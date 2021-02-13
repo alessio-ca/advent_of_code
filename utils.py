@@ -22,4 +22,8 @@ def read_input_batch(input_file: str) -> List[str]:
                 for element in line.strip().split(" "):
                     batch.append(element)
 
+        # Append last batch
+        if batch:
+            input_list.append(batch)
+
     return input_list

@@ -1,5 +1,3 @@
-from utils import read_input_batch
-
 """
 --- Day 6: Custom Customs ---
 
@@ -57,8 +55,7 @@ In this example, the sum of these counts is 3 + 3 + 3 + 1 + 1 = 11.
 
 For each group, count the number of questions to which anyone answered "yes".
  What is the sum of those counts?
-"""
-"""
+
 --- Part Two ---
 
 As you finish the last group's customs declaration, you notice that you
@@ -98,6 +95,7 @@ In this example, the sum of these counts is 3 + 0 + 1 + 1 + 1 = 6.
 For each group, count the number of questions to which everyone answered "yes".
  What is the sum of those counts?
 """
+from utils import read_input_batch
 
 
 def main():

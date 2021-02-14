@@ -1,6 +1,3 @@
-import numpy as np
-from utils import read_input
-
 """
 --- Day 3: Toboggan Trajectory ---
 
@@ -69,8 +66,7 @@ In this example, traversing the map using this slope would cause you to
 
 Starting at the top-left corner of your map and following a slope of right 3
  and down 1, how many trees would you encounter?
-"""
-"""
+
 --- Part Two ---
 
 Time to check the rest of the slopes - you need to minimize the probability of
@@ -91,6 +87,8 @@ In the above example, these slopes would find 2, 7, 3, 4, and 2 tree(s)
 What do you get if you multiply together the number of trees encountered on
  each of the listed slopes?
 """
+import numpy as np
+from utils import read_input
 
 TREE = "#"
 SLOPES = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]

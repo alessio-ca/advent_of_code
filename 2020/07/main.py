@@ -44,7 +44,42 @@ So, in this example, the number of bag colors that can eventually contain at
 
 How many bag colors can eventually contain at least one shiny gold bag?
  (The list of rules is quite long; make sure you get all of it.)
+
+--- Part Two ---
+
+It's getting pretty expensive to fly these days - not because of ticket prices,
+ but because of the ridiculous number of bags you need to buy!
+
+Consider again your shiny gold bag and the rules from the above example:
+
+faded blue bags contain 0 other bags.
+dotted black bags contain 0 other bags.
+vibrant plum bags contain 11 other bags: 5 faded blue bags and 6 dotted black
+ bags.
+dark olive bags contain 7 other bags: 3 faded blue bags and 4 dotted black
+ bags.
+So, a single shiny gold bag must contain 1 dark olive bag (and the 7 bags
+ within it) plus 2 vibrant plum bags (and the 11 bags within each of those): 1
+  + 1*7 + 2 + 2*11 = 32 bags!
+
+Of course, the actual rules have a small chance of going several levels deeper
+ than this example; be sure to count all of the bags, even if the nesting
+  becomes topologically impractical!
+
+Here's another example:
+
+shiny gold bags contain 2 dark red bags.
+dark red bags contain 2 dark orange bags.
+dark orange bags contain 2 dark yellow bags.
+dark yellow bags contain 2 dark green bags.
+dark green bags contain 2 dark blue bags.
+dark blue bags contain 2 dark violet bags.
+dark violet bags contain no other bags.
+In this example, a single shiny gold bag must contain 126 other bags.
+
+How many individual bags are required inside your single shiny gold bag?
 """
+
 from parsimonious.grammar import Grammar, NodeVisitor
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -82,8 +117,8 @@ class MyVisitor(NodeVisitor):
     def visit_ENTRY(self, node, visited_children):
         parent, children, *_ = visited_children
         # Add a graph edge between parent and children
-        for child in children:
-            self.graph.add_edge(parent, child[0])
+        for color, number in children:
+            self.graph.add_edge(parent, color, count=number)
 
     def visit_PARENT(self, node, visited_children):
         # This returns the 0-th element of PARENT, COLOR
@@ -106,15 +141,28 @@ class MyVisitor(NodeVisitor):
         return visited_children or node
 
 
+def count_bags(graph: nx.DiGraph, bag: str):
+    """Count the number of bags contained in a particular bag
+    Considers the children of this bag as well!
+    """
+    # The bag itself counts as 1
+    count = 1
+    for child in graph.neighbors(bag):
+        count += count_bags(graph, child) * graph.edges[bag, child]["count"]
+
+    return count
+
+
 def plot_graph(
     graph: nx.DiGraph,
     pos=None,
-    node_color=None,
+    node_color="#1f78b4",
     with_labels=True,
-    node_size=None,
-    font_size=None,
-    width=None,
-    arrowsize=None,
+    edge_labels=None,
+    node_size=300,
+    font_size=12,
+    width=1,
+    arrowsize=10,
     alpha=None,
     out_file="graph.png",
 ):
@@ -141,14 +189,20 @@ def plot_graph(
 def main():
     # Open raw file
     input_raw = open("2020/07/input.txt", "r")
+
     # Create graph by parsing input
     parser = MyVisitor()
     parser.grammar = grammar
     graph = parser.create_graph(input_raw.read())
-    # List shiny_gold parent nodes
-    shiny_gold_parents = list(nx.ancestors(graph, "shiny gold"))
 
+    # List of shiny_gold parent nodes
+    shiny_gold_parents = list(nx.ancestors(graph, "shiny gold"))
     print(f"Result of part 1: {len(shiny_gold_parents)}")
+
+    # Count bags contained in a shiny_gold bag
+    # The -1 is to remove itself from the count
+    bags_in_shiny_gold = count_bags(graph, "shiny gold") - 1
+    print(f"Result of part 2: {bags_in_shiny_gold}")
 
     # Optional: plot the graph!
     colors = []
@@ -159,6 +213,7 @@ def main():
             colors.append("red")
         else:
             colors.append("blue")
+
     plot_graph(
         graph,
         pos=nx.spring_layout(graph, k=0.5),

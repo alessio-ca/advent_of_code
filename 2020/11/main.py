@@ -381,6 +381,8 @@ def main():
     system = CellularAutomataSystem(X)
 
     # First part
+    system.style = 'nn'
+    system.tolerance = 4
     while not system.equilibrium:
         system.generate_status()
     print(f"First answer: {system.grid[system.grid == 1].sum()}")

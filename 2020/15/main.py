@@ -131,6 +131,7 @@ def main():
     result = python_function(input_X, 30000000)
     end = time.time()
     print(f"Result of part 2 (python): {result} ({end-start:.2f}s)")
+
     start = time.time()
     result = numba_function(input_X, 30000000)
     end = time.time()

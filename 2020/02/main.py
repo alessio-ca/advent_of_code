@@ -62,10 +62,8 @@ import re
 def main():
     input_file = read_input("2020/02/input.txt")
     # Restructure input
-    # fmt: off
     input_tuples = [
-        re.match(r"(\d+)-(\d+) (\w): (\w+)", line).groups()
-        for line in input_file
+        re.match(r"(\d+)-(\d+) (\w): (\w+)", line).groups() for line in input_file
     ]
 
     #  For part 1, Create boolean mask of valid passwords

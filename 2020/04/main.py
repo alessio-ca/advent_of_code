@@ -212,6 +212,7 @@ from typing import Dict
 
 class Passport:
     """Class for Passport entries"""
+
     def __init__(self, init_dict: Dict = {}):
         # Raise Exception if you don't provide a dict
         if not isinstance(init_dict, Dict):
@@ -305,16 +306,8 @@ class Passport:
 def main():
     input_file = read_input_batch("2020/04/input.txt")
     # Convert input file into a list of Passports
-    # fmt: off
     passport_list = [
-        Passport(
-            dict(
-                [
-                    re.match(r"(\w+):(.+)", entry).groups()
-                    for entry in batch
-                ]
-            )
-        )
+        Passport(dict([re.match(r"(\w+):(.+)", entry).groups() for entry in batch]))
         for batch in input_file
     ]
     #  Obtain the mask of valid passports

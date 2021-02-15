@@ -122,6 +122,7 @@ from typing import List, Tuple
 
 class Counter:
     """Counter object"""
+
     def __init__(self):
         self.reset()
 
@@ -134,16 +135,19 @@ class Counter:
 
 class ItsALoop(Exception):
     """Exception raised when a loop is detected"""
+
     pass
 
 
 class ItsAMatch(Exception):
     """Exception raised when the program executes correctly"""
+
     pass
 
 
 class LoopDetector:
     """Loop detector object"""
+
     def __init__(self):
         self.reset()
 
@@ -160,6 +164,7 @@ class LoopDetector:
 
 class Instructions:
     """Instructions object"""
+
     def __init__(self, instructions: List[Tuple[str, int]]):
         self.reset()
         self.load(instructions)
@@ -182,6 +187,7 @@ class Instructions:
 
 class DummyProgram:
     """Dummy Program object"""
+
     def __init__(self, instructions: List[Tuple[str, int]]):
         # Initialise the objects
         self.acc = Counter()
@@ -203,9 +209,9 @@ class DummyProgram:
     def execute(self):
         # Execute program
         instr, arg = self.fetch()
-        if instr == 'acc':
+        if instr == "acc":
             self.acc.incr(arg)
-        self.idx.incr(arg if instr == 'jmp' else 1)
+        self.idx.incr(arg if instr == "jmp" else 1)
 
     def run(self):
         # Run the program
@@ -217,12 +223,10 @@ class DummyProgram:
 def main():
     input_file = read_input("2020/08/input.txt")
     # Format file
-    # fmt: off
     instructions = [
         (instr, int(arg))
         for instr, arg in [
-            re.match(r"(\w{3}) (\-?\d+|\+?\d+)", line).groups()
-            for line in input_file
+            re.match(r"(\w{3}) (\-?\d+|\+?\d+)", line).groups() for line in input_file
         ]
     ]
     # For part one, simply catch the loop and output the accumulator
@@ -238,10 +242,10 @@ def main():
         # Modify instructions
         #  (need to convert to list as tuples are immutable)
         new_instructions = [list(entry) for entry in instructions]
-        if instr == 'jmp':
-            new_instructions[idx][0] = 'nop'
-        elif instr == 'nop':
-            new_instructions[idx][0] = 'jmp'
+        if instr == "jmp":
+            new_instructions[idx][0] = "nop"
+        elif instr == "nop":
+            new_instructions[idx][0] = "jmp"
         else:
             continue
         # Reconvert to tuples
@@ -256,13 +260,12 @@ def main():
         except ItsAMatch:
             acc_after_exec = dummy_program.acc.val
             print(
-                f"Result of part 2: {acc_after_exec}"
-                f" (changing instruction {idx})"
+                f"Result of part 2: {acc_after_exec}" f" (changing instruction {idx})"
             )
             return -1
 
     # If you really didn't manage to execute after trying everything...
-    print('You utterly failed! No instruction change can save this program!')
+    print("You utterly failed! No instruction change can save this program!")
 
 
 if __name__ == "__main__":

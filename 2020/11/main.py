@@ -240,10 +240,8 @@ class CellularAutomataSystem:
         self.kernels = self.kernel_stack()
         self.tolerance = tolerance
         if style not in ["nn", "los"]:
-            # fmt: off
             raise Exception(
-                "Nearest Neighbour counting style"
-                f" {style} is not defined"
+                "Nearest Neighbour counting style" f" {style} is not defined"
             )
         self.style = style
         self.equilibrium = 0
@@ -320,7 +318,9 @@ class CellularAutomataSystem:
         # Perform convolution with a NNEIGH filter.
         #  This effectively correspond to counting the number of occupied seats
         #  next to a particular seat
-        Y = convolve2d(Y, CONV_FILTER, mode="same", boundary="fill", fillvalue=0)  # noqa: E501
+        Y = convolve2d(
+            Y, CONV_FILTER, mode="same", boundary="fill", fillvalue=0
+        )  # noqa: E501
         return Y
 
     # Function for occupancy - Line Of Sight
@@ -347,9 +347,9 @@ class CellularAutomataSystem:
         """Generate occupancy status for the grid"""
 
         # Compute the occupancy number
-        if self.style == 'los':
+        if self.style == "los":
             Y = self.count_occupancy_los()
-        elif self.style == 'nn':
+        elif self.style == "nn":
             Y = self.count_occupancy_nn()
 
         # Create two masks corresponding to the rules:
@@ -381,7 +381,7 @@ def main():
     system = CellularAutomataSystem(X)
 
     # First part
-    system.style = 'nn'
+    system.style = "nn"
     system.tolerance = 4
     while not system.equilibrium:
         system.generate_status()
@@ -389,7 +389,7 @@ def main():
 
     # Second part
     system.reset()
-    system.style = 'los'
+    system.style = "los"
     system.tolerance = 5
     while not system.equilibrium:
         system.generate_status()

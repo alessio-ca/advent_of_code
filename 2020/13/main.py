@@ -151,23 +151,17 @@ def main():
     input_file = read_input("2020/13/input.txt")
 
     timestamp = int(input_file[0])
-    # fmt: off
     array_buses = np.array(
         [int(bus) if bus != "x" else 0 for bus in input_file[1].split(",")]
     )
     # For part 1:
     buses = array_buses[array_buses > 0]
     buses_state = buses - timestamp % buses
-    print(
-        "Result of part 1: "
-        f"{buses_state.min() * buses[np.argmin(buses_state)]}"
-    )
+    print("Result of part 1: " f"{buses_state.min() * buses[np.argmin(buses_state)]}")
 
     # For part 2:
     # Create 2D array
-    bus_matrix = np.stack([
-        array_buses, np.arange(array_buses.shape[0])
-    ], axis=1)
+    bus_matrix = np.stack([array_buses, np.arange(array_buses.shape[0])], axis=1)
     # Sort buses array and pos array
     sorted_idx = np.argsort(-bus_matrix[:, 0])
     bus_matrix = bus_matrix[sorted_idx]

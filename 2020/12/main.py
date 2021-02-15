@@ -103,11 +103,13 @@ import numpy as np
 
 class ItsAMatch(Exception):
     """Exception raised when the program executes correctly"""
+
     pass
 
 
 class Instructions:
     """Instructions object"""
+
     def __init__(self, instructions: List[Tuple[str, int]]):
         self.reset()
         self.load(instructions)
@@ -129,14 +131,14 @@ class Instructions:
 
 
 class DummyShip:
-    def __init__(self, instructions: List[Tuple[str, int]], mode='ship'):
+    def __init__(self, instructions: List[Tuple[str, int]], mode="ship"):
         self.pos = np.array([0, 0])
         self.direction = 0
         self.way_pos = np.array([10, 1])
         self.idx = 0
         self.instructions = Instructions(instructions)
-        if mode not in ['ship', 'way']:
-            raise Exception(f'Ship movement mode {mode} is not valid.')
+        if mode not in ["ship", "way"]:
+            raise Exception(f"Ship movement mode {mode} is not valid.")
         self.mode = mode
 
         self.move_vectors = {
@@ -146,7 +148,7 @@ class DummyShip:
             "W": (-1, 0, 0, 0),
             "L": (0, 0, 1, 0),
             "R": (0, 0, -1, 0),
-            "F": (0, 0, 0, 1)
+            "F": (0, 0, 0, 1),
         }
 
     def reset(self):
@@ -170,7 +172,7 @@ class DummyShip:
         c, s = np.cos(arg * rot * np.pi / 180), np.sin(arg * rot * np.pi / 180)
         rot_matrix = np.around(np.array(((c, -s), (s, c)))).astype(int)
 
-        if self.mode == 'ship':
+        if self.mode == "ship":
             # Move on X and Y
             self.pos[0] += arg * (
                 x + forward * np.around(np.cos(self.direction * np.pi / 180))
@@ -178,7 +180,7 @@ class DummyShip:
             self.pos[1] += arg * (
                 y + forward * np.around(np.sin(self.direction * np.pi / 180))
             )
-        elif self.mode == 'way':
+        elif self.mode == "way":
             # Move waypoint X and Y
             self.way_pos[0] += arg * x
             self.way_pos[1] += arg * y
@@ -202,16 +204,12 @@ class DummyShip:
 def main():
     input_file = read_input("2020/12/input.txt")
     # Format file
-    # fmt: off
     instructions = [
         (instr, int(arg))
-        for instr, arg in [
-            re.match(r"(\w)(\d+)", line).groups()
-            for line in input_file
-        ]
+        for instr, arg in [re.match(r"(\w)(\d+)", line).groups() for line in input_file]
     ]
     # For part one, run the program with mode "ship"
-    dummy_ship = DummyShip(instructions, mode='ship')
+    dummy_ship = DummyShip(instructions, mode="ship")
     try:
         dummy_ship.run()
     except ItsAMatch:
@@ -220,7 +218,7 @@ def main():
 
     # For part two, run the program with mode "way"
     dummy_ship.reset()
-    dummy_ship.mode = 'way'
+    dummy_ship.mode = "way"
     try:
         dummy_ship.run()
     except ItsAMatch:

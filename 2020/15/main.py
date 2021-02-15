@@ -58,7 +58,7 @@ import time
 from numba import njit
 
 
-def python_function(X: np.array, length: int):
+def python_function(X: np.array, length: int) -> int:
     """Convenience function for the challenge"""
     lookup_list = [0] * length
     # Initialise lookup list
@@ -82,7 +82,7 @@ def python_function(X: np.array, length: int):
 
 
 @njit
-def numba_function(X: np.array, length: int):
+def numba_function(X: np.array, length: int) -> int:
     """Same convenience function for the challenge,
     with numba compilation
     """

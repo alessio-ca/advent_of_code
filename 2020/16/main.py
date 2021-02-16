@@ -143,7 +143,7 @@ class Rules:
 
 
 def main():
-    input_file = read_input_batch("2020/16/input.txt", line_split=False)
+    input_file = read_input_batch("2020/16/example.txt", line_split=False)
 
     list_rules = input_file[0]
 

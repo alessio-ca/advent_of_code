@@ -10,7 +10,7 @@ def read_input(input_file: str) -> List[str]:
     return input_list
 
 
-def read_input_batch(input_file: str) -> List[str]:
+def read_input_batch(input_file: str, line_split: bool = True) -> List[str]:
     with open(input_file, "r") as input_file:
         input_list = []
         batch = []
@@ -19,8 +19,11 @@ def read_input_batch(input_file: str) -> List[str]:
                 input_list.append(batch)
                 batch = []
             else:
-                for element in line.strip().split(" "):
-                    batch.append(element)
+                if line_split:
+                    for element in line.strip().split(" "):
+                        batch.append(element)
+                else:
+                    batch.append(line.strip())
 
         # Append last batch
         if batch:

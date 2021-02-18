@@ -42,9 +42,37 @@ Here are a few more examples:
 ((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2 becomes 13632.
 Before you can help with the homework, you need to understand it yourself. Evaluate the
  expression on each line of the homework; what is the sum of the resulting values?
+
+--- Part Two ---
+
+You manage to answer the child's questions and they finish part 1 of their homework,
+ but get stuck when they reach the next section: advanced math.
+
+Now, addition and multiplication have different precedence levels, but they're not the
+ ones you're familiar with. Instead, addition is evaluated before multiplication.
+
+For example, the steps to evaluate the expression 1 + 2 * 3 + 4 * 5 + 6 are now as
+ follows:
+
+1 + 2 * 3 + 4 * 5 + 6
+  3   * 3 + 4 * 5 + 6
+  3   *   7   * 5 + 6
+  3   *   7   *  11
+     21       *  11
+         231
+Here are the other examples from above:
+
+1 + (2 * 3) + (4 * (5 + 6)) still becomes 51.
+2 * 3 + (4 * 5) becomes 46.
+5 + (8 * 3 + 9 + 3 * 4 * 3) becomes 1445.
+5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4)) becomes 669060.
+((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2 becomes 23340.
+What do you get if you add up the results of evaluating the homework problems using
+ these new rules?
 """
 from utils import read_input
 from parsimonious.grammar import Grammar, NodeVisitor
+import numpy as np
 
 # Define grammar rule for Parser
 grammar = Grammar(
@@ -59,7 +87,7 @@ grammar = Grammar(
 )
 
 
-class MyVisitor(NodeVisitor):
+class SimpleMathVisitor(NodeVisitor):
     def visit_RULE(self, node, visited_children):
         # The first element of RULE is always a number
         # The second is a list of (OP, EXP), where OP is the math operator and EXP is
@@ -97,12 +125,36 @@ class MyVisitor(NodeVisitor):
         return visited_children or node
 
 
+class AdvanceMathVisitor(SimpleMathVisitor):
+    def visit_RULE(self, node, visited_children):
+        # The first element of RULE is always a number
+        # The second is a list of (OP, EXP), where OP is the math operator and EXP is
+        #  everything else
+        number = visited_children[0]
+        grouped_calc = [number]
+        for op, exp in visited_children[1]:
+            # Apply math operator accordingly
+            if op == "+":
+                # Addition gets priority
+                grouped_calc[-1] += exp
+            elif op == "*":
+                # Multiplication is delayed
+                grouped_calc.append(exp)
+            else:
+                raise Exception(f"Operation {op} not recognized")
+        return np.prod(grouped_calc)
+
+
 def main():
     input_file = read_input("2020/18/input.txt")
-    # Parse input
-    parser = MyVisitor()
-    parser.grammar = grammar
-    print(f"Result of part 1: {sum([parser.parse(el) for el in input_file])}")
+    # Parse input -- basic math
+    parser_basic = SimpleMathVisitor()
+    parser_basic.grammar = grammar
+    print(f"Result of part 1: {sum([parser_basic.parse(el) for el in input_file])}")
+    # Parse input -- advanced math
+    parser_advanced = AdvanceMathVisitor()
+    parser_advanced.grammar = grammar
+    print(f"Result of part 2: {sum([parser_advanced.parse(el) for el in input_file])}")
 
 
 if __name__ == "__main__":

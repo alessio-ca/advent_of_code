@@ -74,6 +74,92 @@ Your goal is to determine the number of messages that completely match rule 0. I
     match rule 0 above, but it has an extra unmatched b on the end.)
 
 How many messages completely match rule 0?
+
+--- Part Two ---
+
+As you look over the list of messages, you realize your matching rules aren't quite
+ right. To fix them, completely replace rules 8: 42 and 11: 42 31 with the following:
+
+8: 42 | 42 8
+11: 42 31 | 42 11 31
+This small change has a big impact: now, the rules do contain loops, and the list of
+ messages they could hypothetically match is infinite. You'll need to determine how
+  these changes affect which messages are valid.
+
+Fortunately, many of the rules are unaffected by this change; it might help to start by
+ looking at which rules always match the same set of values and how those rules
+  (especially rules 42 and 31) are used by the new versions of rules 8 and 11.
+
+(Remember, you only need to handle the rules you have; building a solution that could
+ handle any hypothetical combination of rules would be significantly more difficult.)
+
+For example:
+
+42: 9 14 | 10 1
+9: 14 27 | 1 26
+10: 23 14 | 28 1
+1: "a"
+11: 42 31
+5: 1 14 | 15 1
+19: 14 1 | 14 14
+12: 24 14 | 19 1
+16: 15 1 | 14 14
+31: 14 17 | 1 13
+6: 14 14 | 1 14
+2: 1 24 | 14 4
+0: 8 11
+13: 14 3 | 1 12
+15: 1 | 14
+17: 14 2 | 1 7
+23: 25 1 | 22 14
+28: 16 1
+4: 1 1
+20: 14 14 | 1 15
+3: 5 14 | 16 1
+27: 1 6 | 14 18
+14: "b"
+21: 14 1 | 1 14
+25: 1 1 | 1 14
+22: 14 14
+8: 42
+26: 14 22 | 1 20
+18: 15 15
+7: 14 5 | 1 21
+24: 14 1
+
+abbbbbabbbaaaababbaabbbbabababbbabbbbbbabaaaa
+bbabbbbaabaabba
+babbbbaabbbbbabbbbbbaabaaabaaa
+aaabbbbbbaaaabaababaabababbabaaabbababababaaa
+bbbbbbbaaaabbbbaaabbabaaa
+bbbababbbbaaaaaaaabbababaaababaabab
+ababaaaaaabaaab
+ababaaaaabbbaba
+baabbaaaabbaaaababbaababb
+abbbbabbbbaaaababbbbbbaaaababb
+aaaaabbaabaaaaababaa
+aaaabbaaaabbaaa
+aaaabbaabbaaaaaaabbbabbbaaabbaabaaa
+babaaabbbaaabaababbaabababaaab
+aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba
+Without updating rules 8 and 11, these rules only match three messages:
+ bbabbbbaabaabba, ababaaaaaabaaab, and ababaaaaabbbaba.
+
+However, after updating rules 8 and 11, a total of 12 messages match:
+
+bbabbbbaabaabba
+babbbbaabbbbbabbbbbbaabaaabaaa
+aaabbbbbbaaaabaababaabababbabaaabbababababaaa
+bbbbbbbaaaabbbbaaabbabaaa
+bbbababbbbaaaaaaaabbababaaababaabab
+ababaaaaaabaaab
+ababaaaaabbbaba
+baabbaaaabbaaaababbaababb
+abbbbabbbbaaaababbbbbbaaaababb
+aaaaabbaabaaaaababaa
+aaaabbaabbaaaaaaabbbabbbaaabbaabaaa
+aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba
+After updating rules 8 and 11, how many messages completely match rule 0?
 """
 from utils import read_input_batch
 from typing import List
@@ -83,18 +169,17 @@ import re
 class Rules:
     """Class for Rules entries"""
 
-    def __init__(self, init_list: List[str]):
+    def __init__(self, init_list: List[str], correct: bool = False):
         # Raise Exception if you don't provide a list
         if not isinstance(init_list, List):
             raise Exception(
                 "Rules needs a initialization list"
                 f" -- you provided a {type(init_list)}"
             )
-
         self.init_list = init_list
-        self.parse_rules()
+        self.parse_rules(correct)
 
-    def parse_rules(self):
+    def parse_rules(self, correct: bool = False):
         # Pattern for rules parsing
         self.rules = {}
         for rule in self.init_list:
@@ -106,13 +191,19 @@ class Rules:
                 body = [tuple(map(int, el.split())) for el in body.split("|")]
 
             self.rules[int(idx)] = body
-        # Build a regex for rule 0 -- add anchor and end at the end
-        self.the_zero_rule = "^" + self.build_rules(rule_idx=0) + "$"
+        if correct:
+            # Manually change rule 8 and 11
+            self.rules[8] = [(42,), (42, 8)]
+            self.rules[11] = [(42, 31), (42, 11, 31)]
+        else:
+            # Build a regex for rule 0 -- add anchor and end at the end
+            self.the_zero_rule = "^" + self.build_rules(rule_idx=0) + "$"
 
     def build_rules(self, rule_idx: int):
         # Create a giga-uber-mega Regex by concatenating smaller regexes together
-        #  recursively
+        #  recursively. This works if there are no recursion loops
         rule = self.rules[rule_idx]
+        # Use a tracker to monitor the length of the resulting regex
         if isinstance(rule, str):
             # If this is a letter rule, just return it
             return rule
@@ -127,9 +218,51 @@ class Rules:
 
         return "(" + "|".join(regexes) + ")"
 
+    def match_rules(self, message, rule_idx: int = 0, str_index: int = 0):
+        # Match rules even when recursions are possible.
+        # Use an index to track where a string matches the rules.
+        # Return a list of possible end indexes or an empty list if there is no match.
+
+        # If we are past the string length, return an empty list
+        if str_index >= len(message):
+            return []
+
+        rule = self.rules[rule_idx]
+        if isinstance(rule, str):
+            # Check if string matches the character.
+            # If it does, update the indexer. Otherwise, return an empty list
+            if message[str_index] == rule:
+                return [str_index + 1]
+            else:
+                return []
+
+        matching_str_index = []
+
+        for pattern in rule:
+            # Use the current idx to start matching
+            old_matching_str_index = [str_index]
+            # For each element of rule, try to match it to the possible
+            #  indexers we have so far
+            for sub_idx in pattern:
+                new_matching_str_index = []
+                for starting_idx in old_matching_str_index:
+                    new_matching_str_index += self.match_rules(
+                        message, sub_idx, starting_idx
+                    )
+
+                #  If it worked, keep track of the successful index(es) and continue the
+                #  loop
+                old_matching_str_index = new_matching_str_index
+
+            # If the entire pattern has been matched, add it to the candidates
+            matching_str_index += old_matching_str_index
+
+        return matching_str_index
+
 
 def main():
     input_file = read_input_batch("2020/19/input.txt", line_split=False)
+
     # Define rules
     rules = Rules(input_file[0])
     # Apply regex matching using the zero rule
@@ -138,6 +271,16 @@ def main():
         "Result of part 1: "
         f"{sum(1 if the_rule.match(message) else 0 for message in input_file[1])}"
     )
+
+    # Define rules
+    rules = Rules(input_file[0], correct=True)
+    # Match the rules using a custom matching that prevent recursions
+    # Check that the length of the message is equal to at least one final index
+    #  obtained after rule matching
+    matched_rules = sum(
+        [1 for message in input_file[1] if len(message) in rules.match_rules(message)]
+    )
+    print("Result of part 2: " f"{matched_rules}")
 
 
 if __name__ == "__main__":

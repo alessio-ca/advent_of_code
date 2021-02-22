@@ -396,9 +396,11 @@ class Map:
         ]
 
     def is_corner(self, row_id: int, col_id: int):
+        # Convenience function corner to check wheter a (row, col) cell is corner
         return (row_id in [0, self.grid_size - 1]) & (col_id in [0, self.grid_size - 1])
 
     def not_corner(self, row_id: int, col_id: int, idx: int):
+        # Convenience function to check wheter a (row, col) cell is edge
         return (
             (row_id in [0, self.grid_size - 1])
             & (col_id in [0, self.grid_size - 1])

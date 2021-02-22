@@ -41,6 +41,23 @@ The first step is to determine which ingredients can't possibly contain any of t
 
 Determine which ingredients cannot possibly contain any of the allergens in your list.
  How many times do any of those ingredients appear?
+
+--- Part Two ---
+
+Now that you've isolated the inert ingredients, you should have enough information to
+ figure out which ingredient contains which allergen.
+
+In the above example:
+
+mxmxvkd contains dairy.
+sqjhc contains fish.
+fvjkl contains soy.
+Arrange the ingredients alphabetically by their allergen and separate them by commas to
+ produce your canonical dangerous ingredient list. (There should not be any spaces in
+  your canonical dangerous ingredient list.) In the above example, this would be
+   mxmxvkd,sqjhc,fvjkl.
+
+Time to stock your raft with supplies. What is your canonical dangerous ingredient list?
 """
 from utils import read_input
 import re
@@ -68,19 +85,44 @@ def main():
             k for k, v in id_allergen_dict.items() if allergen in v
         }
 
-    # Obtain unsafe ingredients -- do intersection of the ingredients for all the
-    #  elements in the list of foods that share a certain allergen
+    # Create dictionary of allergen -- ingredients
+    allergen_ingredient_dict = {
+        key: set.intersection(*[ingredients_list[k] for k in value])
+        for key, value in allergen_id_dict.items()
+    }
+
+    # The union of the ingredients in the allergen_ingredient dictionary is the unsafe
+    #  set.
     # Safe ingredients are the difference between the total set and the unsafe set
     safe_ingredients = set_ingredients - set.union(
-        *[
-            set.intersection(*[ingredients_list[k] for k in value])
-            for key, value in allergen_id_dict.items()
-        ]
+        *[v for k, v in allergen_ingredient_dict.items()]
     )
     num_result = sum(
         [len(set.intersection(safe_ingredients, recipe)) for recipe in ingredients_list]
     )
     print("Result of part 1: " f"{num_result}")
+    # Find the right ingredient - allergen relationship
+    # Recursively walk through the allergen_ingredient dictionary.
+    #  If the set difference between the element and the confirmed ingredient-allergen
+    #  pairs is 1, update the ingredient_allergen pairs
+    # Else, remove the ingredient-allergen pair from the allergen_ingredient dictionary
+    ingredient_allergen_dict = {}
+    while len(ingredient_allergen_dict) < len(set_allergens):
+        for allergen in allergen_ingredient_dict:
+            set_difference = allergen_ingredient_dict[allergen].difference(
+                ingredient_allergen_dict.values()
+            )
+
+            if len(set_difference) == 1:
+                ingredient_allergen_dict[allergen] = list(set_difference)[0]
+
+            allergen_ingredient_dict[allergen] = set_difference
+
+    canonical_list = ",".join(
+        [ingredient_allergen_dict[key] for key in sorted(ingredient_allergen_dict)]
+    )
+
+    print(f"Result of part 2: {canonical_list}")
 
 
 if __name__ == "__main__":

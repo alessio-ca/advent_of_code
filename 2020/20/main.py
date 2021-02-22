@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 --- Day 20: Jurassic Jigsaw ---
 
@@ -180,70 +182,196 @@ To check that you've assembled the image correctly, multiply the IDs of the four
 Assemble the tiles into an image. What do you get if you multiply together the IDs of
  the four corner tiles?
 """
-from utils import read_input_batch
+from utils import read_input_batch, read_input
 import numpy as np
+from typing import Set
+from scipy.signal import correlate2d
 
 TILE_CHAR = "#"
 ZERO_CHAR = "."
 
 
-def find_neighbors(X_ids, X):
-    # For each tile, create a dictionary of the possible edge candidates
-    # Need tuple conversion since arrays and lists are not hashable
-    dict_edges = {
-        k: set.union(
-            *[
-                {tuple(edge), tuple(np.flip(edge))}
-                for edge in [tile[0, :], tile[-1, :], tile[:, 0], tile[:, -1]]
-            ]
-        )
-        for k, tile in zip(X_ids, X)
-    }
-    dict_neighbours = {
-        k: (
-            {
-                k_neigh
-                for k_neigh, edges_neigh in dict_edges.items()
-                if edge & edges_neigh
-            }
-            - {k}
-        )
-        for k, edge in dict_edges.items()
-    }
-    return dict_neighbours
+def rotate_and_flip(X: np.array):
+    """Convenience function to rotate and flip an array"""
+    list_rot_and_flip = []
+    X_temp = X.copy()
+    for _ in range(2):
+        for _ in range(4):
+            X_temp = np.rot90(X_temp)
+            list_rot_and_flip.append(X_temp)
+        X_temp = np.flip(X_temp, axis=1)
+    return list_rot_and_flip
 
 
-def find_corners(dict_neighbours):
-    # Corners have only 2 neighbors
-    return [
-        idx
-        for idx, edge_neighbours in dict_neighbours.items()
-        if len(edge_neighbours) == 2
-    ]
+class Tile:
+    """Class for tiles"""
+
+    def __init__(self, idx: int, X: np.array):
+        self.id = idx
+        self.X = X
+
+    def is_above(self, tile: Tile):
+        return np.array_equal(self.X[-1, :], tile.X[0, :])
+
+    def is_left(self, tile: Tile):
+        return np.array_equal(self.X[:, -1], tile.X[:, 0])
+
+
+class Map:
+    """Class for Map instance"""
+
+    def __init__(self, X_ids: np.array, X_tiles: np.array):
+        self.grid_size = int(np.sqrt(len(X_tiles)))
+        # Create dictionary of tiles (complete with rotation and flipping
+        # Each ID is associated to the eight possible tiles after flipping and rotation
+        self.tiles = {
+            idx: [Tile(idx, trans_tile) for trans_tile in rotate_and_flip(tile)]
+            for idx, tile in zip(X_ids, X_tiles)
+        }
+        # Obtain dictionary of neighbours
+        self.neighbours = self.find_neighbors()
+        # Find corners
+        self.corners = self.find_corners()
+        # Initialize map
+        self.grid_map = [
+            [None for i in range(self.grid_size)] for i in range(self.grid_size)
+        ]
+        # Reconstruct map
+        self.search_position(0, 0, set())
+        self.map = np.concatenate(
+            [
+                np.concatenate(
+                    [tile.X[1:-1, 1:-1] for tile in self.grid_map[i][:]], axis=1
+                )
+                for i in range(self.grid_size)
+            ],
+            axis=0,
+        )
+
+    def find_neighbors(self):
+        # For each tile, create a dictionary of the edge candidates.
+        # Loop through the 8 rotated-flipped versions of a tile and select the top edge
+        # Need tuple conversion since arrays and lists are not hashable
+        dict_edges = {
+            k: {tuple(tile.X[0, :]) for tile in tiles}
+            for k, tiles in self.tiles.items()
+        }
+        # For each tile, get the set of tiles that are possible neighbours
+        # For two tiles to be neighbors, their sets of edges must intersect
+        dict_neighbours = {
+            k: (
+                {
+                    k_neigh
+                    for k_neigh, edges_neigh in dict_edges.items()
+                    if edge & edges_neigh
+                }
+                - {k}
+            )
+            for k, edge in dict_edges.items()
+        }
+        return dict_neighbours
+
+    def find_corners(self):
+        # Corners have only 2 neighbors
+        return [
+            idx
+            for idx, edge_neighbours in self.neighbours.items()
+            if len(edge_neighbours) == 2
+        ]
+
+    def not_corner(self, row_id: int, col_id: int, idx: int):
+        return (
+            (row_id in [0, self.grid_size - 1])
+            & (col_id in [0, self.grid_size - 1])
+            & (idx not in self.corners)
+        )
+
+    def search_position(self, row_id: int, col_id: int, visited_tiles: Set(int)):
+        # If you are at the edge, return
+        if row_id == self.grid_size:
+            return
+        # Scan all tiles
+        for idx, tiles in self.tiles.items():
+            #  If corner, and idx is not corner candidate
+            if self.not_corner(row_id, col_id, idx):
+                continue
+            # If the ID is not in visited_tiles
+            if not (idx in visited_tiles):
+                # If valid position, check that tile is valid neighbor to the above and
+                #  left tiles in grid map
+                if row_id > 0:
+                    above_tile = self.grid_map[row_id - 1][col_id].id
+                    if idx not in self.neighbours[above_tile]:
+                        continue
+
+                if col_id > 0:
+                    left_tile = self.grid_map[row_id][col_id - 1].id
+                    if idx not in self.neighbours[left_tile]:
+                        continue
+
+                # If valid candidate, find right orientation
+                for tile in tiles:
+                    if row_id > 0:
+                        if not self.grid_map[row_id - 1][col_id].is_above(tile):
+                            continue
+                    if col_id > 0:
+                        if not self.grid_map[row_id][col_id - 1].is_left(tile):
+                            continue
+
+                    # Assign position and add ID to visited_tiles
+                    self.grid_map[row_id][col_id] = tile
+                    visited_tiles.add(tile.id)
+
+                    # Recursive search
+                    if col_id == self.grid_size - 1:
+                        self.search_position(row_id + 1, 0, visited_tiles)
+                    else:
+                        self.search_position(row_id, col_id + 1, visited_tiles)
+
+                    # Exiting recursion, remove the ID from visited_tiles
+                    visited_tiles.remove(tile.id)
 
 
 def main():
-    input_file = read_input_batch("2020/20/example.txt")
+    input_file = read_input_batch("2020/20/input.txt")
+    monster_file = read_input("2020/20/monster.txt", line_strip=False)
     #  Preprocess inputs
     id_list = [int(tile[1][:-1]) for tile in input_file]
     tile_list = [tile[2:] for tile in input_file]
 
     # Convert characters to 1 and 0, and to array
     X_ids = np.array(id_list, dtype=int)
-    X = np.array(
+    X_tiles = np.array(
         [
             [[1 if char == TILE_CHAR else 0 for char in line] for line in tile]
             for tile in tile_list
         ],
         dtype=int,
     )
-
-    # Find neighbours for each edge
-    dict_neighbours = find_neighbors(X_ids, X)
-    # Find the corner edges
-    corner_edges = find_corners(dict_neighbours)
+    X_monster = np.array(
+        [[1 if char == TILE_CHAR else 0 for char in line] for line in monster_file],
+        dtype=int,
+    )
+    # Create map object
+    mapmap = Map(X_ids, X_tiles)
     # Return result
-    print(f"Result of part 1: {np.prod(corner_edges)}")
+    print(f"Result of part 1: {np.prod(mapmap.corners)}")
+    # Find the correct orientation of the map when looking for sea monsters
+    map_rot_and_flip = rotate_and_flip(mapmap.map)
+    correlation_array = np.array(
+        [
+            correlate2d(map_candidate, X_monster, mode="same")
+            for map_candidate in map_rot_and_flip
+        ]
+    )
+    idx_match = np.argmax(np.max(correlation_array, axis=(1, 2)))
+    # Find the number of monsters
+    num_monsters = (correlation_array[idx_match] == np.max(correlation_array)).sum()
+    # Obtain sea roughness by removing num_monster * sum(monster) values from map
+    print(
+        "Result of part 2: "
+        f"{map_rot_and_flip[idx_match].sum() - num_monsters*X_monster.sum()}"
+    )
 
 
 if __name__ == "__main__":

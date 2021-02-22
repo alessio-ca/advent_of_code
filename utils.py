@@ -1,11 +1,14 @@
 from typing import List
 
 
-def read_input(input_file: str) -> List[str]:
+def read_input(input_file: str, line_strip: bool = True) -> List[str]:
     with open(input_file, "r") as input_file:
         input_list = []
         for line in input_file:
-            input_list.append(line.strip())
+            if line_strip:
+                input_list.append(line.strip())
+            else:
+                input_list.append(line.rstrip("\n"))
 
     return input_list
 

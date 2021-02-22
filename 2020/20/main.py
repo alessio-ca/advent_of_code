@@ -288,6 +288,7 @@ How many # are not part of a sea monster?
 from utils import read_input_batch, read_input
 import numpy as np
 from typing import Set
+import itertools
 from scipy.signal import correlate2d
 
 TILE_CHAR = "#"
@@ -335,10 +336,14 @@ class Map:
         self.neighbours = self.find_neighbors()
         # Find corners
         self.corners = self.find_corners()
+        # Find edges
+        self.edges = self.find_edges()
         # Initialize map
         self.grid_map = [
             [None for i in range(self.grid_size)] for i in range(self.grid_size)
         ]
+        # Obtain dictionary of valid tiles for map
+        self.candidate_tiles = self.valid_tiles()
         # Reconstruct map
         self.search_position(0, 0, set())
         self.map = np.concatenate(
@@ -382,6 +387,17 @@ class Map:
             if len(edge_neighbours) == 2
         ]
 
+    def find_edges(self):
+        # Edges have only 2 or 3 neighbors
+        return [
+            idx
+            for idx, edge_neighbours in self.neighbours.items()
+            if len(edge_neighbours) == 3
+        ]
+
+    def is_corner(self, row_id: int, col_id: int):
+        return (row_id in [0, self.grid_size - 1]) & (col_id in [0, self.grid_size - 1])
+
     def not_corner(self, row_id: int, col_id: int, idx: int):
         return (
             (row_id in [0, self.grid_size - 1])
@@ -389,50 +405,68 @@ class Map:
             & (idx not in self.corners)
         )
 
+    def is_edge(self, row_id: int, col_id: int):
+        return (row_id in [0, self.grid_size - 1]) | (col_id in [0, self.grid_size - 1])
+
+    def valid_tiles(self):
+        # Create dictionary of valid tiles per grid position
+        candidate_tiles = {}
+        for (row_id, col_id) in itertools.product(range(self.grid_size), repeat=2):
+            if self.is_corner(row_id, col_id):
+                candidate_tiles[(row_id, col_id)] = set(self.corners)
+            elif self.is_edge(row_id, col_id):
+                candidate_tiles[(row_id, col_id)] = set(self.edges)
+            else:
+                candidate_tiles[(row_id, col_id)] = (
+                    set(self.tiles.keys()) - set(self.edges) - set(self.corners)
+                )
+        return candidate_tiles
+
     def search_position(self, row_id: int, col_id: int, visited_tiles: Set(int)):
         # If you are at the edge, return
         if row_id == self.grid_size:
             return
+
+        # Obtain valid tiles
+        valid_tiles = self.candidate_tiles[(row_id, col_id)] - visited_tiles
         # Scan all tiles
         for idx, tiles in self.tiles.items():
-            #  If corner, and idx is not corner candidate
-            if self.not_corner(row_id, col_id, idx):
+            #  If not valid, continue
+            if idx not in valid_tiles:
                 continue
-            # If the ID is not in visited_tiles
-            if not (idx in visited_tiles):
-                # If valid position, check that tile is valid neighbor to the above and
-                #  left tiles in grid map
+            # If valid position, check that tile is valid neighbor to the above and
+            #  left tiles in grid map
+            if row_id > 0:
+                above_tile = self.grid_map[row_id - 1][col_id].id
+                if idx not in self.neighbours[above_tile]:
+                    continue
+
+            if col_id > 0:
+                left_tile = self.grid_map[row_id][col_id - 1].id
+                if idx not in self.neighbours[left_tile]:
+                    continue
+
+            # If valid candidate, find right orientation
+            for tile in tiles:
                 if row_id > 0:
-                    above_tile = self.grid_map[row_id - 1][col_id].id
-                    if idx not in self.neighbours[above_tile]:
+                    if not self.grid_map[row_id - 1][col_id].is_above(tile):
                         continue
-
                 if col_id > 0:
-                    left_tile = self.grid_map[row_id][col_id - 1].id
-                    if idx not in self.neighbours[left_tile]:
+                    if not self.grid_map[row_id][col_id - 1].is_left(tile):
                         continue
 
-                # If valid candidate, find right orientation
-                for tile in tiles:
-                    if row_id > 0:
-                        if not self.grid_map[row_id - 1][col_id].is_above(tile):
-                            continue
-                    if col_id > 0:
-                        if not self.grid_map[row_id][col_id - 1].is_left(tile):
-                            continue
+                # Assign position and add ID to visited_tiles
+                self.grid_map[row_id][col_id] = tile
+                visited_tiles.add(tile.id)
 
-                    # Assign position and add ID to visited_tiles
-                    self.grid_map[row_id][col_id] = tile
-                    visited_tiles.add(tile.id)
+                # Recursive search
+                if col_id == self.grid_size - 1:
+                    self.search_position(row_id + 1, 0, visited_tiles)
+                else:
+                    self.search_position(row_id, col_id + 1, visited_tiles)
 
-                    # Recursive search
-                    if col_id == self.grid_size - 1:
-                        self.search_position(row_id + 1, 0, visited_tiles)
-                    else:
-                        self.search_position(row_id, col_id + 1, visited_tiles)
-
-                    # Exiting recursion, remove the ID from visited_tiles
-                    visited_tiles.remove(tile.id)
+                # Exiting recursion, remove the ID from visited_tiles
+                visited_tiles.remove(tile.id)
 
 
 def main():

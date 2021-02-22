@@ -460,6 +460,8 @@ def main():
     # Return result
     print(f"Result of part 1: {np.prod(mapmap.corners)}")
     # Find the correct orientation of the map when looking for sea monsters
+    # The correct orientation should exhibit maximum overlap with the monster template
+    # (in more than one spot, possibly)
     map_rot_and_flip = rotate_and_flip(mapmap.map)
     correlation_array = np.array(
         [
@@ -468,7 +470,7 @@ def main():
         ]
     )
     idx_match = np.argmax(np.max(correlation_array, axis=(1, 2)))
-    # Find the number of monsters
+    # Find the number of monsters by counting the spots of maximum overlap
     num_monsters = (correlation_array[idx_match] == np.max(correlation_array)).sum()
     # Obtain sea roughness by removing num_monster * sum(monster) values from map
     print(

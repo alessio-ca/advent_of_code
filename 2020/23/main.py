@@ -140,7 +140,8 @@ def do_round(x: np.array, num_round: int):
         cup_2 = pointer[cup_1]
         cup_3 = pointer[cup_2]
         destination = index - 1
-        # Find new destination by looping and checking if current destination mod len()
+        # Find new destination by looping and take the first result%length not in the
+        #  fetched cups
         while destination % x.shape[0] in (cup_1, cup_2, cup_3):
             destination -= 1
 

@@ -385,7 +385,7 @@ def main():
     system.tolerance = 4
     while not system.equilibrium:
         system.generate_status()
-    print(f"First answer: {system.grid[system.grid == 1].sum()}")
+    print(f"Result of part 1: {system.grid[system.grid == 1].sum()}")
 
     # Second part
     system.reset()
@@ -393,7 +393,7 @@ def main():
     system.tolerance = 5
     while not system.equilibrium:
         system.generate_status()
-    print(f"Second answer: {system.grid[system.grid == 1].sum()}")
+    print(f"Result of part 2: {system.grid[system.grid == 1].sum()}")
 
 
 if __name__ == "__main__":

@@ -113,8 +113,8 @@ def main():
         # Count trees
         tree_count[i] = (data[y, x] == TREE).sum()
 
-    print("Number of trees in part 1 slope: ", tree_count[1])
-    print("Product of trees in all slopes:", np.prod(tree_count))
+    print(f"Result of part 1: {tree_count[1]}")
+    print(f"Result of part 2: {np.prod(tree_count)}")
 
 
 if __name__ == "__main__":

@@ -519,13 +519,13 @@ def main():
     # First part
     while system.idx < 6:
         system.generate_status()
-    print(f"First answer: {system.grid[system.grid == 1].sum()}")
+    print(f"Result of part 1: {system.grid[system.grid == 1].sum()}")
     # Second part
     system.dimension = 4
     system.reset()
     while system.idx < 6:
         system.generate_status()
-    print(f"First answer: {system.grid[system.grid == 1].sum()}")
+    print(f"Result of part 2: {system.grid[system.grid == 1].sum()}")
 
 
 if __name__ == "__main__":

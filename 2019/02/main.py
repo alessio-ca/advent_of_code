@@ -128,11 +128,15 @@ OPCODE_MUL = 2
 OPCODE_STOP = 99
 
 
+# Note: this function can run much faster with the @njit decorator from numba!
 def program_loop(X: np.array):
     # Make copy
     X = X.copy()
+
+    # Start with index 0
     index = 0
     while X[index] != OPCODE_STOP:
+        # Perform program instructions
         if X[index] == OPCODE_ADD:
             X[X[index + 3]] = X[X[index + 2]] + X[X[index + 1]]
         elif X[index] == OPCODE_MUL:
@@ -152,14 +156,15 @@ def main():
 
     print(f"Result of part 1: {program_loop(program)}")
 
-    for i, j in product(range(100), repeat=2):
-        program[1] = i
-        program[2] = j
+    # Loop over combinations of verb and noun
+    for verb, noun in product(range(100), repeat=2):
+        program[1] = verb
+        program[2] = noun
         result = program_loop(program)
         if result == 19690720:
             break
 
-    print(f"Result of part 2: {100 * i + j}")
+    print(f"Result of part 2: {100 * verb + noun}")
 
 
 if __name__ == "__main__":

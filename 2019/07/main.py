@@ -149,13 +149,13 @@ class Intcode:
         self.setting = 0
         # Default signal is 0
         self.signal = 0
-        # Initialize check as 0
+
         self.reset()
 
     def reset(self):
         self.index = 0
-        self.check = 0
-        self.fb_counter = 0
+        self.check_halt = 0
+        self.is_first_exec = 0
         self.input = iter([self.setting, self.signal])
         self.ops = self.orig_instructions.copy()
 
@@ -165,13 +165,13 @@ class Intcode:
         self.signal = signal
         self.reset()
         # Check is equal to the input signal
-        self.check = signal
+        self.check_halt = signal
 
     # In feedback mode, only load setting in the first run
     def feedback_mode(self, setting: int, signal: int):
         self.setting = setting
         self.signal = signal
-        if self.fb_counter == 0:
+        if self.is_first_exec == 0:
             # Provide setting and input signal at the first feedback loop
             self.input = iter([self.setting, self.signal])
         else:
@@ -193,7 +193,7 @@ class Intcode:
             modes = reversed(f"{self.ops[self.index] // 100:03d}")
 
             # Stop if stop op is reached or input is OpCode.STOP
-            if (op is OpCode.STOP) | (self.check is OpCode.STOP):
+            if (op is OpCode.STOP) | (self.check_halt is OpCode.STOP):
                 return OpCode.STOP
 
             # Execute instructions
@@ -211,9 +211,10 @@ class Intcode:
                 self.index += 2
             elif op is OpCode.GIVE:
                 values = self.get_params(modes, 2)
-                # Update feedback counter
-                self.fb_counter += 1
+                # Update is_first_run status
+                self.is_first_exec = 1
                 self.index += 2
+
                 return self.ops[values[0]]
 
             elif op is OpCode.JUMP_TRUE:
@@ -245,7 +246,7 @@ class Intcode:
 
 
 def main():
-    input_array = np.loadtxt("2019/07/example.txt", delimiter=",", dtype=np.int64)
+    input_array = np.loadtxt("2019/07/input.txt", delimiter=",", dtype=np.int64)
     instructions = input_array.copy()
 
     # Init intcode & set max signal to -inf

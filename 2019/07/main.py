@@ -126,6 +126,7 @@ import numpy as np
 from enum import Enum
 from itertools import permutations
 import math
+from typing import List
 
 
 class OpCode(Enum):
@@ -140,45 +141,40 @@ class OpCode(Enum):
     STOP = 99
 
 
+class InitMode(Enum):
+    NORMAL = 0
+    REPRISE = 1
+
+
 class Intcode:
     """Class for IntCode"""
 
     def __init__(self, instructions: np.array):
         self.orig_instructions = instructions
-        # Default setting is 0
-        self.setting = 0
-        # Default signal is 0
-        self.signal = 0
-
+        # Default input is 0
+        self.input = [0]
         self.reset()
 
     def reset(self):
         self.index = 0
-        self.check_halt = 0
         self.is_first_exec = 0
-        self.input = iter([self.setting, self.signal])
         self.ops = self.orig_instructions.copy()
 
-    # In normal mode, simply assign the setting and signal and reset
-    def normal_mode(self, setting: int, signal: int):
-        self.setting = setting
-        self.signal = signal
-        self.reset()
-        # Check is equal to the input signal
-        self.check_halt = signal
-
-    # In feedback mode, only load setting in the first run
-    def feedback_mode(self, setting: int, signal: int):
-        self.setting = setting
-        self.signal = signal
-        if self.is_first_exec == 0:
-            # Provide setting and input signal at the first feedback loop
-            self.input = iter([self.setting, self.signal])
+    # In normal mode, reset after assigning inputs
+    # In reprise mode, only assign inputs
+    def init_mode(self, init_mode: InitMode, input_values: List[int]):
+        self.input = input_values
+        if init_mode == InitMode.NORMAL:
+            self.reset()
+        elif init_mode == InitMode.REPRISE:
+            if self.is_first_exec == 0:
+                # Provide full input
+                self.input = input_values
+            else:
+                # Only provide input signal -- pop the setting
+                self.input.pop()
         else:
-            # Only provide input signal
-            self.input = iter([self.signal])
-        # Check is equal to the input signal
-        self.check = signal
+            raise Exception(f"Init Mode {init_mode} not supported")
 
     def get_params(self, modes, num: int):
         return [
@@ -193,7 +189,7 @@ class Intcode:
             modes = reversed(f"{self.ops[self.index] // 100:03d}")
 
             # Stop if stop op is reached or input is OpCode.STOP
-            if (op is OpCode.STOP) | (self.check_halt is OpCode.STOP):
+            if op is OpCode.STOP:
                 return OpCode.STOP
 
             # Execute instructions
@@ -207,16 +203,14 @@ class Intcode:
                 self.index += 4
             elif op is OpCode.TAKE:
                 values = self.get_params(modes, 2)
-                self.ops[values[0]] = next(self.input)
+                self.ops[values[0]] = self.input.pop()
                 self.index += 2
             elif op is OpCode.GIVE:
                 values = self.get_params(modes, 2)
                 # Update is_first_run status
                 self.is_first_exec = 1
                 self.index += 2
-
                 return self.ops[values[0]]
-
             elif op is OpCode.JUMP_TRUE:
                 values = self.get_params(modes, 3)
                 if self.ops[values[0]] != 0:
@@ -258,8 +252,8 @@ def main():
         signal = 0
         # Loop over the amplifier
         for i in range(5):
-            # Normal mode and run
-            intcode.normal_mode(settings[i], signal)
+            # Init in Normal mode and run
+            intcode.init_mode(InitMode.NORMAL, [signal, settings[i]])
             signal = intcode.run()
 
         max_signal = max(max_signal, signal)
@@ -279,8 +273,8 @@ def main():
         while signal is not OpCode.STOP:
             # Loop over the amplifiers
             for i in range(5):
-                # Update the signal on the amplifier in feedback mode
-                amplifiers[i].feedback_mode(settings[i], signal)
+                # Update the signal on the amplifier in reprise mode
+                amplifiers[i].init_mode(InitMode.REPRISE, [signal, settings[i]])
                 # Run
                 signal = amplifiers[i].run()
 

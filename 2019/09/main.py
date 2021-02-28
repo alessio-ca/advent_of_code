@@ -80,15 +80,6 @@ from typing import List
 
 
 class OpCode(Enum):
-    ADD = 1
-    MUL = 2
-    TAKE = 3
-    GIVE = 4
-    JUMP_TRUE = 5
-    JUMP_FALSE = 6
-    LT = 7
-    EQ = 8
-    REBASE = 9
     STOP = 99
 
 
@@ -146,27 +137,27 @@ class Intcode:
     def run(self, print_mode=False):
         while True:
             # Fetch instruction -- split in op and modes
-            op = OpCode(self.ops[self.index] % 100)
+            op = self.ops[self.index] % 100
             modes = list(reversed(f"{self.ops[self.index] // 100:03d}"))
 
             # Stop if stop op is reached or input is OpCode.STOP
-            if op is OpCode.STOP:
+            if op == 99:
                 return OpCode.STOP
 
             # Execute instructions
-            if op is OpCode.ADD:
+            if op == 1:
                 values = self.get_params(modes, 4)
                 self.ops[values[2]] = self.ops[values[0]] + self.ops[values[1]]
                 self.index += 4
-            elif op is OpCode.MUL:
+            elif op == 2:
                 values = self.get_params(modes, 4)
                 self.ops[values[2]] = self.ops[values[0]] * self.ops[values[1]]
                 self.index += 4
-            elif op is OpCode.TAKE:
+            elif op == 3:
                 values = self.get_params(modes, 2)
                 self.ops[values[0]] = self.input.pop()
                 self.index += 2
-            elif op is OpCode.GIVE:
+            elif op == 4:
                 values = self.get_params(modes, 2)
                 # Update is_first_run status
                 self.is_first_exec = 1
@@ -177,31 +168,31 @@ class Intcode:
                 else:
                     return self.ops[values[0]]
 
-            elif op is OpCode.JUMP_TRUE:
+            elif op == 5:
                 values = self.get_params(modes, 3)
                 if self.ops[values[0]] != 0:
                     self.index = self.ops[values[1]]
                 else:
                     self.index += 3
-            elif op is OpCode.JUMP_FALSE:
+            elif op == 6:
                 values = self.get_params(modes, 3)
                 if self.ops[values[0]] == 0:
                     self.index = self.ops[values[1]]
                 else:
                     self.index += 3
-            elif op is OpCode.LT:
+            elif op == 7:
                 values = self.get_params(modes, 4)
                 self.ops[values[2]] = (
                     1 if self.ops[values[0]] < self.ops[values[1]] else 0
                 )
                 self.index += 4
-            elif op is OpCode.EQ:
+            elif op == 8:
                 values = self.get_params(modes, 4)
                 self.ops[values[2]] = (
                     1 if self.ops[values[0]] == self.ops[values[1]] else 0
                 )
                 self.index += 4
-            elif op is OpCode.REBASE:
+            elif op == 9:
                 values = self.get_params(modes, 2)
                 self.base += self.ops[values[0]]
                 self.index += 2

@@ -8,6 +8,9 @@ For the time being, I completed the 2020 edition. Currently working on the 2019 
 You can quickly setup the environment via Poetry (https://python-poetry.org).
 Simply execute `poetry install` in the root directory and you are good to go!
 
+Execute `poetry shell` to activate the environment in a shell terminal.
+
+
 ## How to run the programs?
 
 Execute the functions as a Python package from the root directory, for example:

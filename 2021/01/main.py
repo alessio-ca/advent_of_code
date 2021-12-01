@@ -117,8 +117,9 @@ def main():
     # Find the number of positives
     res_1 = (X_diff > 0).sum()
     print(f"Result of part 1: {res_1}")
-    # For Part 2, we create a sliding window of size 3 and take the sum
+    # For Part 2, we create a sliding window of size 3 and take the sum along the second axis (columns)
     Y = sliding_window_view(X, 3).sum(axis=1)
+    # Calculate the array of differences
     Y_diff = np.diff(Y)
     # Find the number of positives
     res_2 = (Y_diff > 0).sum()

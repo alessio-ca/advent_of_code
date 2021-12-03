@@ -121,20 +121,20 @@ def rec_fun(x: List[str], mode: str, y: int = 0):
     try:
         # Sort each string by value & key in ascending order (this will break ties
         #  according to the rule specified in the problem description)
-        candidate = sorted(
+        candidates = sorted(
             collections.Counter([z[y] for z in x]).most_common(),
             key=lambda x: (x[1], x[0]),
             reverse=True,
         )
         # Depending on the selected mode, select the appropriate candidate
         if mode == "most":
-            candidate = candidate[0][0]
+            bit_filter = candidates[0][0]
         elif mode == "least":
-            candidate = candidate[-1][0]
+            bit_filter = candidates[-1][0]
         else:
             raise ValueError
         # Filter list of binary strings
-        x = list(filter(lambda z: z[y] == candidate, x))
+        x = list(filter(lambda z: z[y] == bit_filter, x))
         # Apply recursive call
         return rec_fun(x, mode=mode, y=y + 1)
 

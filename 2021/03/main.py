@@ -111,12 +111,12 @@ Use the binary numbers in your diagnostic report to calculate the oxygen generat
 
 
 """
-from typing import List
+from typing import List, Union, Callable
 from utils import read_input
 import collections
 
 
-def rec_fun(x: List[str], mode: str, y: int = 0):
+def rec_fun(x: List[str], mode: str, y: int = 0) -> str:
     """Simple recursive function to perform candidate selection"""
     try:
         # Sort each string by value & key in ascending order (this will break ties

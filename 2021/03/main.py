@@ -111,7 +111,7 @@ Use the binary numbers in your diagnostic report to calculate the oxygen generat
 
 
 """
-from typing import List, Union, Callable
+from typing import List
 from utils import read_input
 import collections
 

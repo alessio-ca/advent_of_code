@@ -46,6 +46,7 @@ class BingoGame:
     def run(self):
         # Run the program
         self.reset()
+
         # Set the win_condition function
         if self.mode == 1:
             win_condition = self.first_winning_board

@@ -193,8 +193,6 @@ def main():
 
     # For part two, execute the PilotProgram with mode 2
     pilot_program.mode = 2
-    pilot_program.reset()
-
     try:
         pilot_program.run()
     except EndExec:

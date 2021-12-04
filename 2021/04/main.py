@@ -79,13 +79,13 @@ def main():
         X[i] = np.array(matrix).reshape(5, 5)
 
     # Obtain the first board to win
-    game_1 = BingoGame(X, numbers, mode=1)
-    number, winning_sum = game_1.run()
+    game = BingoGame(X, numbers, mode=1)
+    number, winning_sum = game.run()
     print(f"Result of part 1: {winning_sum * number}")
 
     # Obtain the last board to win
-    game_2 = BingoGame(X, numbers, mode=2)
-    number, winning_sum = game_2.run()
+    game.mode = 2
+    number, winning_sum = game.run()
     print(f"Result of part 2: {winning_sum * number}")
 
 

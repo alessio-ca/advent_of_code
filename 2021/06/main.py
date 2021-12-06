@@ -82,9 +82,9 @@ from utils import read_input
 
 
 def fish_simulation(n_days: int, initial_fish: List[int]) -> int:
-    # Initialize list of zeros, from 0 to 9 (max counter)
+    # Initialize list of 9 zeros (one counter for each possible fish timer)
     days_counter = [0] * 9
-    # Update days counter for initial fish
+    # Update days counter for initial fish timers
     for fish in initial_fish:
         days_counter[fish] += 1
     for i in range(n_days):
@@ -94,7 +94,7 @@ def fish_simulation(n_days: int, initial_fish: List[int]) -> int:
         spawn_day = (current_day + 7) % 9
         # Fetch the number of fish creating today
         creators = days_counter[current_day]
-        # Update counter
+        # Update counter for adults
         days_counter[spawn_day] += creators
 
     return sum(days_counter)

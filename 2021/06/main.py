@@ -11,18 +11,12 @@ def fish_simulation(n_days: int, initial_fish: List[int]) -> int:
     for i in range(n_days):
         # Define current day (cyclic)
         current_day = i % 9
-        # Define spawning days for newborns and olds (also cyclic)
-        new_spawns_day = (current_day + 9) % 9
-        old_spawns_day = (current_day + 7) % 9
+        # Define spawning day for adults
+        spawn_day = (current_day + 7) % 9
         # Fetch the number of fish creating today
         creators = days_counter[current_day]
-
-        # Update counter for today (remove the number of creators)
-        days_counter[current_day] -= creators
-        # Update counter for newborns
-        days_counter[new_spawns_day] += creators
-        # Update counter for adults
-        days_counter[old_spawns_day] += creators
+        # Update counter
+        days_counter[spawn_day] += creators
 
     return sum(days_counter)
 

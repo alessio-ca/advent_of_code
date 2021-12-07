@@ -87,7 +87,10 @@ def minimize_fuel(X: np.ndarray, constant_rate: bool) -> float:
     min_pos, max_pos = X.min(), X.max()
     # Perform line search
     for i in range(min_pos, max_pos):
+        # Define the absolute step number between candidate position and any crab
         X_temp = np.abs(X - i)
+        # Optimize min_fuel. For the constant_rate case, use the simple sum. For the non
+        #  constant_rate case, use the Gaussian sum.
         min_fuel = (
             min(min_fuel, X_temp.sum())
             if constant_rate

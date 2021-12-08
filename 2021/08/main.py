@@ -26,6 +26,14 @@ def find_number(line: List[str], digit: List[str]) -> int:
     digits_dict[8] = [i for (i, j) in zip(line, length) if j == 7][0]
 
     # Obtain first segments definition
+    #  We use the following number convention:
+    #   aaaa
+    #  b    c
+    #  b    c
+    #   dddd
+    #  e    f
+    #  e    f
+    #   gggg
     a = digits_dict[7] - digits_dict[1]
     bd = digits_dict[4] - digits_dict[1]
     eg = digits_dict[8] - (digits_dict[4].union(digits_dict[7]))
@@ -76,6 +84,7 @@ def main():
     )
     print(f"Result of part 1: {res_1}")
 
+    # For Part 2, we need to find the correct numbers
     total_sum = 0
     for (line, digit) in zip(signals, digits):
         # Obtain number

@@ -391,7 +391,7 @@ class FlashySystem:
     def _flash_loop(self):
         """At each day, simulate flashes"""
         # Create mask for marking the flashing octopuses
-        mask_flashing = (self.X > 9).astype(int)
+        mask_flashing = np.where(self.X > 9, 1, 0)
         # Ignore entries who have already flashed
         mask_flashing[self.mask_past_flashes == 1] = 0
         # Calculate how many flashes there are

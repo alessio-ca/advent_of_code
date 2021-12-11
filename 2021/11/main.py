@@ -378,17 +378,17 @@ class FlashySystem:
         # Initialize internal day counter
         self._i = 0
 
-    def zero_mask(self):
+    def _zero_mask(self):
         """Zero the mask of occurred flashes"""
         self.mask_past_flashes[:] = 0
         return self
 
-    def update_array(self):
+    def _update_array(self):
         """Update timers"""
         self.X += 1
         return self
 
-    def flash_loop(self):
+    def _flash_loop(self):
         """At each day, simulate flashes"""
         # Create mask for marking the flashing octopuses
         mask_flashing = (self.X > 9).astype(int)
@@ -410,11 +410,11 @@ class FlashySystem:
     def run_day(self):
         """Run a single day"""
         # Update array
-        self.update_array()
+        self._update_array()
         # Reset the mask
-        self.zero_mask()
+        self._zero_mask()
         # Loop over the flashing events
-        while self.flash_loop():
+        while self._flash_loop():
             continue
         # Set the flashing octopuses to 0
         self.X[self.mask_past_flashes == 1] = 0

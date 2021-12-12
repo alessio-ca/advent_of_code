@@ -22,9 +22,9 @@ This is a list of how all of the caves are connected. You start in the cave name
 So, the above cave system looks roughly like this:
 
     start
-    /   \
+    |   |
 c--A-----b--d
-    \   /
+    |   |
      end
 Your goal is to find the number of distinct paths that start at start, end at end, and
  don't visit small caves more than once. There are two types of caves: big caves

@@ -172,6 +172,7 @@ def find_paths(
     edge_dict: DefaultDict[str, List[str]],
     point_list: List[Tuple[str, str]],
     twice: bool = False,
+    double: bool = False,
 ) -> int:
     """Recursive function to find paths"""
     # Define path dictionary based on current one
@@ -180,28 +181,18 @@ def find_paths(
     # Check if we reached the start
     if start == "start":
         return 1
-    # Or we looped at the end
-    elif start == "end":
-        return 0
     # Or if we are visiting a small cave twice
     elif (start.islower()) and (future_counter[start] > 1):
-        if not twice:
+        # If twice is not allowed, or it is the second, path is not valid
+        if (not twice) | double:
             return 0
+        # Else, update the `double` flag
         else:
-            # Check if it's the first small cave we visited twice
-            if any(
-                current_counter[small_cave] > 1
-                for small_cave in current_counter.keys()
-                if small_cave.islower()
-            ):
-                return 0
-            # If it is, then continue
-            else:
-                pass
+            double = True
 
     # Else, apply recursion
     return sum(
-        find_paths(new_start, future_counter, edge_dict, point_list, twice)
+        find_paths(new_start, future_counter, edge_dict, point_list, twice, double)
         for new_start in edge_dict[start]
     )
 
@@ -210,9 +201,12 @@ def main():
     input_file = [tuple(line.split("-")) for line in read_input("2021/12/input.txt")]
     # Create dictionary of edges
     edge_dict = defaultdict(list)
-    for edge in input_file:
-        edge_dict[edge[0]].append(edge[1])
-        edge_dict[edge[1]].append(edge[0])
+    for edge_1, edge_2 in input_file:
+        # Exclude start and end from root and nodes respectively
+        if (edge_1 != "start") and (edge_2 != "end"):
+            edge_dict[edge_1].append(edge_2)
+        if (edge_2 != "start") and (edge_1 != "end"):
+            edge_dict[edge_2].append(edge_1)
 
     res_1 = sum(
         find_paths(point, defaultdict(int), edge_dict, input_file)

@@ -195,6 +195,7 @@ def find_paths(
                 if small_cave.islower()
             ):
                 return 0
+            # If it is, then continue
             else:
                 pass
 

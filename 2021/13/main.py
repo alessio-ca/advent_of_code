@@ -159,15 +159,18 @@ def main():
 
     #  Fold
     for i, (axis, value) in enumerate(folds):
+        # Define the start of the slice as a 2*value window centered in value
+        slice_start = X.shape[not axis] - 2 * value - 1
         if axis == 0:
-            slice_start = X.shape[1] - 2 * value - 1
+            # Slice on the horizontal axis & add the LR-flipped fold
             X[:, slice_start:value] += np.fliplr(X[:, value + 1 :])
             X = X[:, :value]
         else:
-            slice_start = X.shape[0] - 2 * value - 1
+            # Slice on the vertical axis & add the UD-flipped fold
             X[slice_start:value, :] += np.flipud(X[value + 1 :, :])
             X = X[:value, :]
-        # First fold
+
+        # If first fold, sum the number of dots
         if i == 0:
             # Sum on axis
             res_1 = (X > 0).sum()

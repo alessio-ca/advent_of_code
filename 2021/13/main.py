@@ -159,16 +159,23 @@ def main():
 
     #  Fold
     for i, (axis, value) in enumerate(folds):
-        # Define the start of the slice as a 2*value window centered in value
+        # Define the region interested by the fold as a (2*value + 1)
+        #  window centered in value
         slice_start = X.shape[not axis] - 2 * value - 1
+        slice_range = slice(slice_start, value)
+        slice_fold = slice(value + 1, None)
+
+        # The new slice of X is the lower part of the resulting matrix after folding
+        slice_new = slice(None, value)
+
         if axis == 0:
             # Slice on the horizontal axis & add the LR-flipped fold
-            X[:, slice_start:value] += np.fliplr(X[:, value + 1 :])
-            X = X[:, :value]
+            X[:, slice_range] += np.fliplr(X[:, slice_fold])
+            X = X[:, slice_new]
         else:
             # Slice on the vertical axis & add the UD-flipped fold
-            X[slice_start:value, :] += np.flipud(X[value + 1 :, :])
-            X = X[:value, :]
+            X[slice_range, :] += np.flipud(X[slice_fold, :])
+            X = X[slice_new, :]
 
         # If first fold, sum the number of dots
         if i == 0:

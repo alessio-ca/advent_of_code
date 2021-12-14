@@ -149,7 +149,7 @@ def main():
 
     # Create 2D matrix of coords
     X = np.zeros(
-        shape=(max([y for (_, y) in coords]) + 1, max([x for (x, _) in coords]) + 1),
+        shape=(max([y for (_, y) in coords]) + 1, max([x for (x, _) in coords])) + 1,
         dtype=int,
     )
 

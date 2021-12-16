@@ -4,6 +4,7 @@ from functools import reduce
 
 
 def _extract_literal(bits: str) -> Tuple[int, str]:
+    """Extract number as literal. Used when type ID is literal"""
     # Take substrings
     repr = ""
     # Loop until the prefix to the group is '1' (last group)
@@ -16,7 +17,7 @@ def _extract_literal(bits: str) -> Tuple[int, str]:
 
 
 def _extract_operator(bits: str) -> Tuple[List[int], str, int]:
-    # This is an operator
+    """Extract list of subpacket numbers. Used when if type ID is operator"""
     len_type_id, bits = bits[0], bits[1:]
     subpackets = []
     packet_version = 0
@@ -25,17 +26,17 @@ def _extract_operator(bits: str) -> Tuple[List[int], str, int]:
         # Next 11 bits specify the number of subpackets
         n_subpackets, bits = int(bits[:11], 2), bits[11:]
         for _ in range(n_subpackets):
-            # Find subpackets
-            subpacket, bits, sub_packet_version = _decode(bits)
+            # Treat subpackets by recursively decoding them
+            subpacket_number, bits, sub_packet_version = decode(bits)
             packet_version += sub_packet_version
-            subpackets.append(subpacket)
+            subpackets.append(subpacket_number)
     else:
         # Next 15 bits specify the length of subpackets
         len_subpackets, bits = int(bits[:15], 2), bits[15:]
         first_size = len(bits)
         while (first_size - len(bits)) < len_subpackets:
-            # Find subpackets
-            subpacket, bits, sub_packet_version = _decode(bits)
+            # Treat subpackets by recursively decoding them
+            subpacket, bits, sub_packet_version = decode(bits)
             packet_version += sub_packet_version
             subpackets.append(subpacket)
 
@@ -43,7 +44,7 @@ def _extract_operator(bits: str) -> Tuple[List[int], str, int]:
 
 
 def _calculate_number(type_id: int, subpackets: List[int]) -> int:
-    # Calculate values according to type ID
+    """Calculate number from list of subpacket numbers according to type ID"""
     if type_id == 0:
         number = sum(subpackets)
     elif type_id == 1:
@@ -64,7 +65,8 @@ def _calculate_number(type_id: int, subpackets: List[int]) -> int:
     return number
 
 
-def _decode(string: str) -> Tuple[int, str, int]:
+def decode(string: str) -> Tuple[int, str, int]:
+    """General function to decode a string"""
     packet_version, type_id, bits = int(string[:3], 2), int(string[3:6], 2), string[6:]
 
     if type_id == 4:
@@ -83,7 +85,7 @@ def _decode(string: str) -> Tuple[int, str, int]:
 def main():
     input_file = read_input("2021/16/input.txt")[0]
     encoded = "".join([bin(int(char, 16))[2:].zfill(4) for char in input_file])
-    number, _, version_sum = _decode(encoded)
+    number, _, version_sum = decode(encoded)
     print(f"Result of part 1: {version_sum}")
     print(f"Result of part 2: {number}")
 

@@ -20,9 +20,8 @@ class Area:
             vx -= int(vx > 0)
             vy -= 1
 
-            if self.x_min <= x <= self.x_max:
-                if self.y_min <= y <= self.y_max:
-                    return 1
+            if (self.x_min <= x <= self.x_max) and (self.y_min <= y <= self.y_max):
+                return 1
         return 0
 
 

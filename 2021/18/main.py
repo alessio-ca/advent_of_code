@@ -3,28 +3,27 @@ from typing import List, Union, Tuple
 import itertools
 
 
-def _candidate_numerics(s: str) -> Tuple[str, int]:
-    # Check if there is a n-digit numeric at index i
-    # Return n-digit digit numeric and offset
-    offset = 1
-    while s[:offset].isnumeric():
-        offset += 1
-    return s[: offset - 1], offset - 1
-
-
-def _calc_magnitude(x: Union[List, int]) -> int:
-    if isinstance(x, list):
-        if any(isinstance(i, list) for i in x):
-            return 3 * _calc_magnitude(x[0]) + 2 * _calc_magnitude(x[1])
-        else:
-            return 3 * x[0] + 2 * x[1]
-    else:
-        return x
-
-
 class SnailMath:
     def __init__(self, numbers: List[str]):
         self.numbers = numbers
+
+    def _candidate_numerics(self, s: str) -> Tuple[str, int]:
+        # Check if there is a n-digit numeric at index i
+        # Return n-digit digit numeric and offset
+        offset = 1
+        while s[:offset].isnumeric():
+            offset += 1
+        return s[: offset - 1], offset - 1
+
+    def _calc_magnitude(self, x: Union[List, int]) -> int:
+        # Perform magnitude calculation recursively
+        if isinstance(x, list):
+            if any(isinstance(i, list) for i in x):
+                return 3 * self._calc_magnitude(x[0]) + 2 * self._calc_magnitude(x[1])
+            else:
+                return 3 * x[0] + 2 * x[1]
+        else:
+            return x
 
     def add(self, s1: str, s2: str) -> str:
         # Perform addition between two numbers
@@ -32,8 +31,8 @@ class SnailMath:
 
     def explode(self, s: str, i: int) -> Tuple[bool, str, int]:
         # Individuate numerics
-        x, kx = _candidate_numerics(s[i + 1 :])
-        y, ky = _candidate_numerics(s[i + 2 + kx :])
+        x, kx = self._candidate_numerics(s[i + 1 :])
+        y, ky = self._candidate_numerics(s[i + 2 + kx :])
         # Check we have a pair
         is_alpha = (x + y).isnumeric()
         if is_alpha:
@@ -42,7 +41,7 @@ class SnailMath:
             j = i - 2  # There is always a comma before an eventual number
             left_regular = None
             while j > 0:
-                z, kz = _candidate_numerics(s[j::-1])
+                z, kz = self._candidate_numerics(s[j::-1])
                 if z.isnumeric():
                     left_regular = str(int(z[::-1]) + int(x))
                     break
@@ -61,7 +60,7 @@ class SnailMath:
             )  # There is always a comma and a closing bracket before an eventual number
             right_regular = None
             while j < len(s):
-                z, kz = _candidate_numerics(s[j:])
+                z, kz = self._candidate_numerics(s[j:])
                 if z.isnumeric():
                     right_regular = str(int(z) + int(y))
                     break
@@ -126,7 +125,7 @@ class SnailMath:
         for el in self.numbers[1:]:
             res = self.add(res, el)
             res = self.reduce(res)
-        return _calc_magnitude(eval(res))
+        return self._calc_magnitude(eval(res))
 
 
 def main():

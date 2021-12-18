@@ -53,7 +53,7 @@ class SnailMath:
         x, kx = self._candidate_numerics(s[i + 1 :])
         y, ky = self._candidate_numerics(s[i + 2 + kx :])
         # Check we have a pair
-        is_alpha = (x + y).isnumeric()
+        is_alpha = x.isnumeric() and y.isnumeric()
         if is_alpha:
             # Split string in two.
             # For the back, only consider down to 1 spaces from the current

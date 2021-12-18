@@ -7,13 +7,11 @@ class Area:
     def __init__(self, bounds: List[int]):
         if len(bounds) != 4:
             raise ValueError
-        self.x_min = bounds[0]
-        self.x_max = bounds[1]
-        self.y_min = bounds[2]
-        self.y_max = bounds[3]
+        self.x_min, self.x_max, self.y_min, self.y_max = bounds
 
     def simulate(self, vx, vy):
         x, y = 0, 0
+
         while y >= self.y_min:
             x += vx
             y += vy
@@ -22,6 +20,7 @@ class Area:
 
             if (self.x_min <= x <= self.x_max) and (self.y_min <= y <= self.y_max):
                 return 1
+
         return 0
 
 

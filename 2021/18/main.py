@@ -1,6 +1,7 @@
 from utils import read_input
 from typing import List, Union, Tuple
-import itertools
+from itertools import permutations
+from functools import reduce
 
 
 class SnailMath:
@@ -25,11 +26,8 @@ class SnailMath:
         else:
             return x
 
-    def add(self, s1: str, s2: str) -> str:
-        # Perform addition between two numbers
-        return "[" + s1 + "," + s2 + "]"
-
-    def find_candidate(self, s):
+    def _find_candidate(self, s: str) -> Tuple[str, int, int]:
+        # Loop over string to find a numeric candidate
         regular = ""
         j = 0
         kz = 0
@@ -38,7 +36,17 @@ class SnailMath:
             if z.isnumeric():
                 return z, j, kz
             j += 1
+        # Return the candidate, index and candidate size
         return regular, j, kz
+
+    def _adjust_string(self, s: str, pair_n: str, inverse=False) -> str:
+        # Adjust string after finding a regular for the explosion
+        sgn = -1 if inverse else 1
+        # Loop string until a numeric if found.
+        regular, j, k = self._find_candidate(s)
+        # Adjust string if regular was found
+        regular = str(int(regular[::sgn]) + int(pair_n)) if regular else regular
+        return s[:j] + regular[::sgn] + s[j + k :]
 
     def explode(self, s: str, i: int) -> Tuple[bool, str, int]:
         # Individuate numerics and offsets
@@ -57,21 +65,12 @@ class SnailMath:
             offset_forward = i + kx + ky + 4
             s_back, s_forward = s[:offset_back][::-1], s[offset_forward:]
 
-            # Loop back string until a numeric if found.
-            left_regular, jl, kl = self.find_candidate(s_back)
-            # Adjust string if regulars were found
-            left_regular = (
-                str(int(left_regular[::-1]) + int(x)) if left_regular else left_regular
-            )
-            s_back = s_back[:jl] + left_regular[::-1] + s_back[jl + kl :]
-            # Loop forward string until a numeric if found.
-            right_regular, jr, kr = self.find_candidate(s_forward)
-            right_regular = (
-                str(int(right_regular) + int(y)) if right_regular else right_regular
-            )
-            s_forward = s_forward[:jr] + right_regular + s_forward[jr + kr :]
+            # Find left side candidate and adjust back string
+            s_back = self._adjust_string(s_back, x, inverse=True)
+            # Find right side candidate and adjust forward string
+            s_forward = self._adjust_string(s_forward, y, inverse=False)
 
-            # Adjust string
+            # Create final string after explosion
             s = s_back[::-1] + s[offset_back] + "0" + s[offset_forward - 1] + s_forward
         else:
             pass
@@ -122,22 +121,26 @@ class SnailMath:
 
         return res
 
+    def add(self, s1: str, s2: str) -> str:
+        # Perform addition between two numbers
+        return "[" + s1 + "," + s2 + "]"
+
+    def do_math(self, x: str, y: str) -> str:
+        return self.reduce(self.add(x, y))
+
     def process(self) -> int:
-        res = self.numbers[0]
-        for el in self.numbers[1:]:
-            res = self.add(res, el)
-            res = self.reduce(res)
+        res = reduce(self.do_math, self.numbers)
         return self._calc_magnitude(eval(res))
 
 
 def main():
-    input_file = read_input("2021/18/example.txt")
+    input_file = read_input("2021/18/input.txt")
     snail_numbers = SnailMath(input_file)
     res = snail_numbers.process()
     print(f"Result of part 1: {res}")
 
     # Generate all possible distinct pairs
-    pairs = itertools.permutations(input_file, 2)
+    pairs = permutations(input_file, 2)
     max_m = 0
     for pair in pairs:
         pair_numbers = SnailMath(pair)

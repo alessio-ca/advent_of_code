@@ -29,48 +29,50 @@ class SnailMath:
         # Perform addition between two numbers
         return "[" + s1 + "," + s2 + "]"
 
+    def find_candidate(self, s):
+        regular = ""
+        j = 0
+        kz = 0
+        while j < len(s):
+            z, kz = self._candidate_numerics(s[j:])
+            if z.isnumeric():
+                return z, j, kz
+            j += 1
+        return regular, j, kz
+
     def explode(self, s: str, i: int) -> Tuple[bool, str, int]:
-        # Individuate numerics
+        # Individuate numerics and offsets
         x, kx = self._candidate_numerics(s[i + 1 :])
         y, ky = self._candidate_numerics(s[i + 2 + kx :])
         # Check we have a pair
         is_alpha = (x + y).isnumeric()
         if is_alpha:
+            # Split string in two.
+            # For the back, only consider down to 1 spaces from the current
+            #  (since there is always a comma before a candidate number)
+            # For the forward, only consider up to 4 + (kx, ky) spaces from the current
+            #  (since there are the number digits, two commas and brackets before a
+            #  candidate number)
+            offset_back = i - 1
+            offset_forward = i + kx + ky + 4
+            s_back, s_forward = s[:offset_back][::-1], s[offset_forward:]
+
             # Loop back string until a numeric if found.
-            #  Add the first number of the pair to it
-            j = i - 2  # There is always a comma before an eventual number
-            left_regular = None
-            while j > 0:
-                z, kz = self._candidate_numerics(s[j::-1])
-                if z.isnumeric():
-                    left_regular = str(int(z[::-1]) + int(x))
-                    break
-                j -= 1
-            # If a left regular was found, adjust string and iterator variable
-            if left_regular:
-                s = s[: j - kz + 1] + left_regular + s[j + 1 :]
-                # Adjust by the difference between the new inserted number
-                #  and the previous one
-                i += len(left_regular) - kz
-
+            left_regular, jl, kl = self.find_candidate(s_back)
+            # Adjust string if regulars were found
+            left_regular = (
+                str(int(left_regular[::-1]) + int(x)) if left_regular else left_regular
+            )
+            s_back = s_back[:jl] + left_regular[::-1] + s_back[jl + kl :]
             # Loop forward string until a numeric if found.
-            #  Add the second number of the pair to it
-            j = (
-                i + kx + ky + 4
-            )  # There is always a comma and a closing bracket before an eventual number
-            right_regular = None
-            while j < len(s):
-                z, kz = self._candidate_numerics(s[j:])
-                if z.isnumeric():
-                    right_regular = str(int(z) + int(y))
-                    break
-                j += 1
-            # If a right regular was found, adjust string
-            if right_regular:
-                s = s[:j] + right_regular + s[j + kz :]
+            right_regular, jr, kr = self.find_candidate(s_forward)
+            right_regular = (
+                str(int(right_regular) + int(y)) if right_regular else right_regular
+            )
+            s_forward = s_forward[:jr] + right_regular + s_forward[jr + kr :]
 
-            # Replace pair with 0
-            s = s[:i] + "0" + s[(i + kx + ky + 3) :]
+            # Adjust string
+            s = s_back[::-1] + s[offset_back] + "0" + s[offset_forward - 1] + s_forward
         else:
             pass
 
@@ -90,11 +92,11 @@ class SnailMath:
     def reduce(self, res: str) -> str:
         # Perform reduction until the number is reduced
         i = 0
-        while i != len(res) - 1:
+        while i < (len(res) - 3):
             opened = 0
             to_split_i = -1
-            # Parse the number and check for explosions
-            for i, char in enumerate(res):
+            # Parse the number and check for explosions (skip last bracket)
+            for i, char in enumerate(res[:-1]):
                 # Open a new pair
                 if char == "[":
                     opened += 1
@@ -111,7 +113,7 @@ class SnailMath:
                     opened -= 1
                 # Check if there is a pair of consecutive numerics (which means the
                 #  number is arger than 9). Mark split candidate
-                elif ((char + res[i + 1]).isnumeric()) and (to_split_i < 0):
+                elif (to_split_i < 0) and ((char + res[i + 1]).isnumeric()):
                     to_split_i = i
             # If there are no explosions, perform the split if there is a candidate
             if to_split_i > 0:
@@ -129,7 +131,7 @@ class SnailMath:
 
 
 def main():
-    input_file = read_input("2021/18/input.txt")
+    input_file = read_input("2021/18/example.txt")
     snail_numbers = SnailMath(input_file)
     res = snail_numbers.process()
     print(f"Result of part 1: {res}")

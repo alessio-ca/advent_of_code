@@ -1,4 +1,4 @@
-from utils import read_input
+from utils import read_input, timefunc
 from typing import List, Union, Tuple
 from itertools import permutations
 from functools import reduce
@@ -133,6 +133,7 @@ class SnailMath:
         return self._calc_magnitude(eval(res))
 
 
+@timefunc
 def main():
     input_file = read_input("2021/18/input.txt")
     snail_numbers = SnailMath(input_file)

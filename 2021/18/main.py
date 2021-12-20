@@ -8,13 +8,17 @@ class SnailMath:
     def __init__(self, numbers: List[str]):
         self.numbers = numbers
 
-    def _candidate_numerics(self, s: str) -> Tuple[str, int]:
+    def _candidate_numerics(self, s: str, inverse=False) -> Tuple[str, int]:
+        sgn = -1 if inverse else 1
         # Check if there is a n-digit numeric at index i
         # Return n-digit digit numeric and offset
-        offset = 1
-        while s[:offset].isnumeric():
+        offset = 0
+        res = -1
+        while s[offset].isnumeric():
             offset += 1
-        return s[: offset - 1], offset - 1
+        if offset > 0:
+            res = int(s[:offset][::sgn])
+        return res, offset
 
     def _calc_magnitude(self, x: Union[List, int]) -> int:
         # Perform magnitude calculation recursively
@@ -26,34 +30,36 @@ class SnailMath:
         else:
             return x
 
-    def _find_candidate(self, s: str) -> Tuple[str, int, int]:
+    def _find_candidate(self, s: str, inverse=False) -> Tuple[str, int, int]:
         # Loop over string to find a numeric candidate
-        regular = ""
         j = 0
         kz = 0
         while j < len(s):
-            z, kz = self._candidate_numerics(s[j:])
-            if z.isnumeric():
+            z, kz = self._candidate_numerics(s[j:], inverse)
+            if z != -1:
                 return z, j, kz
             j += 1
         # Return the candidate, index and candidate size
-        return regular, j, kz
+        return -1, j, kz
 
-    def _adjust_string(self, s: str, pair_n: str, inverse=False) -> str:
+    def _adjust_string(self, s: str, pair_n: int, inverse=False) -> str:
         # Adjust string after finding a regular for the explosion
         sgn = -1 if inverse else 1
         # Loop string until a numeric if found.
-        regular, j, k = self._find_candidate(s)
+        regular, j, k = self._find_candidate(s, inverse)
         # Adjust string if regular was found
-        regular = str(int(regular[::sgn]) + int(pair_n)) if regular else regular
-        return s[:j] + regular[::sgn] + s[j + k :], j + k
+        if regular != -1:
+            regular = str(regular + pair_n)
+            return s[:j] + regular[::sgn] + s[j + k :], j + k
+        else:
+            return s, 0
 
     def explode(self, s: str, i: int) -> Tuple[bool, str, int]:
         # Individuate numerics and offsets
         x, kx = self._candidate_numerics(s[i + 1 :])
         y, ky = self._candidate_numerics(s[i + 2 + kx :])
         # Check we have a pair
-        is_alpha = x.isnumeric() and y.isnumeric()
+        is_alpha = (x != -1) and (y != -1)
         if is_alpha:
             # Split string in two.
             # For the back, only consider down to 1 spaces from the current
@@ -87,6 +93,15 @@ class SnailMath:
         s = s[:i] + "[" + str(left_n) + "," + str(right_n) + "]" + s[i + 2 :]
         return s
 
+    def post_explode(self, res: str, rollback_i: int, split_i: int) -> Tuple[int, bool]:
+        # Do post-operations after explosions
+        for roll_j, roll_char in enumerate(res[:rollback_i][::-1]):
+            if roll_char == "[":
+                rollback_i -= roll_j + 1
+                break
+
+        return rollback_i, False if rollback_i <= split_i else True
+
     def reduce(self, res: str) -> str:
         # Perform reduction until the number is reduced
         i = 0
@@ -110,12 +125,9 @@ class SnailMath:
                         #  reset split if rollback is smaller
                         #  than the existing candidate split
                         if stop:
-                            for roll_j, roll_char in enumerate(res[:rollback_i][::-1]):
-                                if roll_char == "[":
-                                    rollback_i -= roll_j + 1
-                                    break
-                            if rollback_i <= split_i:
-                                to_split = False
+                            rollback_i, to_split = self.post_explode(
+                                res, rollback_i, split_i
+                            )
                             break
                 # Close a pair
                 elif char == "]":

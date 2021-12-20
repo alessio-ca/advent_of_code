@@ -1,6 +1,9 @@
 from typing import List
 import time
 import functools
+import cProfile
+import io
+import pstats
 
 
 def read_input(input_file: str, line_strip: bool = True) -> List[str]:
@@ -50,3 +53,22 @@ def timefunc(func):
         return result
 
     return time_closure
+
+
+def profilefunc(func):
+    "profilefunc's doc"
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        pr = cProfile.Profile()
+        pr.enable()
+        retval = func(*args, **kwargs)
+        pr.disable()
+        s = io.StringIO()
+        sortby = pstats.SortKey.CUMULATIVE  # 'cumulative'
+        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+        ps.print_stats()
+        print(s.getvalue())
+        return retval
+
+    return wrapper

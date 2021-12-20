@@ -46,7 +46,7 @@ class SnailMath:
         regular, j, k = self._find_candidate(s)
         # Adjust string if regular was found
         regular = str(int(regular[::sgn]) + int(pair_n)) if regular else regular
-        return s[:j] + regular[::sgn] + s[j + k :]
+        return s[:j] + regular[::sgn] + s[j + k :], j + k
 
     def explode(self, s: str, i: int) -> Tuple[bool, str, int]:
         # Individuate numerics and offsets
@@ -66,16 +66,16 @@ class SnailMath:
             s_back, s_forward = s[:offset_back][::-1], s[offset_forward:]
 
             # Find left side candidate and adjust back string
-            s_back = self._adjust_string(s_back, x, inverse=True)
+            s_back, min_offset = self._adjust_string(s_back, x, inverse=True)
             # Find right side candidate and adjust forward string
-            s_forward = self._adjust_string(s_forward, y, inverse=False)
+            s_forward, _ = self._adjust_string(s_forward, y, inverse=False)
 
             # Create final string after explosion
             s = s_back[::-1] + s[offset_back] + "0" + s[offset_forward - 1] + s_forward
         else:
             pass
 
-        return is_alpha, s, i
+        return is_alpha, s, i - min_offset - 1
 
     def split(self, s: str, i: int) -> str:
         # Obtain left and right numbers
@@ -85,40 +85,50 @@ class SnailMath:
 
         # Adjust string
         s = s[:i] + "[" + str(left_n) + "," + str(right_n) + "]" + s[i + 2 :]
-
         return s
 
     def reduce(self, res: str) -> str:
         # Perform reduction until the number is reduced
         i = 0
+        rollback_i = 0
+        opened_dict = {}
+        opened_dict[0] = 0
+        split_i = len(res)
         while i < (len(res) - 3):
-            opened = 0
-            to_split_i = -1
+            opened = opened_dict[rollback_i]
+            to_split = False
             # Parse the number and check for explosions (skip last bracket)
-            for i, char in enumerate(res[:-1]):
+            for i, char in enumerate(res[rollback_i:-1], rollback_i):
+                opened_dict[i] = opened
                 # Open a new pair
                 if char == "[":
                     opened += 1
                     # If we are opening a nested pair at more than 4, performe explode
                     if opened > 4:
-                        stop, res, i = self.explode(res, i)
+                        stop, res, rollback_i = self.explode(res, i)
                         #  If there has been an explosion, stop and
-                        #  reset split candidate
+                        #  reset split
                         if stop:
-                            to_split_i = -1
+                            to_split = False
+                            for roll_j, roll_char in enumerate(res[:rollback_i][::-1]):
+                                if roll_char == "[":
+                                    rollback_i -= roll_j + 1
+                                    break
                             break
                 # Close a pair
                 elif char == "]":
                     opened -= 1
                 # Check if there is a pair of consecutive numerics (which means the
                 #  number is arger than 9). Mark split candidate
-                elif (to_split_i < 0) and ((char + res[i + 1]).isnumeric()):
-                    to_split_i = i
+                elif (not to_split) and ((char + res[i + 1]).isnumeric()):
+                    split_i = min(i, split_i)
+                    to_split = True
             # If there are no explosions, perform the split if there is a candidate
-            if to_split_i > 0:
-                i = to_split_i
+            if (to_split) | (i >= (len(res) - 3)):
+                i = split_i
+                rollback_i = i
                 res = self.split(res, i)
-
+                split_i = len(res)
         return res
 
     def add(self, s1: str, s2: str) -> str:
@@ -136,17 +146,23 @@ class SnailMath:
 
 @timefunc
 def main():
-    input_file = read_input("2021/18/example.txt")
+    input_file = read_input("2021/18/input.txt")
     snail_numbers = SnailMath(input_file)
     res = snail_numbers.process()
     print(f"Result of part 1: {res}")
 
     # Generate all possible distinct pairs
+    res_correct = list(map(int, read_input("res_file.txt")))
     pairs = permutations(input_file, 2)
     max_m = 0
-    for pair in pairs:
+    for i, pair in enumerate(pairs):
         pair_numbers = SnailMath(pair)
-        max_m = max(max_m, pair_numbers.process())
+        test_m = pair_numbers.process()
+        if res_correct[i] != test_m:
+            print(pair_numbers.numbers)
+            print(res_correct[i], test_m)
+            raise Exception
+        max_m = max(max_m, test_m)
     print(f"Result of part 2: {max_m}")
 
 

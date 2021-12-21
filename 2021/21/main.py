@@ -95,22 +95,21 @@ class QuantumPlayer:
         return self
 
     def move(self):
-        # Move
+        # Update the step
+        self.step += 1
+        # Record initial number of universes
         initial_number = self.positions.sum()
-        # Reset temp matrix of the new scores
+        # Reset internal arrays & variables
         self._new_scores[:] = 0
-        # Reset temp array of the new positions
         self._new_positions[:] = 0
-        # Instantiate temp variable to record the number of winnings
         self._tot_winners = 0
 
         # Do move for each possible universe position
         for position, n_universes in enumerate(self.positions):
             self.move_per_position(position, n_universes)
 
-        #  Update the positions
+        # Update the positions & scores
         self.positions += self._new_positions
-        #  Update the scores
         self.scores += self._new_scores
         # If there are winners this round, record the step, number of winners, current
         #  number of universes and initial number of universes
@@ -118,8 +117,6 @@ class QuantumPlayer:
             self.results.append(
                 (self.step, self._tot_winners, self.positions.sum(), initial_number)
             )
-            self.step += 1
-
         return self
 
     def play(self):

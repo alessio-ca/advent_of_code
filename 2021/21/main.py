@@ -59,7 +59,8 @@ class QuantumPlayer:
             # If there are universes
             if n_new > 0:
                 new_score = new_pos if new_pos != 0 else 10
-                # If the new score is larger than 21, add to the winning list and record the step
+                # If the new score is larger than 21, add to the winning list and
+                #  record the step
                 if past_score + new_score >= 21:
                     self._winners[new_pos] += n_new * n_past
                     self._tot_winners += n_new * n_past
@@ -79,7 +80,8 @@ class QuantumPlayer:
         if n_universes > 0:
             # Create array of new positions based on the 27 possible outcomes in Counter
             self.create_new_positions(pos)
-            # For each of these new positions, update corresponding scores & record eventual winners
+            # For each of these new positions, update corresponding scores & record
+            #  eventual winners
             for past_score, n_past in enumerate(self.scores[pos]):
                 # If there are universes with this score
                 if n_past > 0:

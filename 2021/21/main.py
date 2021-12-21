@@ -177,10 +177,13 @@ def main():
     # Obtain the number of possible outcomes per triplet of rolls. Create a counter
     counter = Counter([sum(rolls) + 3 for rolls in list(product(range(3), repeat=3))])
 
+    # Set up the two players. Play individually (since each player is independent, and
+    #  we only need to compare the results at the end of each round)
     player_1 = QuantumPlayer(*data_1, counter)
     player_2 = QuantumPlayer(*data_2, counter)
     player_1.play()
     player_2.play()
+    # Find winner based on the results of each individual player at each round
     print(f"Result of part 2: {who_wins_more(player_1, player_2)}")
 
 

@@ -3,7 +3,6 @@ import re
 from itertools import product
 from collections import Counter
 import numpy as np
-from typing import List, Tuple
 
 
 class Player:

@@ -172,8 +172,7 @@ def main():
             player_2.move(dice_roll)
         turn = not turn
 
-    loser_score = min(player_1.score, player_2.score)
-    print(f"Result of part 1: {loser_score * n}")
+    print(f"Result of part 1: {min(player_1.score, player_2.score) * n}")
 
     # Obtain the number of possible outcomes per triplet of rolls. Create a counter
     counter = Counter([sum(rolls) + 3 for rolls in list(product(range(3), repeat=3))])

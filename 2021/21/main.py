@@ -123,13 +123,12 @@ class QuantumPlayer:
 
         return self
 
-    def play(self) -> List[Tuple]:
+    def play(self):
         # Keep playing until there are universes
         while self.positions.sum() > 0:
             self.move()
 
-        # Return the results
-        return self.results
+        return self
 
 
 def who_wins_more(player_1: QuantumPlayer, player_2: QuantumPlayer) -> int:

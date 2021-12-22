@@ -47,14 +47,22 @@ class QuantumPlayer:
         self.id = id
         self.counter = counter
         self.step = 0
-
+        # Main scores array. The row index is the position, the column index is the
+        #  score, the value is the number of universes per position/score
         self.scores = np.zeros(shape=(10, 21), dtype=int)
         self.scores[start_pos, 0] = 1  # One universe with score 0 in starting position
-
         # Internal arrays
-        self._accumulator = np.zeros(shape=(10, 21), dtype=int)
+        self._accumulator = np.zeros(shape=self.scores.shape, dtype=int)
         self._tot_winners = 0
-
+        # Array of new scores
+        self.new_scores = np.arange(self.scores.shape[0])
+        self.new_scores[0] = 10
+        # Mask of scores that will be winners
+        self.mask = (
+            np.arange(self.scores.shape[1])[np.newaxis, :]
+            + self.new_scores[:, np.newaxis]
+            >= 21
+        )
         # List of starters, winners and still playing at each winning step
         self.results = []
 
@@ -77,19 +85,11 @@ class QuantumPlayer:
         # Calculate array of new scores (position, or 10 if position is 0)
         new_scores = np.arange(self.scores.shape[0])
         new_scores[0] = 10
-
-        # Only rows and columns where column + (new score) < 21 are valid
-        mask = (
-            np.arange(self.scores.shape[1])[np.newaxis, :] + new_scores[:, np.newaxis]
-            >= 21
-        )
-
         # Record the number of winners and remove them from accumulator
-        self._tot_winners = self._accumulator[mask].sum()
-        self._accumulator[mask] = 0
-
+        self._tot_winners = self._accumulator[self.mask].sum()
+        self._accumulator[self.mask] = 0
         # Set the accumulator to be the new scores by shifting
-        self.scores = _roll_rows(self._accumulator, new_scores)
+        self.scores = _roll_rows(self._accumulator, self.new_scores)
         return self
 
     def move_per_position(self):
@@ -106,16 +106,13 @@ class QuantumPlayer:
     def move(self):
         # Update the step
         self.step += 1
-
         # Record initial number of universes
         initial_number = self.scores.sum()
         # Reset count of winners this round
         self._tot_winners = 0
-
         # Do move for each possible universe position
         # Get current positions with existing universes
         self.move_per_position()
-
         # If there are winners this round, record the step, number of winners, current
         #  number of universes and initial number of universes
         if self._tot_winners > 0:
@@ -128,7 +125,6 @@ class QuantumPlayer:
         # Keep playing until there are universes
         while self.scores.sum() > 0:
             self.move()
-
         return self
 
 
@@ -140,7 +136,6 @@ def who_wins_more(player_1: QuantumPlayer, player_2: QuantumPlayer) -> int:
         # Assign quantities from status at each step
         _, winners_1, playing_1, _ = status_1
         _, winners_2, _, beginning_2 = status_2
-
         # The number of universes where player 1 wins is the number of winners per the
         #  number of universes at the beginning for player 2 (since player 1 moves
         #  first)

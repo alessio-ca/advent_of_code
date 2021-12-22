@@ -3,6 +3,25 @@ import re
 from itertools import product
 from collections import Counter
 import numpy as np
+from numpy.fft import fft, ifft
+
+
+def _roll_rows(A, r):
+    """Roll rows of a matrix on the right by a row-specific amount specified in r"""
+    return np.real(
+        ifft(
+            fft(A, axis=1)
+            * np.exp(
+                -2
+                * 1j
+                * np.pi
+                / A.shape[1]
+                * r[:, None]
+                * np.r_[0 : A.shape[1]][None, :]
+            ),
+            axis=1,
+        ).round()
+    ).astype(A.dtype)
 
 
 class Player:
@@ -29,99 +48,85 @@ class QuantumPlayer:
         self.counter = counter
         self.step = 0
 
-        self.positions = np.zeros(shape=(10,), dtype=int)
-        self.positions[start_pos] = 1  # One universe in starting position
-
         self.scores = np.zeros(shape=(10, 21), dtype=int)
         self.scores[start_pos, 0] = 1  # One universe with score 0 in starting position
 
         # Internal arrays
-        self._new_positions = np.zeros(shape=(10,), dtype=int)
-        self._accumulator = np.zeros(shape=(10,), dtype=int)
-        self._winners = np.zeros(shape=(10,), dtype=int)
-        self._new_scores = np.zeros(shape=(10, 21), dtype=int)
+        self._accumulator = np.zeros(shape=(10, 21), dtype=int)
         self._tot_winners = 0
 
         # List of starters, winners and still playing at each winning step
         self.results = []
 
-    def create_new_positions(self, pos):
+    def create_accumulator(self):
         # Create new positions based on current position and all possible outcomes
         for roll, n in self.counter.items():
-            result = (pos + roll) % 10
-            self._accumulator[result] += 1 * n
+            for pos in np.arange(self.scores.shape[0]):
+                result = (pos + roll) % 10
+                # Each row of the accumulator is increased by the number of outcomes per
+                #  this new position per the row of scores at pos (so if there are no
+                #  universes/a pos/score combination is empty, it will not be
+                #  accumulated)
+
+                #  Can be vectorized by moving the pos -> result mapping (as it is a
+                #  function) to a lookup table
+                self._accumulator[result, :] += 1 * n * self.scores[pos, :]
         return self
 
-    def update_scores(self, pos: int, past_score: int, n_past: int):
-        # Loop over the newly found positions in accumulator
-        for new_pos, n_new in enumerate(self._accumulator):
-            # If there are universes
-            if n_new > 0:
-                new_score = new_pos if new_pos != 0 else 10
-                # If the new score is larger than 21, add to the winning list and
-                #  record the step
-                if past_score + new_score >= 21:
-                    self._winners[new_pos] += n_new * n_past
-                    self._tot_winners += n_new * n_past
-                # Else, update the scores for the new position
-                else:
-                    self._new_scores[new_pos, past_score + new_score] += n_new * n_past
-        # Substract the number of updated universes from the old position
-        self._new_scores[pos, past_score] -= n_past
+    def update_scores(self):
+        # Calculate array of new scores (position, or 10 if position is 0)
+        new_scores = np.arange(self.scores.shape[0])
+        new_scores[0] = 10
+
+        # Only rows and columns where column + (new score) < 21 are valid
+        mask = (
+            np.arange(self.scores.shape[1])[np.newaxis, :] + new_scores[:, np.newaxis]
+            >= 21
+        )
+
+        # Record the number of winners and remove them from accumulator
+        self._tot_winners = self._accumulator[mask].sum()
+        self._accumulator[mask] = 0
+
+        # Set the accumulator to be the new scores by shifting
+        self.scores = _roll_rows(self._accumulator, new_scores)
         return self
 
-    def move_per_position(self, pos: int, n_universes: int):
+    def move_per_position(self):
         # Reset accumulator
         self._accumulator[:] = 0
-        # Reset winners per move
-        self._winners[:] = 0
-        # If there are universes in this position
-        if n_universes > 0:
-            # Create array of new positions based on the 27 possible outcomes in Counter
-            self.create_new_positions(pos)
-            # For each of these new positions, update corresponding scores & record
-            #  eventual winners
-            for past_score, n_past in enumerate(self.scores[pos]):
-                # If there are universes with this score
-                if n_past > 0:
-                    self.update_scores(pos, past_score, n_past)
-
-        # Add accumulator to the new positions
-        self._new_positions += n_universes * self._accumulator
-        # Subtract winners
-        self._new_positions -= self._winners
-        # Subtract the old counter
-        self.positions[pos] -= n_universes
+        # Create accumulator of new positions based on the 27 possible outcomes
+        #  in self.counter
+        self.create_accumulator()
+        # For each of these new positions, update corresponding scores & record
+        #  eventual winners
+        self.update_scores()
         return self
 
     def move(self):
         # Update the step
         self.step += 1
+
         # Record initial number of universes
-        initial_number = self.positions.sum()
-        # Reset internal arrays & variables
-        self._new_scores[:] = 0
-        self._new_positions[:] = 0
+        initial_number = self.scores.sum()
+        # Reset count of winners this round
         self._tot_winners = 0
 
         # Do move for each possible universe position
-        for position, n_universes in enumerate(self.positions):
-            self.move_per_position(position, n_universes)
+        # Get current positions with existing universes
+        self.move_per_position()
 
-        # Update the positions & scores
-        self.positions += self._new_positions
-        self.scores += self._new_scores
         # If there are winners this round, record the step, number of winners, current
         #  number of universes and initial number of universes
         if self._tot_winners > 0:
             self.results.append(
-                (self.step, self._tot_winners, self.positions.sum(), initial_number)
+                (self.step, self._tot_winners, self.scores.sum(), initial_number)
             )
         return self
 
     def play(self):
         # Keep playing until there are universes
-        while self.positions.sum() > 0:
+        while self.scores.sum() > 0:
             self.move()
 
         return self

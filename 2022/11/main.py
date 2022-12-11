@@ -361,7 +361,7 @@ class MonkeyBusiness:
     def __init__(self, raw_monkeys) -> None:
         # Initialise monkeys and maximum possible divisor of importance
         self.monkeys = [Monkey(monkey) for monkey in raw_monkeys]
-        self.maximum_divisor = prod([monkey.divisor for monkey in self.monkeys])
+        self.maximum_divisor = prod(set(monkey.divisor for monkey in self.monkeys))
 
     def inspect(self, monkey: Monkey, is_first_part=True):
         try:

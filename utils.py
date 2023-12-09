@@ -7,9 +7,9 @@ import pstats
 
 
 def read_input(input_file: str, line_strip: bool = True) -> List[str]:
-    with open(input_file, "r") as input_file:
+    with open(input_file, "r") as file:
         input_list = []
-        for line in input_file:
+        for line in file:
             if line_strip:
                 input_list.append(line.strip())
             else:
@@ -18,11 +18,13 @@ def read_input(input_file: str, line_strip: bool = True) -> List[str]:
     return input_list
 
 
-def read_input_batch(input_file: str, line_split: bool = True) -> List[str]:
-    with open(input_file, "r") as input_file:
+def read_input_batch(
+    input_file: str, line_split: bool = True
+) -> List[List[str]]:  # noqa: E501
+    with open(input_file, "r") as file:
         input_list = []
-        batch = []
-        for line in input_file:
+        batch: List[str] = []
+        for line in file:
             if line == "\n":
                 input_list.append(batch)
                 batch = []

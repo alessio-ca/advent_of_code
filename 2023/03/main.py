@@ -73,19 +73,24 @@ def calculate_ratios(
     # Iterate over valid gears
     ratios: List[int] = []
     for gear in gears:
-        part_ns = []
-        for block, nn in zip(
-            [int("".join(matrix[block])) for block in blocks],
-            [
+        a = -1
+        b = 0
+        block_list = zip(
+            (int("".join(matrix[block])) for block in blocks),
+            (
                 set((x, y) for x, y in zip(block_x, block_y))
                 for block_x, block_y in blocks_nn
-            ],
-        ):
+            ),
+        )
+        while (a * b) <= 0:
+            block, nn = next(block_list)
             if gear in nn:
-                part_ns.append(block)
+                if a < 0:
+                    a = block
+                else:
+                    b = block
 
-        if len(part_ns) == 2:
-            ratios.append(int(np.prod(part_ns)))
+        ratios.append(a * b)
     return ratios
 
 
@@ -100,7 +105,8 @@ def main():
     blocks = assign_blocks(x_digits, y_digits)
     # Calculate NNs
     blocks_nn = assign_nn(blocks, matrix.shape)
-    # Create list of nearest neightbors
+
+    # Perform loop
     res = 0
     for block, block_nn in zip(blocks, blocks_nn):
         if any(np.char.isdigit(matrix[block_nn]) | (matrix[block_nn] != ".")):

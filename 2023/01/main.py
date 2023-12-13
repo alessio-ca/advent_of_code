@@ -36,9 +36,7 @@ def main():
     digits_pattern = r"(?=(\d|" + r"|".join(DIGITS_DICT.keys()) + r"))"
     raw_digits = [re.findall(digits_pattern, line) for line in X_raw]
     # Convert literal to numbers
-    digits = [
-        [convert_literal_to_digit(s) for s in line] for line in raw_digits
-    ]  # noqa: E501
+    digits = [[convert_literal_to_digit(s) for s in line] for line in raw_digits]
     # Take first and last, concatenate
     numbers = [int(line[0] + line[-1]) for line in digits]
     print(f"Result of part 2: {sum(numbers)}")

@@ -177,7 +177,7 @@ class Grid:
         # Perform convolution with a NNEIGH filter.
         #  This effectively correspond to counting the number of occupied seats
         #  next to a particular seat
-        Y = convolve(Y, self.conv_filter, mode="constant", cval=1)  # noqa: E501
+        Y = convolve(Y, self.conv_filter, mode="constant", cval=1)
         return Y
 
     # Function to generate system status

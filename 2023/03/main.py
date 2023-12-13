@@ -43,9 +43,7 @@ def assign_nn(
                 np.arange(x.min() - 1, x.max() + 2),
             )
         )
-        nn_y = np.concatenate(
-            (y, y, np.repeat(y[0] - 1, 3), np.repeat(y[-1] + 1, 3))
-        )  # noqa: E501
+        nn_y = np.concatenate((y, y, np.repeat(y[0] - 1, 3), np.repeat(y[-1] + 1, 3)))
         # Filter
         mask = (nn_x >= 0) & (nn_x < x_shape) & (nn_y >= 0) & (nn_y < y_shape)
         nn_x = nn_x[mask]
@@ -64,9 +62,7 @@ def calculate_ratios(
 ) -> List[int]:
     # Filter gears to iterate on
     counter_gears = Counter(
-        (x, y)
-        for block_x, block_y in blocks_nn
-        for x, y in zip(block_x, block_y)  # noqa: E501
+        (x, y) for block_x, block_y in blocks_nn for x, y in zip(block_x, block_y)
     )
     gears = [gear for gear in gears if counter_gears[gear] == 2]
 

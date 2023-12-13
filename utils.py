@@ -18,9 +18,7 @@ def read_input(input_file: str, line_strip: bool = True) -> List[str]:
     return input_list
 
 
-def read_input_batch(
-    input_file: str, line_split: bool = True
-) -> List[List[str]]:  # noqa: E501
+def read_input_batch(input_file: str, line_split: bool = True) -> List[List[str]]:
     with open(input_file, "r") as file:
         input_list = []
         batch: List[str] = []

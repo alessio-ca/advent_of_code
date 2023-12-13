@@ -482,7 +482,7 @@ class CellularAutomataSystem:
         # Perform convolution with a NNEIGH filter.
         #  This effectively correspond to counting the number of occupied seats
         #  next to a particular seat
-        Y = convolve(Y, self.conv_filter, mode="constant")  # noqa: E501
+        Y = convolve(Y, self.conv_filter, mode="constant")
         return Y
 
     # Function to generate system status

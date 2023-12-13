@@ -318,9 +318,7 @@ class CellularAutomataSystem:
         # Perform convolution with a NNEIGH filter.
         #  This effectively correspond to counting the number of occupied seats
         #  next to a particular seat
-        Y = convolve2d(
-            Y, CONV_FILTER, mode="same", boundary="fill", fillvalue=0
-        )  # noqa: E501
+        Y = convolve2d(Y, CONV_FILTER, mode="same", boundary="fill", fillvalue=0)
         return Y
 
     # Function for occupancy - Line Of Sight

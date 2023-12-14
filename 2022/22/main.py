@@ -113,7 +113,7 @@ def walk_maze(dict_nodes, instructions, dirlist):
 
 
 def main():
-    input_file = read_input("2022/22/example.txt", line_strip=False)
+    input_file = read_input("2022/22/input.txt", line_strip=False)
     dict_nodes = create_node_system(input_file, 4)
 
     llist = CircularDoublyLinkedList()

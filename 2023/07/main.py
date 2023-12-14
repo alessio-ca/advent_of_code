@@ -12,6 +12,7 @@ class Card:
     face: str
     dict_values: Dict[str, int]
 
+    @property
     def value(self) -> int:
         if self.face.isdigit():
             return int(self.face)
@@ -63,7 +64,7 @@ class Hand:
         """Assign total value by counting in base 14.
         This ensures full comparison between hands at once"""
         return sum(
-            14 ** (len(self.cards) - i) * Card(x, self.dict_values).value()
+            14 ** (len(self.cards) - i) * Card(x, self.dict_values).value
             for i, x in enumerate(self.cards)
         )
 

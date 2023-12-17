@@ -1,7 +1,8 @@
 from utils import read_input
 import numpy as np
-from collections import deque
-from typing import Tuple, List
+import heapq
+
+from typing import Tuple, List, Set
 from typing import TypeVar
 
 T1 = TypeVar("T1", bound=int)
@@ -155,24 +156,31 @@ class Network:
         )
         pass
 
+    def _fill_flood(self, init_seeds: Set[CoordTuple]) -> Set[CoordTuple]:
+        """Fill flood algorithm to fill area given a set of seeds."""
+        # Initialize the full map minus the network.
+        # Initialize queue and visited set
+        full_map = self.full_grid.difference(self.network)
+        queue = list(init_seeds)
+        visited = set(queue)
+
+        heapq.heapify(queue)
+        while queue:
+            # Pop from queue
+            point = heapq.heappop(queue)
+            # Test neighbors
+            nns = generate_all_nn(point)
+            for nn in nns:
+                # If neighbor satisfies conditions, add to queue and visited
+                if nn in full_map and nn not in visited:
+                    heapq.heappush(queue, nn)
+                    visited.add(nn)
+        return visited.union(init_seeds)
+
     def construct_loop(self):
         """Construct full loop & calculate area"""
-        # Initialize a deque as the full map minus the network,
-        #  and minus the clock / anticlock sets
-        full_map = self.full_grid.difference(self.network)
-        to_search = deque(full_map.difference(self.clock_set).difference(self.anti_set))
-
-        while len(to_search) > 0:
-            point = to_search.pop()
-            # Pop point and test membership of its nns with the two sets
-            nns = generate_all_nn(point)
-            if len(set(nns).intersection(self.clock_set)) > 0:
-                self.clock_set.add(point)
-            elif len(set(nns).intersection(self.anti_set)) > 0:
-                self.anti_set.add(point)
-            else:
-                # If no match, reappend the point to the deque
-                to_search.appendleft(point)
+        self.clock_set = self._fill_flood(self.clock_set)
+        self.anti_set = self._fill_flood(self.anti_set)
 
         if self.total_angle > 0:
             # Take clock set

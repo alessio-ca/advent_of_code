@@ -95,7 +95,7 @@ class Network:
         self.clock_set = set()
         self.anti_set = set()
         self.total_angle = 0
-        self.loop_size = 0
+        self.network_loop = 0
 
     def start_network(self) -> Tuple[CoordTuple, CoordTuple]:
         """Start the network. Find first connected pipe to start.
@@ -179,15 +179,12 @@ class Network:
 
     def construct_loop(self):
         """Construct full loop & calculate area"""
-        self.clock_set = self._fill_flood(self.clock_set)
-        self.anti_set = self._fill_flood(self.anti_set)
-
         if self.total_angle > 0:
-            # Take clock set
-            self.loop_size = len(self.clock_set)
+            # Take clock set as the seeds
+            self.network_loop = self._fill_flood(self.clock_set)
         else:
-            # Take anti clock set
-            self.loop_size = len(self.anti_set)
+            # Take anti clock set as the seeds
+            self.network_loop = self._fill_flood(self.anti_set)
 
 
 def main():
@@ -196,7 +193,7 @@ def main():
     network.construct_network()
     print(f"Result of part 1: {int((len(network.network)+1)/2)}")
     network.construct_loop()
-    print(f"Result of part 2: {network.loop_size}")
+    print(f"Result of part 2: {len(network.network_loop)}")
 
 
 if __name__ == "__main__":

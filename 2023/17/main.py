@@ -1,4 +1,4 @@
-from utils import read_input, timefunc, profilefunc
+from utils import read_input, timefunc
 import numpy as np
 from typing import Tuple, List, Dict, Optional
 import itertools

@@ -35,6 +35,12 @@ class Boxes:
         # Lenses are represented as {box: {label: focal}}
         self.dict_lenses = defaultdict(lambda: defaultdict(int))
 
+    def perform_extraction(self, hash_box, idx):
+        self.dict_labels[hash_box].rotate(-idx)
+        self.dict_labels[hash_box].popleft()
+        self.dict_labels[hash_box].rotate(idx)
+        pass
+
     def process_sequence(self, step: Tuple[str, int]):
         label, focal = step
         hash_box = hash_algorithm(label)
@@ -48,9 +54,7 @@ class Boxes:
             # If the label exist, do operations
             if idx >= 0:
                 # Pop the label and shift everything
-                self.dict_labels[hash_box].rotate(-idx)
-                self.dict_labels[hash_box].popleft()
-                self.dict_labels[hash_box].rotate(idx)
+                self.perform_extraction(hash_box, idx)
                 # Pop the label from the lenses
                 self.dict_lenses[hash_box].pop(label)
         else:

@@ -165,7 +165,8 @@ def search_result(period: int, steps: int, offset: int, y: np.ndarray):
     # Our target is the non-periodic end part.
     # We solve the following equation:
     # ax^2 + bx + c = i
-    # The "i"s are chosen to be the offset and the next two periods.
+    # The "i"s are chosen to be the number of occupied tiles at the offset
+    #  and the next two periods.
     # The "x"s are the number of periods (0, 1, 2,...)
     # This will allow us to fit the relationship and extrapolate to target
     target = (steps - offset) // period

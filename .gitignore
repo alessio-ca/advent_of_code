@@ -3,3 +3,5 @@ __pycache__/
 .mypy_cache
 */*/*.pkl
 */*/*.ipynb
+*/*/*.tex
+*/*/input.txt

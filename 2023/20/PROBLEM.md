@@ -22,78 +22,78 @@ Pulses are always processed in the order they are sent. So, if a pulse is sent t
 
 The module configuration (your puzzle input) lists each module. The name of the module is preceded by a symbol identifying its type, if any. The name is then followed by an arrow and a list of its destination modules. For example:
 
-broadcaster -> a, b, c
-%a -> b
-%b -> c
-%c -> inv
-&inv -> a
+    broadcaster -> a, b, c
+    %a -> b
+    %b -> c
+    %c -> inv
+    &inv -> a
 In this module configuration, the broadcaster has three destination modules named a, b, and c. Each of these modules is a flip-flop module (as indicated by the % prefix). a outputs to b which outputs to c which outputs to another module named inv. inv is a conjunction module (as indicated by the & prefix) which, because it has only one input, acts like an inverter (it sends the opposite of the pulse type it receives); it outputs to a.
 
 By pushing the button once, the following pulses are sent:
 
-button -low-> broadcaster
-broadcaster -low-> a
-broadcaster -low-> b
-broadcaster -low-> c
-a -high-> b
-b -high-> c
-c -high-> inv
-inv -low-> a
-a -low-> b
-b -low-> c
-c -low-> inv
-inv -high-> a
+    button -low-> broadcaster
+    broadcaster -low-> a
+    broadcaster -low-> b
+    broadcaster -low-> c
+    a -high-> b
+    b -high-> c
+    c -high-> inv
+    inv -low-> a
+    a -low-> b
+    b -low-> c
+    c -low-> inv
+    inv -high-> a
 After this sequence, the flip-flop modules all end up off, so pushing the button again repeats the same sequence.
 
 Here's a more interesting example:
 
-broadcaster -> a
-%a -> inv, con
-&inv -> b
-%b -> con
-&con -> output
+    broadcaster -> a
+    %a -> inv, con
+    &inv -> b
+    %b -> con
+    &con -> output
 This module configuration includes the broadcaster, two flip-flops (named a and b), a single-input conjunction module (inv), a multi-input conjunction module (con), and an untyped module named output (for testing purposes). The multi-input conjunction module con watches the two flip-flop modules and, if they're both on, sends a low pulse to the output module.
 
 Here's what happens if you push the button once:
 
-button -low-> broadcaster
-broadcaster -low-> a
-a -high-> inv
-a -high-> con
-inv -low-> b
-con -high-> output
-b -high-> con
-con -low-> output
+    button -low-> broadcaster
+    broadcaster -low-> a
+    a -high-> inv
+    a -high-> con
+    inv -low-> b
+    con -high-> output
+    b -high-> con
+    con -low-> output
 Both flip-flops turn on and a low pulse is sent to output! However, now that both flip-flops are on and con remembers a high pulse from each of its two inputs, pushing the button a second time does something different:
 
-button -low-> broadcaster
-broadcaster -low-> a
-a -low-> inv
-a -low-> con
-inv -high-> b
-con -high-> output
+    button -low-> broadcaster
+    broadcaster -low-> a
+    a -low-> inv
+    a -low-> con
+    inv -high-> b
+    con -high-> output
 Flip-flop a turns off! Now, con remembers a low pulse from module a, and so it sends only a high pulse to output.
 
 Push the button a third time:
 
-button -low-> broadcaster
-broadcaster -low-> a
-a -high-> inv
-a -high-> con
-inv -low-> b
-con -low-> output
-b -low-> con
-con -high-> output
+    button -low-> broadcaster
+    broadcaster -low-> a
+    a -high-> inv
+    a -high-> con
+    inv -low-> b
+    con -low-> output
+    b -low-> con
+    con -high-> output
 This time, flip-flop a turns on, then flip-flop b turns off. However, before b can turn off, the pulse sent to con is handled first, so it briefly remembers all high pulses for its inputs and sends a low pulse to output. After that, flip-flop b turns off, which causes con to update its state and send a high pulse to output.
 
 Finally, with a on and b off, push the button a fourth time:
 
-button -low-> broadcaster
-broadcaster -low-> a
-a -low-> inv
-a -low-> con
-inv -high-> b
-con -high-> output
+    button -low-> broadcaster
+    broadcaster -low-> a
+    a -low-> inv
+    a -low-> con
+    inv -high-> b
+    con -high-> output
 This completes the cycle: a turns off, causing con to remember only low pulses and restoring all modules to their original states.
 
 To get the cables warmed up, the Elves have pushed the button 1000 times. How many pulses got sent as a result (including the pulses sent by the button itself)?

@@ -1,4 +1,4 @@
---- Day 21: Step Counter ---
+# --- Day 21: Step Counter ---
 
 You manage to catch the airship right as it's dropping someone else off on their all-expenses-paid trip to Desert Island! It even helpfully drops you off near the gardener and his massive farm.
 
@@ -79,7 +79,7 @@ However, the Elf actually needs to get 64 steps today, and the map he's handed y
 
 Starting from the garden plot marked S on your map, how many garden plots could the Elf reach in exactly 64 steps?
 
---- Part Two ---
+# --- Part Two ---
 
 The Elf seems confused by your answer until he realizes his mistake: he was reading from a list of his favorite numbers that are both perfect squares and perfect cubes, not his step counter.
 

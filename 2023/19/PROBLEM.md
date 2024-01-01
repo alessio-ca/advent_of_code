@@ -1,4 +1,4 @@
---- Day 19: Aplenty ---
+# --- Day 19: Aplenty ---
 
 The Elves of Gear Island are thankful for your help and send you on your way. They even have a hang glider that someone stole from Desert Island; since you're already going that direction, it would help them a lot if you would use it to get down there and return it to them.
 
@@ -50,7 +50,7 @@ Ultimately, three parts are accepted. Adding up the x, m, a, and s rating for ea
 
 Sort through all of the parts you've been given; what do you get if you add together all of the rating numbers for all of the parts that ultimately get accepted?
 
---- Part Two ---
+# --- Part Two ---
 
 Even with your help, the sorting process still isn't fast enough.
 

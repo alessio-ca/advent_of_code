@@ -1,4 +1,4 @@
---- Day 3: Gear Ratios ---
+# --- Day 3: Gear Ratios ---
 
 You and the Elf eventually reach a gondola lift station; he says the gondola lift will take you up to the water source, but this is as far as he can bring you. You go inside.
 
@@ -28,7 +28,7 @@ In this schematic, two numbers are not part numbers because they are not adjacen
 
 Of course, the actual engine schematic is much larger. What is the sum of all of the part numbers in the engine schematic?
 
---- Part Two ---
+# --- Part Two ---
 
 The engineer finds the missing part and installs it in the engine! As the engine springs to life, you jump in the closest gondola, finally ready to ascend to the water source.
 

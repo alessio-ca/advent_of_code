@@ -1,4 +1,4 @@
---- Day 24: Never Tell Me The Odds ---
+# --- Day 24: Never Tell Me The Odds ---
 
 It seems like something is going wrong with the snow-making process. Instead of forming snow, the water that's been absorbed into the air seems to be forming hail!
 
@@ -66,7 +66,7 @@ However, you'll need to search a much larger test area if you want to see if any
 
 Considering only the X and Y axes, check all pairs of hailstones' future paths for intersections. How many of these intersections occur within the test area?
 
---- Part Two ---
+# --- Part Two ---
 
 Upon further analysis, it doesn't seem like any hailstones will naturally collide. It's up to you to fix that!
 

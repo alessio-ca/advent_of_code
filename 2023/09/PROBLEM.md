@@ -1,4 +1,4 @@
---- Day 9: Mirage Maintenance ---
+# --- Day 9: Mirage Maintenance ---
 
 You ride the camel through the sandstorm and stop where the ghost's maps told you to stop. The sandstorm subsequently subsides, somehow seeing you standing at an oasis!
 
@@ -64,7 +64,7 @@ If you find the next value for each history in this example and add them togethe
 
 Analyze your OASIS report and extrapolate the next value for each history. What is the sum of these extrapolated values?
 
---- Part Two ---
+# --- Part Two ---
 
 Of course, it would be nice to have even more history included in your report. Surely it's safe to just extrapolate backwards as well, right?
 

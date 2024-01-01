@@ -1,4 +1,4 @@
---- Day 12: Hot Springs ---
+# --- Day 12: Hot Springs ---
 
 You finally reach the hot springs! You can see steam rising from secluded areas attached to the primary, ornate building.
 
@@ -69,7 +69,7 @@ Adding all of the possible arrangement counts together produces a total of 21 ar
 
 For each row, count all of the different arrangements of operational and broken springs that meet the given criteria. What is the sum of those counts?
 
---- Part Two ---
+# --- Part Two ---
 
 As you look out at the field of springs, you feel like there are way more springs than the condition records list. When you examine the records, you discover that they were actually folded up this whole time!
 

@@ -1,4 +1,4 @@
---- Day 11: Cosmic Expansion ---
+# --- Day 11: Cosmic Expansion ---
 
 You continue following signs for "Hot Springs" and eventually come across an observatory. The Elf within turns out to be a researcher studying cosmic expansion using the giant telescope here.
 
@@ -89,7 +89,7 @@ In this example, after expanding the universe, the sum of the shortest path betw
 
 Expand the universe, then find the length of the shortest path between every pair of galaxies. What is the sum of these lengths?
 
---- Part Two ---
+# --- Part Two ---
 
 The galaxies are much older (and thus much farther apart) than the researcher initially estimated.
 

@@ -1,4 +1,4 @@
---- Day 7: Camel Cards ---
+# --- Day 7: Camel Cards ---
 
 Your all-expenses-paid trip turns out to be a one-way, five-minute ride in an airship. (At least it's a cool airship!) It drops you off at the edge of a vast desert and descends back to Island Island.
 
@@ -51,7 +51,7 @@ So, the first step is to put the hands in order of strength:
 
 Find the rank of every hand in your set. What are the total winnings?
 
---- Part Two ---
+# --- Part Two ---
 
 To make things a little more interesting, the Elf introduces one additional rule. Now, J cards are jokers - wildcards that can act like whatever card would make the hand the strongest type possible.
 

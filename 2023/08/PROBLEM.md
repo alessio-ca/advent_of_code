@@ -1,4 +1,4 @@
---- Day 8: Haunted Wasteland ---
+# --- Day 8: Haunted Wasteland ---
 
 You're still riding a camel across Desert Island when you spot a sandstorm quickly approaching. When you turn to warn the Elf, she disappears before your eyes! To be fair, she had just finished warning you about ghosts a few minutes ago.
 
@@ -30,7 +30,7 @@ Of course, you might not find ZZZ right away. If you run out of left/right instr
     ZZZ = (ZZZ, ZZZ)
 Starting at AAA, follow the left/right instructions. How many steps are required to reach ZZZ?
 
---- Part Two ---
+# --- Part Two ---
 
 The sandstorm is upon you and you aren't any closer to escaping the wasteland. You had the camel follow the instructions, but you've barely left your starting position. It's going to take significantly more steps to escape!
 

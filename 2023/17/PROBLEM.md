@@ -1,4 +1,4 @@
---- Day 17: Clumsy Crucible ---
+# --- Day 17: Clumsy Crucible ---
 
 The lava starts flowing rapidly once the Lava Production Facility is operational. As you leave, the reindeer offers you a parachute, allowing you to quickly reach Gear Island.
 
@@ -50,7 +50,7 @@ This path never moves more than three consecutive blocks in the same direction a
 
 Directing the crucible from the lava pool to the machine parts factory, but not moving more than three consecutive blocks in the same direction, what is the least heat loss it can incur?
 
---- Part Two ---
+# --- Part Two ---
 
 The crucibles of lava simply aren't large enough to provide an adequate supply of lava to the machine parts factory. Instead, the Elves are going to upgrade to ultra crucibles.
 

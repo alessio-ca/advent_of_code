@@ -1,4 +1,4 @@
---- Day 18: Lavaduct Lagoon ---
+# --- Day 18: Lavaduct Lagoon ---
 
 Thanks to your efforts, the machine parts factory is one of the first factories up and running since the lavafall came back. However, to catch up with the large backlog of parts requests, the factory will also need a large supply of lava for a while; the Elves have already started creating a large lagoon nearby for this purpose.
 
@@ -48,7 +48,7 @@ Now, the lagoon can contain a much more respectable 62 cubic meters of lava. Whi
 
 The Elves are concerned the lagoon won't be large enough; if they follow their dig plan, how many cubic meters of lava could it hold?
 
---- Part Two ---
+# --- Part Two ---
 
 The Elves were right to be concerned; the planned lagoon would be much too small.
 

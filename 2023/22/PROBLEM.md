@@ -1,4 +1,4 @@
---- Day 22: Sand Slabs ---
+# --- Day 22: Sand Slabs ---
 
 Enough sand has fallen; it can finally filter water for Snow Island.
 
@@ -112,7 +112,7 @@ So, in this example, 5 bricks can be safely disintegrated.
 
 Figure how the blocks will settle based on the snapshot. Once they've settled, consider disintegrating a single brick; how many bricks could be safely chosen as the one to get disintegrated?
 
---- Part Two ---
+# --- Part Two ---
 
 Disintegrating bricks one at a time isn't going to be fast enough. While it might sound dangerous, what you really need is a chain reaction.
 

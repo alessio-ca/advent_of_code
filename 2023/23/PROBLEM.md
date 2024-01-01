@@ -1,4 +1,4 @@
---- Day 23: A Long Walk ---
+# --- Day 23: A Long Walk ---
 
 The Elves resume water filtering operations! Clean water starts flowing over the edge of Island Island.
 
@@ -64,7 +64,7 @@ This hike contains 94 steps. (The other possible hikes you could have taken were
 
 Find the longest hike you can take through the hiking trails listed on your map. How many steps long is the longest hike?
 
---- Part Two ---
+# --- Part Two ---
 
 As you reach the trailhead, you realize that the ground isn't as slippery as you expected; you'll have no problem climbing up the steep slopes.
 

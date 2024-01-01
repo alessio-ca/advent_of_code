@@ -1,4 +1,4 @@
---- Day 10: Pipe Maze ---
+# --- Day 10: Pipe Maze ---
 
 You use the hang glider to ride the hot air from Desert Island all the way up to the floating metal island. This island is surprisingly cold and there definitely aren't any thermals to glide on, so you leave your hang glider behind.
 
@@ -93,7 +93,7 @@ Here are the distances for each tile on that loop:
     23...
 Find the single giant loop starting at S. How many steps along the loop does it take to get from the starting position to the point farthest from the starting position?
 
---- Part Two ---
+# --- Part Two ---
 
 You quickly reach the farthest point of the loop, but the animal never emerges. Maybe its nest is within the area enclosed by the loop?
 

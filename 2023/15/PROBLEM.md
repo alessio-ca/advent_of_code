@@ -1,4 +1,4 @@
---- Day 15: Lens Library ---
+# --- Day 15: Lens Library ---
 
 The newly-focused parabolic reflector dish is sending all of the collected light to a point on the side of yet another mountain - the largest mountain on Lava Island. As you approach the mountain, you find that the light is being collected by the wall of a large facility embedded in the mountainside.
 
@@ -63,7 +63,7 @@ In this example, the sum of these results is 1320. Unfortunately, the reindeer h
 
 Run the HASH algorithm on each step in the initialization sequence. What is the sum of the results? (The initialization sequence is one long line; be careful when copy-pasting it.)
 
---- Part Two ---
+# --- Part Two ---
 
 You convince the reindeer to bring you the page; the page confirms that your HASH algorithm is working.
 

@@ -1,4 +1,4 @@
---- Day 5: If You Give A Seed A Fertilizer ---
+# --- Day 5: If You Give A Seed A Fertilizer ---
 
 You take the boat and find the gardener right where you were told he would be: managing a giant "garden" that looks more to you like a farm.
 
@@ -94,7 +94,7 @@ So, the lowest location number in this example is 35.
 
 What is the lowest location number that corresponds to any of the initial seed numbers?
 
---- Part Two ---
+# --- Part Two ---
 
 Everyone will starve if you only plant such a small number of seeds. Re-reading the almanac, it looks like the seeds: line actually describes ranges of seed numbers.
 

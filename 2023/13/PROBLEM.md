@@ -1,4 +1,4 @@
---- Day 13: Point of Incidence ---
+# --- Day 13: Point of Incidence ---
 
 With your help, the hot springs team locates an appropriate spring which launches you neatly and precisely up to the edge of Lava Island.
 
@@ -59,7 +59,7 @@ To summarize your pattern notes, add up the number of columns to the left of eac
 
 Find the line of reflection in each of the patterns in your notes. What number do you get after summarizing all of your notes?
 
---- Part Two ---
+# --- Part Two ---
 
 You resume walking through the valley of mirrors and - SMACK! - run directly into one. Hopefully nobody was watching, because that must have been pretty embarrassing.
 

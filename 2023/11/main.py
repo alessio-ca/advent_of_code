@@ -29,10 +29,8 @@ def compute_distances(x: np.ndarray, y: np.ndarray) -> int:
     return res
 
 
-def main():
-    grid_raw = np.array(
-        [list(line) for line in read_input("2023/11/input.txt")], dtype=str
-    )
+def main(filename: str):
+    grid_raw = np.array([list(line) for line in read_input(filename)], dtype=str)
     # Get galaxies positions & compute
     x, y = get_galaxies(grid_raw, expansion_n=2)
     print(f"Result of part 1: {compute_distances(x,y)}")
@@ -42,4 +40,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/11/input.txt")

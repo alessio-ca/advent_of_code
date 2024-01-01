@@ -91,8 +91,8 @@ def calculate_ratios(
 
 
 @timefunc
-def main():
-    matrix = np.array([list(line) for line in read_input("2023/03/input.txt")])
+def main(filename: str):
+    matrix = np.array([list(line) for line in read_input(filename)])
     # Get array of non-zero (digit) elements
     x_digits, y_digits = np.array(
         [[s.isdigit() for s in row] for row in matrix]
@@ -116,4 +116,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/03/input.txt")

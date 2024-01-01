@@ -50,8 +50,8 @@ def range_convert_source_to_dest(input_sources, mapping):
         yield el
 
 
-def main():
-    mappings = read_input_batch("2023/05/input.txt", line_split=False)
+def main(filename: str):
+    mappings = read_input_batch(filename, line_split=False)
     # Format mappings
     seeds = list(map(int, re.findall(r"\d+", mappings[0][0].split(": ")[1])))
     source_to_dist_maps = [
@@ -74,4 +74,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/05/input.txt")

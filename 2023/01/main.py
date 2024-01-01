@@ -24,8 +24,8 @@ def convert_literal_to_digit(s: str) -> str:
         return s
 
 
-def main():
-    X_raw = read_input("2023/01/input.txt")
+def main(filename: str):
+    X_raw = read_input(filename)
     # Extract digits
     digits = [re.findall(r"\d", line) for line in X_raw]
     # Take first and last, concatenate
@@ -43,4 +43,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/01/input.txt")

@@ -84,8 +84,8 @@ class Boxes:
         return total
 
 
-def main():
-    sequences = read_input("2023/15/input.txt")[0].split(",")
+def main(filename: str):
+    sequences = read_input(filename)[0].split(",")
     total_n = 0
     for seq in sequences:
         total_n += hash_algorithm(seq)
@@ -97,4 +97,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/15/input.txt")

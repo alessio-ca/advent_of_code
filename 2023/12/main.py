@@ -51,8 +51,8 @@ class Record:
 
 
 @timefunc
-def main():
-    records = [Record(*line.split()) for line in read_input("2023/12/input.txt")]
+def main(filename: str):
+    records = [Record(*line.split()) for line in read_input(filename)]
     total_n = 0
     for record in records:
         total_n += record.count_configs()
@@ -68,4 +68,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/12/input.txt")

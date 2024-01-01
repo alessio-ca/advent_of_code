@@ -49,8 +49,8 @@ def min_possible_set(game):
     return min_set
 
 
-def main():
-    games = read_input("2023/02/input.txt")
+def main(filename: str):
+    games = read_input(filename)
     games_ids, game_rounds = parse_games(games)
     res_1 = 0
     res_2 = 0
@@ -63,4 +63,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/02/input.txt")

@@ -35,8 +35,8 @@ class Network:
         return np.lcm.reduce(list(paths))
 
 
-def main():
-    instr, network = read_input_batch("2023/08/input.txt", line_split=False)
+def main(filename: str):
+    instr, network = read_input_batch(filename, line_split=False)
     network = {
         x: (y, z) for (x, y, z) in (re.findall(r"[A-Z]{3}", line) for line in network)
     }
@@ -48,4 +48,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/08/input.txt")

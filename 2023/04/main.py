@@ -18,8 +18,8 @@ def format_cards(cards: List[str]) -> Dict[int, Tuple[Set[int], Set[int]]]:
     return cards_dict
 
 
-def main():
-    cards = format_cards(read_input("2023/04/input.txt"))
+def main(filename: str):
+    cards = format_cards(read_input(filename))
     # Create tracking arrays
     points_cards = np.zeros(shape=(len(cards)), dtype=int)
     counter_cards = np.ones(shape=(len(cards)), dtype=int)
@@ -34,4 +34,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/04/input.txt")

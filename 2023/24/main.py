@@ -136,8 +136,7 @@ def solve_systems(
     return int(np.array(result).mean() / 2)
 
 
-def main():
-    filename = "2023/24/input.txt"
+def main(filename: str):
     if "example" in filename:
         bound_min = 7
         bound_max = 27
@@ -162,4 +161,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/24/input.txt")

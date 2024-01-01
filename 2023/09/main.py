@@ -19,14 +19,14 @@ def backward_value(seq: np.ndarray) -> int:
     return reduce(lambda a, b: b - a, reversed(values), 0)
 
 
-def main():
+def main(filename: str):
     hists = [
         np.array(list(map(int, line.split())), dtype="int")
-        for line in read_input("2023/09/input.txt")
+        for line in read_input(filename)
     ]
     print(f"Result of part 1: {sum(forward_value(hist) for hist in hists)}")
     print(f"Result of part 2: {sum(backward_value(hist) for hist in hists)}")
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/09/input.txt")

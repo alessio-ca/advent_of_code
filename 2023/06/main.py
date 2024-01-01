@@ -16,12 +16,9 @@ def race_distance(race):
     return x2 - x1 + 1
 
 
-def main():
+def main(filename: str):
     races = np.array(
-        [
-            list(map(int, re.findall(r"\d+", line)))
-            for line in read_input("2023/06/input.txt")
-        ],
+        [list(map(int, re.findall(r"\d+", line))) for line in read_input(filename)],
         dtype="int",
     ).T
 
@@ -30,12 +27,9 @@ def main():
         n *= race_distance(race)
     print(f"Result of part 1: {n}")
 
-    X = tuple(
-        int("".join(re.findall(r"\d+", line)))
-        for line in read_input("2023/06/input.txt")
-    )
+    X = tuple(int("".join(re.findall(r"\d+", line))) for line in read_input(filename))
     print(f"Result of part 2: {race_distance(X)}")
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/06/input.txt")

@@ -124,8 +124,8 @@ class ModuleProcess:
         pass
 
 
-def main():
-    modules = [ModuleSelector.factory(row) for row in read_input("2023/20/input.txt")]
+def main(filename: str):
+    modules = [ModuleSelector.factory(row) for row in read_input(filename)]
     modules = {module.id: module for module in modules}
     process = ModuleProcess(modules)
 
@@ -144,4 +144,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/20/input.txt")

@@ -115,9 +115,9 @@ def update_straights(neighbor, previous_node, straights):
 
 
 @timefunc
-def main():
+def main(filename: str):
     grid = np.array(
-        list(list(map(int, row)) for row in read_input("2023/17/input.txt")),
+        list(list(map(int, row)) for row in read_input(filename)),
         dtype=int,
     )
     dict_nn = create_neighbors_dict(grid)
@@ -133,4 +133,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/17/input.txt")

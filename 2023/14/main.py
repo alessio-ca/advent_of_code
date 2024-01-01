@@ -90,13 +90,10 @@ def calculate_load(platform):
 
 
 @timefunc
-def main():
+def main(filename: str):
     platform = Platform(
         np.array(
-            [
-                [DICT_ROCKS[rock] for rock in line]
-                for line in read_input("2023/14/input.txt")
-            ],
+            [[DICT_ROCKS[rock] for rock in line] for line in read_input(filename)],
             dtype=int,
         )
     )
@@ -108,4 +105,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/14/input.txt")

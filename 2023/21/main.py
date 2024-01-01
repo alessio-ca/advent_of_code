@@ -180,10 +180,8 @@ def search_result(period: int, steps: int, offset: int, y: np.ndarray):
     return int(np.round(result))
 
 
-def main():
-    grid = np.array(
-        [[c for c in line] for line in read_input("2023/21/example.txt")], dtype=str
-    )
+def main(filename: str):
+    grid = np.array([[c for c in line] for line in read_input(filename)], dtype=str)
     x_0, y_0 = (grid == "S").nonzero()
     start = Point(x_0[0], y_0[0])
     # Create neighbour dictionary
@@ -216,4 +214,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/21/example.txt")

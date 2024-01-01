@@ -58,10 +58,10 @@ def calculate_area(
     return int(internal_area + external_area)
 
 
-def main():
+def main(filename: str):
     instructions = [
         (x, int(y), z)
-        for row in read_input("2023/18/input.txt")
+        for row in read_input(filename)
         for (x, y, z) in re.findall(PATTERN, row)
     ]
     trench = create_trench(instructions)
@@ -74,4 +74,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/18/input.txt")

@@ -187,8 +187,8 @@ class Network:
             self.network_loop = self._fill_flood(self.anti_set)
 
 
-def main():
-    grid = np.array([list(line) for line in read_input("2023/10/input.txt")], dtype=str)
+def main(filename: str):
+    grid = np.array([list(line) for line in read_input(filename)], dtype=str)
     network = Network(grid)
     network.construct_network()
     print(f"Result of part 1: {int((len(network.network)+1)/2)}")
@@ -197,4 +197,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/10/input.txt")

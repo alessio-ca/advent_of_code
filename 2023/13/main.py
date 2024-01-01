@@ -42,10 +42,10 @@ def test_pattern(grid, condition):
     return 100 * find_reflection(grid, condition) + find_reflection(grid.T, condition)
 
 
-def main():
+def main(filename: str):
     patterns = [
         np.array([list(row) for row in pattern]) == "#"
-        for pattern in read_input_batch("2023/13/input.txt")
+        for pattern in read_input_batch(filename)
     ]
     total = 0
     for pattern in patterns:
@@ -59,4 +59,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/13/input.txt")

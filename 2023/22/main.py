@@ -93,11 +93,11 @@ class BrickSystem:
         )
 
 
-def main():
+def main(filename: str):
     brick_system = BrickSystem(
         [
             [list(map(int, seq.split(","))) for seq in line.split("~")]
-            for line in read_input("2023/22/input.txt")
+            for line in read_input(filename)
         ]
     )
     brick_system.free_fall()
@@ -106,4 +106,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/22/input.txt")

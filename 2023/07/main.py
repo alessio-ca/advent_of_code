@@ -69,8 +69,8 @@ class Hand:
         )
 
 
-def main():
-    games = [line.split() for line in read_input("2023/07/input.txt")]
+def main(filename: str):
+    games = [line.split() for line in read_input(filename)]
     hand_sets = [Hand(hand, bid, DICT_VALUES) for hand, bid in games]
     hand_tuples = [
         (hand.define_hand(), hand.compute_total_values(), hand.bid)
@@ -89,4 +89,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/07/input.txt")

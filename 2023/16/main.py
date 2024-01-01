@@ -55,8 +55,8 @@ def generate_starts(grid):
 
 
 @timefunc
-def main():
-    grid = read_input("2023/16/input.txt")
+def main(filename: str):
+    grid = read_input(filename)
     print(f"Result of part 1: {laser_walk(grid, start=(0,0), head=(0,1))}")
     configs = []
     for start, head in generate_starts(grid):
@@ -65,4 +65,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/16/input.txt")

@@ -36,14 +36,12 @@ def spectral_min_cut(adj: np.ndarray, deg: np.ndarray) -> int:
     return (fielder_v > 0).sum()
 
 
-def main():
-    connections = [
-        re.findall(r"[a-z]{3}", line) for line in read_input("2023/25/input.txt")
-    ]
+def main(filename):
+    connections = [re.findall(r"[a-z]{3}", line) for line in read_input(filename)]
     adj_matrix, deg_matrix = build_graph_matrices(connections)
     min_cut_size = spectral_min_cut(adj_matrix, deg_matrix)
     print(f"Result of part 1: {min_cut_size * (adj_matrix.shape[0] - min_cut_size)}")
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/25/input.txt")

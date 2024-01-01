@@ -98,8 +98,8 @@ def calculate_combinations(intervals_dict):
     return n
 
 
-def main():
-    workflows, parts = [row for row in read_input_batch("2023/19/input.txt")]
+def main(filename: str):
+    workflows, parts = [row for row in read_input_batch(filename)]
     parts = [tuple(map(int, re.findall(r"\d+", part))) for part in parts]
     flow_dict = create_flow_dict(workflows)
     total_n = 0
@@ -111,4 +111,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/19/input.txt")

@@ -177,8 +177,8 @@ def create_neighbors_dict(
 
 
 @timefunc
-def main():
-    grid = np.array([[c for c in row] for row in read_input("2023/23/input.txt")])
+def main(filename: str):
+    grid = np.array([[c for c in row] for row in read_input(filename)])
     # Create neighbour dictionary
     dict_nn = convert_coords_to_int(create_neighbors_dict(grid), grid)
 
@@ -197,4 +197,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2023/23/input.txt")

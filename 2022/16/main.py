@@ -88,10 +88,8 @@ def pressure_release(lengths, nodes, start_node, trajectory, t):
     return pressure
 
 
-def main():
-    raw_input = [
-        parse_input(line) for line in read_input("2022/16/input.txt", line_strip=True)
-    ]
+def main(filename: str):
+    raw_input = [parse_input(line) for line in read_input(filename, line_strip=True)]
     nodes = {node.name: node for node in raw_input}
     dists = compute_all_paths("AA", nodes)
 
@@ -117,7 +115,7 @@ def main():
         # Stopping criterion
         if p1 * 2 < max_score:
             break
-        for (p2, path_2) in releases[i + 1 :]:
+        for p2, path_2 in releases[i + 1 :]:
             # Check if paths overlap
             if len(path_1 & path_2) == 0:
                 pair_release = p1 + p2
@@ -126,4 +124,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/16/input.txt")

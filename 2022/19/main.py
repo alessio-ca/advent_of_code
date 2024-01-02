@@ -222,12 +222,9 @@ class MiningOp:
 
 
 @timefunc
-def main():
+def main(filename: str):
     blueprints = create_blueprints(
-        [
-            line.split(": ")[1]
-            for line in read_input("2022/19/input.txt", line_strip=True)
-        ]
+        [line.split(": ")[1] for line in read_input(filename, line_strip=True)]
     )
     res = 0
     for id, blueprint in blueprints.items():
@@ -248,4 +245,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/19/input.txt")

@@ -66,8 +66,8 @@ def grain_fall(grid, x, y, bounds):
         grain_fall(grid, x, y + 1, bounds)
 
 
-def main():
-    raw_config = read_input("2022/14/input.txt", line_strip=True)
+def main(filename: str):
+    raw_config = read_input(filename, line_strip=True)
 
     grid_set = construct_grid(raw_config)
     x, y = zip(*grid_set)
@@ -95,4 +95,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/14/input.txt")

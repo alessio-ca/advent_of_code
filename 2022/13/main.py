@@ -44,8 +44,8 @@ def compare_packets(A: Packet, B: Packet) -> int:
         return compare_packets(A, B)
 
 
-def main():
-    raw_packets = read_input_batch("2022/13/input.txt", line_split=True)
+def main(filename: str):
+    raw_packets = read_input_batch(filename, line_split=True)
     packets = [
         [ast.literal_eval(subpacket) for subpacket in packet] for packet in raw_packets
     ]
@@ -64,4 +64,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/13/input.txt")

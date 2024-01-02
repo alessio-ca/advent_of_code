@@ -65,8 +65,8 @@ def apply_operator(monkeys, a, op, b):
     return int(res) if isinstance(res, float) else res
 
 
-def main():
-    input_file = read_input("2022/21/input.txt", line_strip=True)
+def main(filename: str):
+    input_file = read_input(filename, line_strip=True)
     monkeys = create_monkeys(input_file)
     print(f'Result of part 1: {apply_operator(monkeys, *monkeys["root"])}')
 
@@ -77,4 +77,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/21/input.txt")

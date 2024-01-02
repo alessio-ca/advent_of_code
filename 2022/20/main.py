@@ -21,8 +21,8 @@ def mix_match(dict_input, n_mix):
 
 
 @timefunc
-def main():
-    X = list(map(int, read_input("2022/20/input.txt", line_strip=True)))
+def main(filename: str):
+    X = list(map(int, read_input(filename, line_strip=True)))
     Y = list(range(len(X)))
 
     dict_input = {k: v for k, v in zip(Y, X)}
@@ -34,4 +34,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/20/input.txt")

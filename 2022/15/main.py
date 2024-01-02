@@ -103,10 +103,10 @@ def find_distress_beacon(sensors, distances, bounds):
                             return pt
 
 
-def main():
+def main(filename: str):
     raw_input = [
         list(map(int, re.findall(r"-?\d+", line)))
-        for line in read_input("2022/15/input.txt", line_strip=True)
+        for line in read_input(filename, line_strip=True)
     ]
 
     # Mark sensor and Manhattan distance
@@ -124,7 +124,7 @@ def main():
     # Calculate sensor overlaps with row of interest
     overlaps = set()
     y_line = 2000000
-    for ((x_s, y_s), dist_s) in zip(sensors, distances):
+    for (x_s, y_s), dist_s in zip(sensors, distances):
         dist_x = dist_s - abs(y_line - y_s)
         if dist_x >= 0:
             overlaps.update(range(x_s - dist_x, x_s + dist_x + 1))
@@ -140,4 +140,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/15/input.txt")

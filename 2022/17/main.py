@@ -127,11 +127,9 @@ class RockSystem:
 
 
 @timefunc
-def main():
+def main(filename: str):
     map_jet = {">": 1, "<": -1}
-    jet_streams = [
-        *map(map_jet.get, read_input("2022/17/input.txt", line_strip=True)[0])
-    ]
+    jet_streams = [*map(map_jet.get, read_input(filename, line_strip=True)[0])]
 
     rock_system = RockSystem(jet_streams, SHAPES)
     rock_system.simulate(2022)
@@ -143,4 +141,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/17/input.txt")

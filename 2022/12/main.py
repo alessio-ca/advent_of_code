@@ -14,7 +14,6 @@ def modified_shortest_path_dijkstra(
     flip_check: bool = True,
     end: Optional[Tuple[int, int]] = None,
 ) -> Dict[Tuple[int, int], int]:
-
     # Create neighbor grid
     dict_nn = _create_neighbors_dict(grid)
 
@@ -89,8 +88,8 @@ def _create_neighbors_dict(
     return dict_nn
 
 
-def main():
-    grid_input = [[*line] for line in read_input("2022/12/input.txt", line_strip=True)]
+def main(filename: str):
+    grid_input = [[*line] for line in read_input(filename, line_strip=True)]
     # Find coordinates of starting and end points
     for i, line in enumerate(grid_input):
         for j, char in enumerate(line):
@@ -119,4 +118,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/12/input.txt")

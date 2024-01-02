@@ -16,8 +16,8 @@ def calculate_exposed_edges(cubes):
     return n
 
 
-def main():
-    lines = read_input("2022/18/input.txt", line_strip=True)
+def main(filename: str):
+    lines = read_input(filename, line_strip=True)
     cubes = set(tuple(map(int, line.split(","))) for line in lines)
     print(f"Result of part 1: {calculate_exposed_edges(cubes)}")
 
@@ -38,4 +38,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/18/input.txt")

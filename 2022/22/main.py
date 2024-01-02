@@ -112,8 +112,8 @@ def walk_maze(dict_nodes, instructions, dirlist):
     return pos
 
 
-def main():
-    input_file = read_input("2022/22/input.txt", line_strip=False)
+def main(filename: str):
+    input_file = read_input(filename, line_strip=False)
     dict_nodes = create_node_system(input_file, 4)
 
     llist = CircularDoublyLinkedList()
@@ -133,4 +133,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("2022/22/input.txt")

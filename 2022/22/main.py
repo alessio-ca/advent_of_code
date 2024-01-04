@@ -7,7 +7,6 @@ from typing import Union, List, Dict, Tuple, TypeVar, Callable
 from . import cube_funs as cb
 
 T = TypeVar("T", bound=int)
-CoordTuple = Tuple[T, T]
 CubeTuple = Tuple[T, T, T]
 
 DIR_MAP = {(0, 1): "right", (1, 0): "down", (0, -1): "left", (-1, 0): "up"}

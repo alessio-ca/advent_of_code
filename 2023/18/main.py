@@ -1,20 +1,13 @@
-from utils import read_input
+from utils import read_input, CoordTuple, add_tuples
 import re
-from typing import Tuple, TypeVar, List
+from typing import Tuple, List
 from itertools import accumulate
 import numpy as np
 
-T1 = TypeVar("T1", bound=int)
-T2 = TypeVar("T2", bound=int)
-CoordTuple = Tuple[T1, T2]
 
 PATTERN = r"^(U|R|L|D) (\d+) \(#(.+)\)"
 
 MAP_DICT = {"0": "R", "1": "D", "2": "L", "3": "U"}
-
-
-def add_points(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
-    return p1[0] + p2[0], p1[1] + p2[1]
 
 
 def generate_vertexes(
@@ -23,13 +16,13 @@ def generate_vertexes(
 ) -> CoordTuple:
     s, n = instr
     if s == "R":
-        return add_points(point, (0, n))
+        return add_tuples(point, (0, n))
     elif s == "D":
-        return add_points(point, (n, 0))
+        return add_tuples(point, (n, 0))
     elif s == "L":
-        return add_points(point, (0, -n))
+        return add_tuples(point, (0, -n))
     else:
-        return add_points(point, (-n, 0))
+        return add_tuples(point, (-n, 0))
 
 
 def create_trench(instructions: List[Tuple[str, int, str]]) -> List[CoordTuple]:

@@ -4,6 +4,14 @@ import functools
 import cProfile
 import io
 import pstats
+from typing import TypeVar, Tuple
+
+T = TypeVar("T", bound=int)
+CoordTuple = Tuple[T, T]
+
+
+def add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
+    return p1[0] + p2[0], p1[1] + p2[1]
 
 
 def read_input(input_file: str, line_strip: bool = True) -> List[str]:

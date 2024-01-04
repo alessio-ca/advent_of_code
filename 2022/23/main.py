@@ -1,11 +1,9 @@
-from utils import timefunc
+from utils import timefunc, CoordTuple
 from scipy.ndimage import convolve
 import numpy as np
 from collections import deque, Counter
-from typing import TypeVar, Tuple, Dict
+from typing import Tuple, Dict
 
-T = TypeVar("T", bound=int)
-CoordTuple = Tuple[T, T]
 
 CONV_FILTER = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]], dtype=int)
 S_FILTER = np.array([[1, 1, 1], [0, 0, 0], [0, 0, 0]], dtype=int)

@@ -1,13 +1,8 @@
-from utils import read_input
+from utils import read_input, CoordTuple
 import numpy as np
 import heapq
 
 from typing import Tuple, List, Set
-from typing import TypeVar
-
-T1 = TypeVar("T1", bound=int)
-T2 = TypeVar("T2", bound=int)
-CoordTuple = Tuple[T1, T2]
 
 N = (-1, 0)
 S = (1, 0)

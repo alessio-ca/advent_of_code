@@ -43,7 +43,7 @@ def shortest_path_astar(
         if current_node == end:
             return current_time
 
-        # Advance time & move blizzards if not already cached
+        # Advance time
         new_time = current_time + 1
 
         # Check all neighbors & the current node (in case we wait)

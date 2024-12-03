@@ -26,6 +26,10 @@ def read_input(input_file: str, line_strip: bool = True) -> List[str]:
     return input_list
 
 
+def read_integer_lists(input_file: str) -> list[int]:
+    return list(map(lambda x: list(map(int, x.split(" "))), read_input(input_file)))
+
+
 def read_input_batch(input_file: str, line_split: bool = True) -> List[List[str]]:
     with open(input_file, "r") as file:
         input_list = []

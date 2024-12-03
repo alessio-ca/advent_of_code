@@ -64,7 +64,7 @@ def timefunc(func):
 
 
 def profilefunc(func):
-    "profilefunc's doc"
+    """profilefunc's doc"""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

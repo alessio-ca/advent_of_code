@@ -1,4 +1,3 @@
-from typing import List
 import time
 import functools
 import cProfile
@@ -14,7 +13,7 @@ def add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
     return p1[0] + p2[0], p1[1] + p2[1]
 
 
-def read_input(input_file: str, line_strip: bool = True) -> List[str]:
+def read_input(input_file: str, line_strip: bool = True) -> list[str]:
     with open(input_file, "r") as file:
         input_list = []
         for line in file:
@@ -30,10 +29,10 @@ def read_integer_lists(input_file: str) -> list[int]:
     return list(map(lambda x: list(map(int, x.split(" "))), read_input(input_file)))
 
 
-def read_input_batch(input_file: str, line_split: bool = True) -> List[List[str]]:
+def read_input_batch(input_file: str, line_split: bool = True) -> list[list[str]]:
     with open(input_file, "r") as file:
         input_list = []
-        batch: List[str] = []
+        batch: list[str] = []
         for line in file:
             if line == "\n":
                 input_list.append(batch)

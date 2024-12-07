@@ -9,11 +9,10 @@ def rule_enforcer(
     sum_correct = 0
     sum_incorrect = 0
     for update in updates:
-        i = 0
         queue = deque(update)
         ordered = deque()
         # Scroll through the queue
-        while i < len(update):
+        while queue:
             # Pop a page & check if intersection of queue with rules is empty
             page = queue.pop()
             if set(queue).intersection(rules_dict[page]):
@@ -21,7 +20,6 @@ def rule_enforcer(
                 queue.appendleft(page)
             else:
                 # Append page to ordered
-                i += 1
                 ordered.append(page)
 
         value = list(ordered)[len(update) // 2]

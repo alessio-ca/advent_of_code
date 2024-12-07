@@ -1,5 +1,5 @@
 from utils import read_input_batch
-from collections import defaultdict
+from collections import defaultdict, deque
 
 
 def rule_enforcer(
@@ -8,25 +8,27 @@ def rule_enforcer(
 
     sum_correct = 0
     sum_incorrect = 0
-
     for update in updates:
         i = 0
-        is_correct = True
-        # Scroll through the update
+        queue = deque(update)
+        ordered = deque()
+        # Scroll through the queue
         while i < len(update):
-            # Check if intersection between future pages and set of rules
-            #  for current page is empty
-            if set(update[i:]).intersection(rules_dict[update[i]]):
-                # If not, flag & push the current index to end of update
-                is_correct = False
-                update = update[:i] + update[i + 1 :] + [update[i]]
+            # Pop a page & check if intersection of queue with rules is empty
+            page = queue.pop()
+            if set(queue).intersection(rules_dict[page]):
+                # If not, flag & push the current page to end of queue
+                queue.appendleft(page)
             else:
+                # Append page to ordered
                 i += 1
+                ordered.append(page)
 
-        if is_correct:
-            sum_correct += update[len(update) // 2]
+        value = list(ordered)[len(update) // 2]
+        if list(ordered) == update:
+            sum_correct += value
         else:
-            sum_incorrect += update[len(update) // 2]
+            sum_incorrect += value
 
     return sum_correct, sum_incorrect
 

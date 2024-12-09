@@ -2,12 +2,6 @@ from utils import read_input, timefunc
 from collections import deque
 
 
-def add_tuples(t1, t2):
-    x1, y1 = t1
-    x2, y2 = t2
-    return (x1 + x2, y1 + y2)
-
-
 def encounter(x, y, hx, hy, grid):
     element = grid[x][y]
     if element == "\\":

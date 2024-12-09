@@ -40,7 +40,7 @@ class GridWalker:
 
         # If the result is an obstacle, increase obstacle counter
         # and change direction. Keep existing position
-        if self.grid[xn][yn] == "#":
+        elif self.grid[xn][yn] == "#":
             self.i += 1
             return (x, y) + self.next_vector()
         # Otherwise, return the result and existing direction
@@ -51,23 +51,20 @@ class GridWalker:
         return x >= 0 and x < self.xg and y >= 0 and y < self.yg
 
     def grid_walk(self, move: DirTuple, path: set[CoordTuple]) -> bool:
-        loop = False
         while move := self.encounter(move):
             # If the move was already performed,
             # it's a loop
             if move in path:
-                loop = True
-                break
+                return True
             path.add(move)
-        return loop
+        return False
 
     def obtain_positions(self, path: set[DirTuple]) -> int:
         return len(set((x, y) for x, y, _, _ in path))
 
-    def simulate(self, move: DirTuple, new_move: DirTuple, path: set[DirTuple]) -> bool:
+    def simulate(self, move: DirTuple, xn: int, yn: int, path: set[DirTuple]) -> bool:
         # Keep original i & change grid
         old_i = self.i
-        xn, yn, _, _ = new_move
         self.grid[xn][yn] = "#"
         # Simulate if loop, then restore
         loop = self.grid_walk(move, path | set())
@@ -89,7 +86,7 @@ class GridWalker:
             x, y, _, _ = new_move
             if (x, y) not in checked:
                 # Change grid and simulate if there is a loop
-                loops += 1 if self.simulate(move, new_move, path) else 0
+                loops += 1 if self.simulate(move, x, y, path) else 0
                 checked.add((x, y))
             # Otherwise, add move to path and proceed
             path.add(move)

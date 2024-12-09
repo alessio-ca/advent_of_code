@@ -50,42 +50,54 @@ class GridWalker:
     def check_bounds(self, x: int, y: int) -> bool:
         return x >= 0 and x < self.xg and y >= 0 and y < self.yg
 
-    def grid_walk(self):
-        # Initialize
-        self.i = 0
-        self.visited = set()
-        move = self.guard + self.next_vector()
-        self.visited.add(move)
+    def grid_walk(self, move: DirTuple, path: set[CoordTuple]) -> bool:
         loop = False
-        # Loop over moves
         while move := self.encounter(move):
             # If the move was already performed,
             # it's a loop
-            if move in self.visited:
+            if move in path:
                 loop = True
                 break
-            self.visited.add(move)
-        # Return whether it's a loop
+            path.add(move)
         return loop
 
-    def obtain_positions(self):
-        return len(set((x, y) for x, y, _, _ in self.visited))
+    def obtain_positions(self, path: set[DirTuple]) -> int:
+        return len(set((x, y) for x, y, _, _ in path))
 
-    def explore_grid(self) -> int:
-        # Obtain candidates by excluding the initial position
-        candidates = set(
-            (x, y) for (x, y, _, _) in self.visited if (x, y) != self.guard
-        )
+    def simulate(self, move: DirTuple, new_move: DirTuple, path: set[DirTuple]) -> bool:
+        # Keep original i & change grid
+        old_i = self.i
+        xn, yn, _, _ = new_move
+        self.grid[xn][yn] = "#"
+        # Simulate if loop, then restore
+        loop = self.grid_walk(move, path | set())
+        self.i = old_i
+        self.grid[xn][yn] = "."
+        return loop
+
+    def explore_grid(self) -> tuple[int, int]:
+        # Initialize
+        self.i = 0
+        path = set()
+        move = self.guard + self.next_vector()
+        checked = set([self.guard])
         loops = 0
-        # Loop over candidates
-        for x, y in candidates:
-            self.grid[x][y] = "#"
-            # If the modified grid creates a loop,
-            # increase counter
-            if self.grid_walk():
-                loops += 1
-            self.grid[x][y] = "."
-        return loops
+        # Loop over moves
+        new_move = self.encounter(move)
+        while new_move:
+            # Check if the new_move position has been checked
+            x, y, _, _ = new_move
+            if (x, y) not in checked:
+                # Change grid and simulate if there is a loop
+                loops += 1 if self.simulate(move, new_move, path) else 0
+                checked.add((x, y))
+            # Otherwise, add move to path and proceed
+            path.add(move)
+            move = new_move
+            new_move = self.encounter(move)
+        # Add last move to path
+        path.add(move)
+        return self.obtain_positions(path), loops
 
 
 @timefunc
@@ -95,9 +107,9 @@ def main(filename: str):
         initialize_guard(grid),
         grid,
     )
-    walker.grid_walk()
-    print(f"Result of part 1: {walker.obtain_positions()}")
-    print(f"Result of part 2: {walker.explore_grid()}")
+    positions, loops = walker.explore_grid()
+    print(f"Result of part 1: {positions}")
+    print(f"Result of part 2: {loops}")
 
 
 if __name__ == "__main__":

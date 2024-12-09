@@ -3,10 +3,10 @@ import functools
 import cProfile
 import io
 import pstats
-from typing import TypeVar, Tuple
+from typing import TypeVar
 
 T = TypeVar("T", bound=int)
-CoordTuple = Tuple[T, T]
+CoordTuple = tuple[T, T]
 
 
 def add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:

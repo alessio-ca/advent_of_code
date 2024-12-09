@@ -13,6 +13,10 @@ def add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
     return p1[0] + p2[0], p1[1] + p2[1]
 
 
+def diff_tuple(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
+    return p1[0] - p2[0], p1[1] - p2[1]
+
+
 def read_input(input_file: str, line_strip: bool = True) -> list[str]:
     with open(input_file, "r") as file:
         input_list = []

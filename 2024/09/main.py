@@ -1,4 +1,4 @@
-from utils import read_single_line
+from utils import read_single_line, timefunc
 from collections import deque, defaultdict
 import heapq
 
@@ -67,22 +67,23 @@ def compactify_v2(diskmap: list[int]) -> int:
             # Add new gap to left if needed
             if (residual := size - d_size) > 0:
                 heapq.heappush(gaps[residual], idx + d_size)
+
+            # Exhaust the other candidates
+            while candidates:
+                g_i, g_size = heapq.heappop(candidates)
+                heapq.heappush(gaps[g_size], g_i)
+
         # Return the digit index otherwise
         else:
             idx = d_i
 
         # Update disksum
         disksum += sum(d * i for i in range(idx, idx + d_size))
-        # Add gap where digit was
-        heapq.heappush(gaps[d_size], d_i)
-        # Exhaust the other candidates
-        while candidates:
-            g_i, g_size = heapq.heappop(candidates)
-            heapq.heappush(gaps[g_size], g_i)
 
     return disksum
 
 
+@timefunc
 def main(filename: str):
     diskmap = list(map(int, read_single_line(filename)))
     print(f"Result of part 1: {compactify(diskmap)}")

@@ -29,10 +29,13 @@ def compactify(diskmap: list[int]) -> int:
 
 def compactify_v2(diskmap: list[int]) -> int:
     assert len(diskmap) % 2 != 0
-    digits: deque[tuple[int, int, int]] = deque([])
-    gaps: defaultdict[int, list[int]] = defaultdict(list)
+    digits: deque[tuple[int, int, int]] = deque(
+        []
+    )  # queue of idx, block_size and digit_id
+    gaps: defaultdict[int, list[int]] = defaultdict(list)  # dict of gap_size -> indexes
     # Start from end of 0 block
     k = diskmap[0]
+    # Populate digits queue and gaps dictionary
     for i, (gap, digit) in enumerate(zip(diskmap[1::2], diskmap[2::2])):
         if gap > 0:
             gaps[gap].append(k)
@@ -42,10 +45,11 @@ def compactify_v2(diskmap: list[int]) -> int:
     disksum = 0
 
     while digits:
+        # Extract digit
         d_i, d_size, d = digits.pop()
+        # Find candidate gaps
         candidates: list[tuple[int, int]] = []
         heapq.heapify(candidates)
-        # Find candidate gaps
         for g_size, g_idxs in gaps.items():
             # Gap needs to be larger than digit
             if g_size >= d_size:
@@ -57,15 +61,17 @@ def compactify_v2(diskmap: list[int]) -> int:
                 else:
                     heapq.heappush(candidates, (g_i, g_size))
 
+        # Extract gap index and size
         if candidates:
-            # Extract gap index and size
             idx, size = heapq.heappop(candidates)
             # Add new gap to left if needed
             if (residual := size - d_size) > 0:
                 heapq.heappush(gaps[residual], idx + d_size)
+        # Return the digit index otherwise
         else:
             idx = d_i
 
+        # Update disksum
         disksum += sum(d * i for i in range(idx, idx + d_size))
         # Add gap where digit was
         heapq.heappush(gaps[d_size], d_i)

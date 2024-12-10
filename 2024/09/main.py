@@ -67,7 +67,6 @@ def compactify_v2(diskmap: list[int]) -> int:
             # Add new gap to left if needed
             if (residual := size - d_size) > 0:
                 heapq.heappush(gaps[residual], idx + d_size)
-
             # Exhaust the other candidates
             while candidates:
                 g_i, g_size = heapq.heappop(candidates)

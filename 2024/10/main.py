@@ -32,7 +32,7 @@ def trailing_path(
     endpoints = Counter()
 
     while stack:
-        # Pop from the stack & add to visited, then explore neighbors
+        # Pop from the stack & explore neighbors
         dist, head = stack.pop()
         for neighbor in _get_neighbors(head, grid):
             # Add to stack

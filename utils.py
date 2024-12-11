@@ -3,10 +3,13 @@ import functools
 import cProfile
 import io
 import pstats
-from typing import TypeVar
+from typing import Generator, Callable
+import numpy as np
 
-T = TypeVar("T", bound=int)
-CoordTuple = tuple[T, T]
+CoordTuple = tuple[int, int]
+CoordGenerator = Generator[CoordTuple, None, None]
+ConstraintFunArgs = tuple[int, int, int, int, np.ndarray]
+ConstraintFun = Callable[[ConstraintFunArgs], bool]
 
 
 def add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
@@ -15,6 +18,27 @@ def add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
 
 def diff_tuple(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
     return p1[0] - p2[0], p1[1] - p2[1]
+
+
+def no_constraints(_: ConstraintFunArgs) -> bool:
+    return True
+
+
+def get_neighbors(
+    node: CoordTuple,
+    grid: np.ndarray,
+    constraint: ConstraintFun = no_constraints,
+) -> Generator[CoordTuple, None, None]:
+    """Simple function to obtain the neighbors coordinates of a point on a grid.
+    The grid bounds are considered. Obstacles/constraints are considered"""
+    x, y = node
+    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        xx, yy = (x + dx, y + dy)
+        # Check if out of bounds
+        if 0 <= xx < grid.shape[0] and 0 <= yy < grid.shape[1]:
+            # Check constraint
+            if constraint((xx, yy, x, y, grid)):
+                yield xx, yy
 
 
 def read_input(input_file: str, line_strip: bool = True) -> list[str]:

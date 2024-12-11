@@ -1,22 +1,12 @@
-from utils import read_input, CoordTuple
+from utils import read_input, get_neighbors, CoordTuple, ConstraintFunArgs
 import numpy as np
-from typing import Generator
 from collections import deque, Counter
 
 
-def _get_neighbors(
-    node: CoordTuple, grid: np.ndarray
-) -> Generator[CoordTuple, None, None]:
-    """Simple function to obtain the neighbors coordinates of a point on a grid.
-    The grid bounds are considered. Obstacles/constraints are considered"""
-    x, y = node
-    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-        xx, yy = (x + dx, y + dy)
-        # Check if out of bounds
-        if 0 <= xx < grid.shape[0] and 0 <= yy < grid.shape[1]:
-            # Check if constraint
-            if (grid[xx, yy] - grid[x, y]) == 1:
-                yield (xx, yy)
+def constraint(fun_args: ConstraintFunArgs) -> bool:
+    """Define constraint for neighbors"""
+    xx, yy, x, y, grid = fun_args
+    return grid[xx, yy] - grid[x, y] == 1
 
 
 def trailing_path(
@@ -34,7 +24,7 @@ def trailing_path(
     while stack:
         # Pop from the stack & explore neighbors
         dist, head = stack.pop()
-        for neighbor in _get_neighbors(head, grid):
+        for neighbor in get_neighbors(head, grid, constraint):
             # Add to stack
             stack.append((dist + 1, neighbor))
 

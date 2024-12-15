@@ -5,6 +5,7 @@ import io
 import pstats
 from typing import Generator, Callable
 import numpy as np
+from functools import cache
 
 CoordTuple = tuple[int, int]
 CoordGenerator = Generator[CoordTuple, None, None]
@@ -14,6 +15,11 @@ ConstraintFun = Callable[[ConstraintFunArgs], bool]
 
 def add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
     return p1[0] + p2[0], p1[1] + p2[1]
+
+
+@cache
+def cached_add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
+    return add_tuples(p1, p2)
 
 
 def diff_tuple(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:

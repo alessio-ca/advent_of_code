@@ -1,11 +1,5 @@
-from utils import read_input_batch, CoordTuple, add_tuples
+from utils import read_input_batch, CoordTuple, cached_add_tuples
 from collections import deque
-from functools import cache
-
-
-@cache
-def _cached_add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
-    return add_tuples(p1, p2)
 
 
 def warehouse(filename: str) -> tuple[list[list[str]], str]:
@@ -57,7 +51,7 @@ class RobotWalker:
             self.grid[x][y] = "."
         # Assign new positions
         for pos, grid_value in moves.items():
-            xn, yn = _cached_add_tuples(pos, move)
+            xn, yn = cached_add_tuples(pos, move)
             self.grid[xn][yn] = grid_value
 
     def attempt_move(self, pos: CoordTuple, move: CoordTuple) -> dict[CoordTuple, str]:
@@ -72,16 +66,16 @@ class RobotWalker:
                     moves[(x, y)] = grid_value
                     if (grid_value == "O") | (grid_value == "@"):
                         # There is a box or robot at xn, yn
-                        queue.append(_cached_add_tuples((x, y), move))
+                        queue.append(cached_add_tuples((x, y), move))
                     elif grid_value == "[":
                         # There is a bigbox at xn, [yn, yn + 1]
                         # Check neighbor and rest of box
-                        queue.append(_cached_add_tuples((x, y), move))
+                        queue.append(cached_add_tuples((x, y), move))
                         queue.append((x, y + 1))
                     elif grid_value == "]":
                         # There is a bigbox at xn, [yn, yn - 1]
                         # Check neighbor and rest of box
-                        queue.append(_cached_add_tuples((x, y), move))
+                        queue.append(cached_add_tuples((x, y), move))
                         queue.append((x, y - 1))
                     elif grid_value == "#":
                         # There is a wall - we can't perform this move
@@ -95,7 +89,7 @@ class RobotWalker:
         for _, move in enumerate(self.moves):
             if moves := self.attempt_move(self.robot, self.VECTORS[move]):
                 self.move(moves, self.VECTORS[move])
-                self.robot = _cached_add_tuples(self.robot, self.VECTORS[move])
+                self.robot = cached_add_tuples(self.robot, self.VECTORS[move])
 
     def return_gps(self, pos: CoordTuple) -> int:
         return 100 * pos[0] + pos[1]

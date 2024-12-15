@@ -47,6 +47,7 @@ def main(filename: str):
     # Dump the map!
     with open("2024/14/grid.txt", "w+") as f:
         grid = np.empty(shape=shape, dtype=str)
+        # One map cycle is shape[0]*shape[1]
         for i in range(0, shape[0] * shape[1]):
             f.write(f"{str(i)}\n")
             grid[:] = "."

@@ -10,6 +10,7 @@ import numpy as np
 from typing import Optional, Generator
 import math
 
+GeneralisedNode = tuple[CoordTuple, CoordTuple]
 VECTORS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
 
@@ -58,9 +59,7 @@ def modified_dijkstra(
     # Each dictionary value is a Path object storing:
     # - The shortest distance to this (node,head) tuple
     # - The set of nodes belonging to the shortest paths so far
-    dists: defaultdict[tuple[CoordTuple, CoordTuple], Path] = defaultdict(
-        lambda: Path()
-    )
+    dists: defaultdict[GeneralisedNode, Path] = defaultdict(lambda: Path())
 
     # Initialise queue - from start, moving east
     queue = [(0, start, (0, 1))]
@@ -76,8 +75,10 @@ def modified_dijkstra(
             continue
 
         for neigh, neigh_head in get_neighbors(node, grid, constraint):
+            current_node = (node, head)
+            current_path = dists[current_node].path
             # Prevent 180 turns
-            if neigh not in dists[(node, head)].path:
+            if neigh not in current_path:
                 # If direction is same, add 1
                 if neigh_head == head:
                     new_dist = dist + 1
@@ -86,13 +87,14 @@ def modified_dijkstra(
                     new_dist = dist + 1001
                 # Only consider this new path if it's better to any path we've
                 # found arriving in (neigh, neigh_head)
-                if new_dist < dists[(neigh, neigh_head)].dist:
-                    dists[(neigh, neigh_head)].dist = new_dist
-                    dists[(neigh, neigh_head)].path = dists[(node, head)].path | {neigh}
+                neigh_node = (neigh, neigh_head)
+                if new_dist < dists[neigh_node].dist:
+                    dists[neigh_node].dist = new_dist
+                    dists[neigh_node].path = current_path | {neigh}
                     heapq.heappush(queue, (new_dist, neigh, neigh_head))
                 # If instead we have a duplicate best path, expand the existing path
-                elif new_dist == dists[(neigh, neigh_head)].dist:
-                    dists[(neigh, neigh_head)].path.update(dists[(node, head)].path)
+                elif new_dist == dists[neigh_node].dist:
+                    dists[neigh_node].path.update(current_path)
 
     # Find minimum path among those arriving in end from different directions
     min_dist = min(dists[(end, head)].dist for head in VECTORS)
@@ -101,15 +103,6 @@ def modified_dijkstra(
         if dists[(end, head)].dist == min_dist:
             path_tiles.update(dists[(end, head)].path)
     return min_dist, path_tiles
-
-
-def print_maze(dists, maze, node):
-    for head in VECTORS:
-        new_maze = maze.copy()
-        for x, y in dists[(node, head)].path:
-            new_maze[x][y] = "O"
-
-        print(new_maze)
 
 
 def main(filename: str):

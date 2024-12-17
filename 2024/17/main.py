@@ -72,26 +72,30 @@ def reverse_iteration(targets, is_test: bool = True) -> int:
     out = []
     while A > 0:
         out.append(op(A)) (operation producing an output based only on A)
-        A = A >> 3  (shift A by 3 == divide&floor by 2**3)
+        A = A >> 3  (right-shift A by 3 == divide&floor by 2**3)
     Find the smallest A for which out == targets.
     Use a heap to keep track of valid candidates, and walk
     the `targets` list backward.
     """
     # Structure heap as (A, target_idx)
-    # We start from 0 and target the last output (1)
+    # We start from 0 (the final A) and target the last output (1)
     heap = [(0, 1)]
     heapq.heapify(heap)
     while heap:
-        # Pop the smallest A
-        A, i = heapq.heappop(heap)
+        # Pop the smallest A ending one op
+        # with out = targets[-i]
+        end_A, i = heapq.heappop(heap)
         if i > len(targets):
             # We reached the smallest A
             # that produces all the targets
-            return A
+            return end_A
 
-        # Shift A by 3 digits
-        A = A << 3
-        for A in range(A, A + 8):
+        # Left-Shift end_A by 3 digits
+        min_A = end_A << 3
+        # Candidate A for target
+        # is in the range [A, A+8)
+        # (so that A >> 3 produces the same output end_A)
+        for A in range(min_A, min_A + 8):
             # If the op produces the target,
             # add A to heap and point to next target
             if op(A, is_test) == targets[-i]:

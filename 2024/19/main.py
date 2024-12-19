@@ -6,11 +6,12 @@ from functools import cache
 def count_ways(design: str, patterns: tuple[str]) -> int:
     if design == "":
         return 1
-    count = 0
-    for pattern in patterns:
-        if design.startswith(pattern):
-            count += count_ways(design.removeprefix(pattern), patterns)
-    return count
+    else:
+        return sum(
+            count_ways(design.removeprefix(pattern), patterns)
+            for pattern in patterns
+            if design.startswith(pattern)
+        )
 
 
 def main(filename: str):

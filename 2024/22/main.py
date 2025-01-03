@@ -37,13 +37,13 @@ def highest_price(numbers: np.ndarray, n: int) -> int:
     ).sum(-1)
     # Create empty array of bananas
     bananas = np.zeros(shape=(windows.max() + 1,), dtype=int)
-    for i in np.arange(windows.shape[1]):
+    for buyer, price in zip(windows.T, prices.T):
         # For each buyer, obtain the windows idx (as base19 encoded)
         # and the idx to retrieve the prices corresponding to the first appearance
         # of that window
-        window_idx, price_idx = np.unique(windows[:, i], return_index=True)
+        window_idx, price_idx = np.unique(buyer, return_index=True)
         # Update the bananas array: each window is update with the associated price
-        bananas[window_idx] += prices[price_idx + 4, i]
+        bananas[window_idx] += price[price_idx + 4]
 
     return bananas.max()
 

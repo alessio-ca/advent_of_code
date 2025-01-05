@@ -2,8 +2,9 @@ from utils import read_input_batch
 import heapq
 from collections import deque
 import re
+from itertools import chain
 
-GatesDict = dict[str, tuple[str, set[str]]]
+GatesDict = dict[str, tuple[str, frozenset[str]]]
 WiresDict = dict[str, int]
 OP_DICT = {
     "OR": lambda x, y: x | y,
@@ -52,6 +53,98 @@ def part_1(gates: GatesDict, wires: WiresDict) -> int:
     return reconstruct(wires)
 
 
+def get_inputs(s: str, gates) -> list[str]:
+    return sorted([gate for gate in gates if gate[0] == s])
+
+
+def zero_pad(x: int) -> str:
+    return str(x).zfill(2)
+
+
+class AdderConstructor:
+    def __init__(self, gates):
+        self.raw_gates = dict(gates)
+        self.gates = {v: k for k, v in gates.items()}
+        # Maps the adders's keys to the actual gates
+        self.mapping = dict()
+        self.max_bit = int(get_inputs("z", gates)[-1][1:]) - 1
+        self.pairs = []
+
+    def map_inputs(self, inputs, map_dict: dict[str, str]):
+        if all((op, inputs) in self.gates for op in map_dict):
+            # Map the adder's keys to the gate
+            for key, value in map_dict.items():
+                self.mapping[value] = self.gates[(key, inputs)]
+            return True
+        else:
+            return False
+
+    def construct_half_adder(self, bit):
+        # The half adder has:
+        #  XOR inputs --> z
+        #  AND inputs --> c
+        digit = zero_pad(bit)
+        inputs = frozenset((f"x{digit}", f"y{digit}"))
+        self.map_inputs(inputs, {"XOR": f"z{digit}", "AND": f"c{digit}"})
+
+    def construct_full_adder(self, bit):
+        # The full adder has:
+        #  XOR inputs --> a0
+        #  AND inputs --> a1
+        #  XOR (a0, c from previous bit) --> z
+        #  AND (a0, c from previous bit) --> a2
+        #  OR (a1, a2) --> c
+        digit = zero_pad(bit)
+        inputs = frozenset((f"x{digit}", f"y{digit}"))
+        if not self.map_inputs(inputs, {"XOR": f"a0{digit}", "AND": f"a1{digit}"}):
+            return False, inputs, "XOR"
+
+        inputs = frozenset(
+            (self.mapping[f"a0{digit}"], self.mapping[f"c{zero_pad(bit-1)}"])
+        )
+        if not self.map_inputs(inputs, {"XOR": f"z{digit}", "AND": f"a2{digit}"}):
+            return False, inputs, "XOR"
+
+        inputs = frozenset((self.mapping[f"a1{digit}"], self.mapping[f"a2{digit}"]))
+        if not self.map_inputs(inputs, {"OR": f"c{digit}"}):
+            return False, inputs, "OR"
+
+        return True, frozenset(), ""
+
+    def construct(self):
+        self.construct_half_adder(0)
+        for i in range(1, self.max_bit):
+            out = self.construct_full_adder(i)
+            # If the status is False, swap
+            if not out[0]:
+                _, inputs, in_op = out
+                # Find the entry in self.gates that intersects the inputs and
+                #  has the same operation
+                swap_inputs = [
+                    gates
+                    for (op, gates), v in self.gates.items()
+                    if gates.intersection(inputs) and (op == in_op)
+                ][0]
+                pair = (swap_inputs | inputs) - (swap_inputs & inputs)
+                # Reset gates
+                self.raw_gates = {swap(k, pair): v for k, v in self.raw_gates.items()}
+                self.gates = {v: k for k, v in self.raw_gates.items()}
+                # Add pair
+                self.pairs.append(pair)
+                return out
+        return out
+
+
+def swap(s, pair):
+    in_1, in_2 = pair
+    if s == in_1:
+        return in_2
+    elif s == in_2:
+        return in_1
+    else:
+        return s
+
+
 def main(filename: str):
     wires = {
         k: int(v)
@@ -66,7 +159,15 @@ def main(filename: str):
         gates[out] = (op, frozenset((in_1, in_2)))
 
     print(f"Result of part 1: {part_1(gates, wires)}")
-    print(f"Result of part 2: {0}")
+
+    constructor = AdderConstructor(gates)
+    status: tuple[bool, frozenset[str], str] = (False, frozenset(), "")
+    while not status[0]:
+        status = constructor.construct()
+
+    print(
+        f"Result of part 2: {','.join(sorted(chain.from_iterable(constructor.pairs)))}"
+    )
 
 
 if __name__ == "__main__":

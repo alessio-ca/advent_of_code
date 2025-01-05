@@ -34,7 +34,8 @@ DIRECTIONAL_PAD: Pad = {
 
 
 def create_graph_subset(node: str, pad: Pad) -> ShortestPrevs:
-    """Create graph subset; the subset has the property that each path from `node` to any node
+    """Create graph subset; the subset has the property that each path from
+      `node` to any node
     is a shortest path between `node` and the target."""
     q: list[tuple[Dist, str]] = [(0, node)]
 
@@ -81,7 +82,8 @@ def find_shortest_paths(pad: Pad) -> ShortestPaths:
 
                 # Explore neighbors of node in Prev
                 for neigh, edge in prev[node]:
-                    # Favour moves where the edge is unchanged (i.e. we move in the same direction)
+                    # Favour moves where the edge is unchanged
+                    #  (i.e. we move in the same direction)
                     if (not path) or (edge != path[0]):
                         candidate = cost + 1
                     else:

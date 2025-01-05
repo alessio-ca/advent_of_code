@@ -6,6 +6,7 @@ from itertools import chain
 
 GatesDict = dict[str, tuple[str, frozenset[str]]]
 WiresDict = dict[str, int]
+ConstructorStatus = tuple[bool, frozenset[str], str]
 OP_DICT = {
     "OR": lambda x, y: x | y,
     "AND": lambda x, y: x & y,
@@ -14,6 +15,8 @@ OP_DICT = {
 
 
 def ordered_gates(gates: GatesDict, inputs: list[str]) -> deque[str]:
+    # Return a deque containing the sorted gates (left to right)
+    #  respecting their order
     stack = [(0, node, gates[node][1]) for node in inputs]
     queue: deque[str] = deque()
     while stack:
@@ -29,6 +32,7 @@ def ordered_gates(gates: GatesDict, inputs: list[str]) -> deque[str]:
 
 
 def reconstruct(wires: WiresDict) -> int:
+    # Reconstruct the value of z
     out_dict = sorted(
         {k: v for k, v in wires.items() if k[0] == "z"}.items(),
         key=lambda item: item[0],
@@ -45,11 +49,12 @@ def reconstruct(wires: WiresDict) -> int:
 def part_1(gates: GatesDict, wires: WiresDict) -> int:
     inputs = [node for node in gates if node[0] == "z"]
     queue = ordered_gates(gates, inputs)
+    # Walk the queue, updating the wires dictionary
     while queue:
         node = queue.popleft()
         op, (in_1, in_2) = gates[node]
         wires[node] = OP_DICT[op](wires[in_1], wires[in_2])
-
+    # Output the reconstructed z
     return reconstruct(wires)
 
 
@@ -61,16 +66,30 @@ def zero_pad(x: int) -> str:
     return str(x).zfill(2)
 
 
+def swap(s: str, pair: frozenset[str]):
+    in_1, in_2 = pair
+    if s == in_1:
+        return in_2
+    elif s == in_2:
+        return in_1
+    else:
+        return s
+
+
 class AdderConstructor:
-    def __init__(self, gates):
+    """Construct an adder based on `gates`.
+    If the construction fails, outputs the OP and INPUTS
+    missing from `gates` to make the construction possible"""
+
+    def __init__(self, gates: GatesDict):
         self.raw_gates = dict(gates)
         self.gates = {v: k for k, v in gates.items()}
         # Maps the adders's keys to the actual gates
-        self.mapping = dict()
+        self.mapping: dict[str, str] = dict()
         self.max_bit = int(get_inputs("z", gates)[-1][1:]) - 1
-        self.pairs = []
+        self.pairs: list[frozenset[str]] = []
 
-    def map_inputs(self, inputs, map_dict: dict[str, str]):
+    def map_inputs(self, inputs: frozenset[str], map_dict: dict[str, str]) -> bool:
         if all((op, inputs) in self.gates for op in map_dict):
             # Map the adder's keys to the gate
             for key, value in map_dict.items():
@@ -79,15 +98,14 @@ class AdderConstructor:
         else:
             return False
 
-    def construct_half_adder(self, bit):
+    def construct_start_half_adder(self):
         # The half adder has:
-        #  XOR inputs --> z
-        #  AND inputs --> c
-        digit = zero_pad(bit)
-        inputs = frozenset((f"x{digit}", f"y{digit}"))
-        self.map_inputs(inputs, {"XOR": f"z{digit}", "AND": f"c{digit}"})
+        #  XOR inputs --> z00
+        #  AND inputs --> c00
+        inputs = frozenset(("x00", "y00"))
+        self.map_inputs(inputs, {"XOR": "z00", "AND": "c00"})
 
-    def construct_full_adder(self, bit):
+    def construct_full_adder(self, bit: int) -> ConstructorStatus:
         # The full adder has:
         #  XOR inputs --> a0
         #  AND inputs --> a1
@@ -111,20 +129,25 @@ class AdderConstructor:
 
         return True, frozenset(), ""
 
-    def construct(self):
-        self.construct_half_adder(0)
+    def construct(self) -> ConstructorStatus:
+        self.construct_start_half_adder()
         for i in range(1, self.max_bit):
             out = self.construct_full_adder(i)
             # If the status is False, swap
             if not out[0]:
                 _, inputs, in_op = out
                 # Find the entry in self.gates that intersects the inputs and
-                #  has the same operation
-                swap_inputs = [
-                    gates
-                    for (op, gates), v in self.gates.items()
-                    if gates.intersection(inputs) and (op == in_op)
-                ][0]
+                #  has the same
+                try:
+                    swap_inputs = [
+                        gates
+                        for (op, gates), v in self.gates.items()
+                        if gates.intersection(inputs) and (op == in_op)
+                    ][0]
+                except IndexError:
+                    raise IndexError(
+                        "No swaps are possible. This system cannot represent an adder."
+                    )
                 pair = (swap_inputs | inputs) - (swap_inputs & inputs)
                 # Reset gates
                 self.raw_gates = {swap(k, pair): v for k, v in self.raw_gates.items()}
@@ -133,16 +156,6 @@ class AdderConstructor:
                 self.pairs.append(pair)
                 return out
         return out
-
-
-def swap(s, pair):
-    in_1, in_2 = pair
-    if s == in_1:
-        return in_2
-    elif s == in_2:
-        return in_1
-    else:
-        return s
 
 
 def main(filename: str):
@@ -162,6 +175,7 @@ def main(filename: str):
 
     constructor = AdderConstructor(gates)
     status: tuple[bool, frozenset[str], str] = (False, frozenset(), "")
+    # Iterate until the constructor succeeds
     while not status[0]:
         status = constructor.construct()
 

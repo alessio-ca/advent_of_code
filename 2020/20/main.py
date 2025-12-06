@@ -1,301 +1,14 @@
 from __future__ import annotations
-
-"""
---- Day 20: Jurassic Jigsaw ---
-
-The high-speed train leaves the forest and quickly carries you south. You can even see
- a desert in the distance! Since you have some spare time, you might as well see if
-  there was anything interesting in the image the Mythical Information Bureau satellite
-   captured.
-
-After decoding the satellite messages, you discover that the data actually contains
- many small images created by the satellite's camera array. The camera array consists
-  of many cameras; rather than produce a single square image, they produce many smaller
-   square image tiles that need to be reassembled back into a single image.
-
-Each camera in the camera array returns a single monochrome image tile with a random
- unique ID number. The tiles (your puzzle input) arrived in a random order.
-
-Worse yet, the camera array appears to be malfunctioning: each image tile has been
- rotated and flipped to a random orientation. Your first task is to reassemble the
-  original image by orienting the tiles so they fit together.
-
-To show how the tiles should be reassembled, each tile's image data includes a border
- that should line up exactly with its adjacent tiles. All tiles have this border, and
-  the border lines up exactly when the tiles are both oriented correctly. Tiles at the
-   edge of the image also have this border, but the outermost edges won't line up with
-    any other tiles.
-
-For example, suppose you have the following nine tiles:
-
-Tile 2311:
-..##.#..#.
-##..#.....
-#...##..#.
-####.#...#
-##.##.###.
-##...#.###
-.#.#.#..##
-..#....#..
-###...#.#.
-..###..###
-
-Tile 1951:
-#.##...##.
-#.####...#
-.....#..##
-#...######
-.##.#....#
-.###.#####
-###.##.##.
-.###....#.
-..#.#..#.#
-#...##.#..
-
-Tile 1171:
-####...##.
-#..##.#..#
-##.#..#.#.
-.###.####.
-..###.####
-.##....##.
-.#...####.
-#.##.####.
-####..#...
-.....##...
-
-Tile 1427:
-###.##.#..
-.#..#.##..
-.#.##.#..#
-#.#.#.##.#
-....#...##
-...##..##.
-...#.#####
-.#.####.#.
-..#..###.#
-..##.#..#.
-
-Tile 1489:
-##.#.#....
-..##...#..
-.##..##...
-..#...#...
-#####...#.
-#..#.#.#.#
-...#.#.#..
-##.#...##.
-..##.##.##
-###.##.#..
-
-Tile 2473:
-#....####.
-#..#.##...
-#.##..#...
-######.#.#
-.#...#.#.#
-.#########
-.###.#..#.
-########.#
-##...##.#.
-..###.#.#.
-
-Tile 2971:
-..#.#....#
-#...###...
-#.#.###...
-##.##..#..
-.#####..##
-.#..####.#
-#..#.#..#.
-..####.###
-..#.#.###.
-...#.#.#.#
-
-Tile 2729:
-...#.#.#.#
-####.#....
-..#.#.....
-....#..#.#
-.##..##.#.
-.#.####...
-####.#.#..
-##.####...
-##..#.##..
-#.##...##.
-
-Tile 3079:
-#.#.#####.
-.#..######
-..#.......
-######....
-####.#..#.
-.#...#.##.
-#.#####.##
-..#.###...
-..#.......
-..#.###...
-By rotating, flipping, and rearranging them, you can find a square arrangement that
- causes all adjacent borders to line up:
-
-#...##.#.. ..###..### #.#.#####.
-..#.#..#.# ###...#.#. .#..######
-.###....#. ..#....#.. ..#.......
-###.##.##. .#.#.#..## ######....
-.###.##### ##...#.### ####.#..#.
-.##.#....# ##.##.###. .#...#.##.
-#...###### ####.#...# #.#####.##
-.....#..## #...##..#. ..#.###...
-#.####...# ##..#..... ..#.......
-#.##...##. ..##.#..#. ..#.###...
-
-#.##...##. ..##.#..#. ..#.###...
-##..#.##.. ..#..###.# ##.##....#
-##.####... .#.####.#. ..#.###..#
-####.#.#.. ...#.##### ###.#..###
-.#.####... ...##..##. .######.##
-.##..##.#. ....#...## #.#.#.#...
-....#..#.# #.#.#.##.# #.###.###.
-..#.#..... .#.##.#..# #.###.##..
-####.#.... .#..#.##.. .######...
-...#.#.#.# ###.##.#.. .##...####
-
-...#.#.#.# ###.##.#.. .##...####
-..#.#.###. ..##.##.## #..#.##..#
-..####.### ##.#...##. .#.#..#.##
-#..#.#..#. ...#.#.#.. .####.###.
-.#..####.# #..#.#.#.# ####.###..
-.#####..## #####...#. .##....##.
-##.##..#.. ..#...#... .####...#.
-#.#.###... .##..##... .####.##.#
-#...###... ..##...#.. ...#..####
-..#.#....# ##.#.#.... ...##.....
-For reference, the IDs of the above tiles are:
-
-1951    2311    3079
-2729    1427    2473
-2971    1489    1171
-To check that you've assembled the image correctly, multiply the IDs of the four corner
- tiles together. If you do this with the assembled tiles from the example above, you
-  get 1951 * 3079 * 2971 * 1171 = 20899048083289.
-
-Assemble the tiles into an image. What do you get if you multiply together the IDs of
- the four corner tiles?
-
---- Part Two ---
-
-Now, you're ready to check the image for sea monsters.
-
-The borders of each tile are not part of the actual image; start by removing them.
-
-In the example above, the tiles become:
-
-.#.#..#. ##...#.# #..#####
-###....# .#....#. .#......
-##.##.## #.#.#..# #####...
-###.#### #...#.## ###.#..#
-##.#.... #.##.### #...#.##
-...##### ###.#... .#####.#
-....#..# ...##..# .#.###..
-.####... #..#.... .#......
-
-#..#.##. .#..###. #.##....
-#.####.. #.####.# .#.###..
-###.#.#. ..#.#### ##.#..##
-#.####.. ..##..## ######.#
-##..##.# ...#...# .#.#.#..
-...#..#. .#.#.##. .###.###
-.#.#.... #.##.#.. .###.##.
-###.#... #..#.##. ######..
-
-.#.#.### .##.##.# ..#.##..
-.####.## #.#...## #.#..#.#
-..#.#..# ..#.#.#. ####.###
-#..####. ..#.#.#. ###.###.
-#####..# ####...# ##....##
-#.##..#. .#...#.. ####...#
-.#.###.. ##..##.. ####.##.
-...###.. .##...#. ..#..###
-Remove the gaps to form the actual image:
-
-.#.#..#.##...#.##..#####
-###....#.#....#..#......
-##.##.###.#.#..######...
-###.#####...#.#####.#..#
-##.#....#.##.####...#.##
-...########.#....#####.#
-....#..#...##..#.#.###..
-.####...#..#.....#......
-#..#.##..#..###.#.##....
-#.####..#.####.#.#.###..
-###.#.#...#.######.#..##
-#.####....##..########.#
-##..##.#...#...#.#.#.#..
-...#..#..#.#.##..###.###
-.#.#....#.##.#...###.##.
-###.#...#..#.##.######..
-.#.#.###.##.##.#..#.##..
-.####.###.#...###.#..#.#
-..#.#..#..#.#.#.####.###
-#..####...#.#.#.###.###.
-#####..#####...###....##
-#.##..#..#...#..####...#
-.#.###..##..##..####.##.
-...###...##...#...#..###
-Now, you're ready to search for sea monsters! Because your image is monochrome, a sea
- monster will look like this:
-
-                  #
-#    ##    ##    ###
- #  #  #  #  #  #
-When looking for this pattern in the image, the spaces can be anything; only the # need
- to match. Also, you might need to rotate or flip your image before it's oriented
-  correctly to find sea monsters. In the above image, after flipping and rotating it to
-   the appropriate orientation, there are two sea monsters (marked with O):
-
-.####...#####..#...###..
-#####..#..#.#.####..#.#.
-.#.#...#.###...#.##.O#..
-#.O.##.OO#.#.OO.##.OOO##
-..#O.#O#.O##O..O.#O##.##
-...#.#..##.##...#..#..##
-#.##.#..#.#..#..##.#.#..
-.###.##.....#...###.#...
-#.####.#.#....##.#..#.#.
-##...#..#....#..#...####
-..#.##...###..#.#####..#
-....#.##.#.#####....#...
-..##.##.###.....#.##..#.
-#...#...###..####....##.
-.#.##...#.##.#.#.###...#
-#.###.#..####...##..#...
-#.###...#.##...#.##O###.
-.O##.#OO.###OO##..OOO##.
-..O#.O..O..O.#O##O##.###
-#.#..##.########..#..##.
-#.#####..#.#...##..#....
-#....##..#.#########..##
-#...#.....#..##...###.##
-#..###....##.#...##.##.#
-Determine how rough the waters are in the sea monsters' habitat by counting the number
- of # that are not part of a sea monster. In the above example, the habitat's water
-  roughness is 273.
-
-How many # are not part of a sea monster?
-
-
-"""
-from utils import read_input_batch, read_input
-import numpy as np
-from typing import Set
 import itertools
+import numpy as np
 from scipy.signal import correlate2d
+from utils import read_input, read_input_batch
 
 TILE_CHAR = "#"
 ZERO_CHAR = "."
 
 
-def rotate_and_flip(X: np.array):
+def rotate_and_flip(X: np.ndarray):
     """Convenience function to rotate and flip an array"""
     list_rot_and_flip = []
     X_temp = X.copy()
@@ -310,7 +23,7 @@ def rotate_and_flip(X: np.array):
 class Tile:
     """Class for tiles"""
 
-    def __init__(self, idx: int, X: np.array):
+    def __init__(self, idx: int, X: np.ndarray):
         self.id = idx
         self.X = X
 
@@ -324,7 +37,7 @@ class Tile:
 class Map:
     """Class for Map instance"""
 
-    def __init__(self, X_ids: np.array, X_tiles: np.array):
+    def __init__(self, X_ids: np.ndarray, X_tiles: np.ndarray):
         self.grid_size = int(np.sqrt(len(X_tiles)))
         # Create dictionary of tiles (complete with rotation and flipping
         # Each ID is associated to the eight possible tiles after flipping and rotation
@@ -349,7 +62,8 @@ class Map:
         self.map = np.concatenate(
             [
                 np.concatenate(
-                    [tile.X[1:-1, 1:-1] for tile in self.grid_map[i][:]], axis=1
+                    [tile.X[1:-1, 1:-1] for tile in self.grid_map[i][:]],  # type: ignore
+                    axis=1,
                 )
                 for i in range(self.grid_size)
             ],
@@ -413,7 +127,7 @@ class Map:
     def valid_tiles(self):
         # Create dictionary of valid tiles per grid position
         candidate_tiles = {}
-        for (row_id, col_id) in itertools.product(range(self.grid_size), repeat=2):
+        for row_id, col_id in itertools.product(range(self.grid_size), repeat=2):
             if self.is_corner(row_id, col_id):
                 candidate_tiles[(row_id, col_id)] = set(self.corners)
             elif self.is_edge(row_id, col_id):
@@ -424,7 +138,7 @@ class Map:
                 )
         return candidate_tiles
 
-    def search_position(self, row_id: int, col_id: int, visited_tiles: Set(int)):
+    def search_position(self, row_id: int, col_id: int, visited_tiles: set[int]):
         # If you are at the edge, return
         if row_id == self.grid_size:
             return
@@ -439,26 +153,26 @@ class Map:
             # If valid position, check that tile is valid neighbor to the above and
             #  left tiles in grid map
             if row_id > 0:
-                above_tile = self.grid_map[row_id - 1][col_id].id
+                above_tile = self.grid_map[row_id - 1][col_id].id  # type: ignore
                 if idx not in self.neighbours[above_tile]:
                     continue
 
             if col_id > 0:
-                left_tile = self.grid_map[row_id][col_id - 1].id
+                left_tile = self.grid_map[row_id][col_id - 1].id  # type: ignore
                 if idx not in self.neighbours[left_tile]:
                     continue
 
             # If valid candidate, find right orientation
             for tile in tiles:
                 if row_id > 0:
-                    if not self.grid_map[row_id - 1][col_id].is_above(tile):
+                    if not self.grid_map[row_id - 1][col_id].is_above(tile):  # type: ignore
                         continue
                 if col_id > 0:
-                    if not self.grid_map[row_id][col_id - 1].is_left(tile):
+                    if not self.grid_map[row_id][col_id - 1].is_left(tile):  # type: ignore
                         continue
 
                 # Assign position and add ID to visited_tiles
-                self.grid_map[row_id][col_id] = tile
+                self.grid_map[row_id][col_id] = tile  # type: ignore
                 visited_tiles.add(tile.id)
 
                 # Recursive search
@@ -511,7 +225,7 @@ def main():
     # Obtain sea roughness by removing num_monster * sum(monster) values from map
     print(
         "Result of part 2: "
-        f"{map_rot_and_flip[idx_match].sum() - num_monsters*X_monster.sum()}"
+        f"{map_rot_and_flip[idx_match].sum() - num_monsters * X_monster.sum()}"
     )
 
 

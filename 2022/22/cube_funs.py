@@ -1,6 +1,8 @@
-from .main import CubeTuple, Node
-from typing import Dict, Deque
+from typing import Deque, Dict
+
 from utils import CoordTuple
+
+from .main import CubeTuple, Node  # type: ignore
 
 
 def remap_edges_example(dict_nodes: Dict[CubeTuple, Node], size: int):

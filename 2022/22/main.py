@@ -1,13 +1,15 @@
-from utils import read_input
+import itertools
 import math
 import re
-import itertools
 from collections import deque
-from typing import Union, List, Dict, Tuple, TypeVar, Callable
-from . import cube_funs as cb
+from typing import Callable, TypeVar
+
+from utils import read_input
+
+import cube_funs as cb
 
 T = TypeVar("T", bound=int)
-CubeTuple = Tuple[T, T, T]
+CubeTuple = tuple[T, T, T]
 
 DIR_MAP = {(0, 1): "right", (1, 0): "down", (0, -1): "left", (-1, 0): "up"}
 FACING_MAP = {(0, 1): 0, (1, 0): 1, (0, -1): 2, (-1, 0): 3}
@@ -20,7 +22,7 @@ def find_match(c, line):
         return math.inf
 
 
-def generate_instructions(input_file: List[str]) -> List[Union[str, int]]:
+def generate_instructions(input_file: list[str]) -> list[str | int]:
     steps = list(map(int, re.findall(r"\d+", input_file[-1].strip())))
     rot = re.findall(r"[A-Z]", input_file[-1].strip())
     return [
@@ -39,7 +41,7 @@ class Node:
         self.right = None
 
 
-def create_node_system(input_file: List[str]) -> Dict[CubeTuple, Node]:
+def create_node_system(input_file: list[str]) -> dict[CubeTuple, Node]:
     # Create flat node system
     dict_nodes = {}
     for i, line in enumerate(input_file[:-2]):
@@ -73,7 +75,7 @@ def create_node_system(input_file: List[str]) -> Dict[CubeTuple, Node]:
     return dict_nodes
 
 
-def initialise_cube_coords(input_file: List[str], size: int) -> List[Node]:
+def initialise_cube_coords(input_file: list[str], size: int) -> list[Node]:
     # For the cube case, add the face_id when parsing the input
     nodes = []
     idx = -1
@@ -97,10 +99,10 @@ def initialise_cube_coords(input_file: List[str], size: int) -> List[Node]:
 
 
 def create_cube_system(
-    nodes: List[Node],
+    nodes: list[Node],
     size: int,
     remap_edges_fun: Callable,
-) -> Tuple[Dict[CubeTuple, Node], Dict[CubeTuple, CubeTuple]]:
+) -> tuple[dict[CubeTuple, Node], dict[CubeTuple, CubeTuple]]:
     dict_nodes = {}
     remap_nodes = {}
 
@@ -108,8 +110,9 @@ def create_cube_system(
     # Normalise coords to the (0, size) range for each face
     for face_id in range(max_id):
         face_nodes = [node for node in nodes if node.id == face_id]
-        min_x, min_y = min(node.x for node in face_nodes), min(
-            node.y for node in face_nodes
+        min_x, min_y = (
+            min(node.x for node in face_nodes),
+            min(node.y for node in face_nodes),
         )
         # Before normalising, store the original position
         # (we need it for the final result)
@@ -138,10 +141,10 @@ def create_cube_system(
 
 def walk_cube(
     start_pos: CubeTuple,
-    dict_cube: Dict[CubeTuple, Node],
-    instructions: List[Union[int, str]],
+    dict_cube: dict[CubeTuple, Node],
+    instructions: list[int | str],
     turn_direction_fun: Callable,
-) -> Tuple[int, int]:
+) -> tuple[CubeTuple, tuple[int, int]]:
     pos = start_pos
     # Initialise direction as a deque, which can rotate
     # to deal with direction changes

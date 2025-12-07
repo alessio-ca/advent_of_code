@@ -1,5 +1,6 @@
-from utils import read_input
 import numpy as np
+
+from utils import read_input
 
 
 class CPU:
@@ -8,8 +9,8 @@ class CPU:
         self.idx_s = 0
         self.cycle = 1
         self.strenghts = list(range(20, 300, 40))
-        self.res = []
-        self.crt = []
+        self.res: list[int] = []
+        self.crt: list[str] = []
 
     def update_res(self):
         self.cycle += 1

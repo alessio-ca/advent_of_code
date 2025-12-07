@@ -1,6 +1,7 @@
-from utils import read_input
 import itertools
-from typing import List, Iterable, Tuple, Set
+from typing import Iterable, List, Set, Tuple
+
+from utils import read_input
 
 
 def pairwise(iterable: Iterable) -> Iterable:
@@ -75,8 +76,8 @@ def main(filename: str):
     i = 0
     while True:
         try:
-            x, y = (500, 0)
-            grain_fall(grid_set, x, y, bounds)
+            x_d, y_d = (500, 0)
+            grain_fall(grid_set, x_d, y_d, bounds)
             i += 1
         except StopIteration:
             break
@@ -87,8 +88,8 @@ def main(filename: str):
     bounds = None, None, max(y)
     i = 0
     while (500, 0) not in grid_set:
-        x, y = (500, 0)
-        grain_fall(grid_set, x, y, bounds)
+        x_d, y_d = (500, 0)
+        grain_fall(grid_set, x_d, y_d, bounds)
         i += 1
 
     print(f"Result of part 2: {i}")

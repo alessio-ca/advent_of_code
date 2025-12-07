@@ -1,7 +1,8 @@
-from utils import read_input, timefunc
 import re
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
+from typing import Any
+from utils import read_input, timefunc
 
 
 def chunks(lst, n):
@@ -81,7 +82,7 @@ class MiningOp:
         )
         self.blueprint = blueprint
         self.max_geodes = 0
-        self.best_geodes = defaultdict(int)
+        self.best_geodes: defaultdict[Any, int] = defaultdict(int)
         pass
 
     def op_potential(self, time, *args):

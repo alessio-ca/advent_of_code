@@ -16,7 +16,7 @@ def number_to_base(n: int, base: int) -> list[int]:
 def quinary_to_balanced(quinary: list[int]) -> str:
     quinary.reverse()
     c = 0
-    balanced = []
+    balanced: list[int] = []
     for digit in quinary:
         digit += c
         c = digit // 3
@@ -24,8 +24,8 @@ def quinary_to_balanced(quinary: list[int]) -> str:
 
     balanced.reverse()
     snafu_reverse = {value: key for key, value in SNAFU_DICT.items()}
-    balanced = list(map(snafu_reverse.get, balanced))
-    return "".join(balanced)
+    balanced_to_str: list[str] = [snafu_reverse[digit] for digit in balanced]
+    return "".join(balanced_to_str)
 
 
 def main(filename: str):

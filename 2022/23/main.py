@@ -1,9 +1,9 @@
-from utils import timefunc, CoordTuple
-from scipy.ndimage import convolve
-import numpy as np
-from collections import deque, Counter
-from typing import Tuple, Dict
+from collections import Counter, deque
 
+import numpy as np
+from scipy.ndimage import convolve
+
+from utils import CoordTuple, timefunc
 
 CONV_FILTER = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]], dtype=int)
 S_FILTER = np.array([[1, 1, 1], [0, 0, 0], [0, 0, 0]], dtype=int)
@@ -21,7 +21,7 @@ def add_tuples(t1: CoordTuple, t2: CoordTuple) -> CoordTuple:
     return (t1[0] + t2[0], t1[1] + t2[1])
 
 
-def perform_convolutions(grid: np.ndarray) -> Tuple[Dict[str, np.ndarray], np.ndarray]:
+def perform_convolutions(grid: np.ndarray) -> tuple[dict[str, np.ndarray], np.ndarray]:
     # Perform 4 directional convolutions and a full one
     convs = {
         move: convolve(grid, d_filter, mode="constant")
@@ -30,7 +30,7 @@ def perform_convolutions(grid: np.ndarray) -> Tuple[Dict[str, np.ndarray], np.nd
         )
     }
     # Store sum of all directions - we don't care about double summations
-    full_conv = sum(conv for conv in convs.values())
+    full_conv = np.array(sum(conv for conv in convs.values()))
     return convs, full_conv
 
 
@@ -49,7 +49,7 @@ def enlarge_grid(grid):
     return grid, lookup_elves, convs, full_conv
 
 
-def diffuse_elves(grid: np.ndarray) -> np.ndarray:
+def diffuse_elves(grid: np.ndarray) -> tuple[np.ndarray, int]:
     grid, lookup_elves, convs, full_conv = enlarge_grid(grid)
     # Direction queue
     directions = deque([("N", (-1, 0)), ("S", (1, 0)), ("W", (0, -1)), ("E", (0, 1))])
@@ -100,9 +100,7 @@ def diffuse_elves(grid: np.ndarray) -> np.ndarray:
 
 @timefunc
 def main(filename: str):
-    grid = np.where(
-        np.genfromtxt(filename, comments=None, delimiter=1, dtype=str) == "#", 1, 0
-    )
+    grid = np.where(np.genfromtxt(filename, delimiter="", dtype=str) == "#", 1, 0)
     part_1_grid, part_2_num = diffuse_elves(grid)
     print(f"Result of part 1: {(part_1_grid == 0).sum()}")
     print(f"Result of part 2: {part_2_num}")

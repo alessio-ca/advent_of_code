@@ -1,22 +1,23 @@
-from utils import CoordTuple, timefunc
-from typing import Dict, List, Set
-from collections import defaultdict
-from functools import lru_cache
-import numpy as np
 import heapq
 import itertools
 import math
+from collections import defaultdict
+from functools import lru_cache
+
+import numpy as np
+
+from utils import CoordTuple, timefunc
 
 
 @lru_cache(maxsize=None)
-def manhattan(point: CoordTuple, source: CoordTuple) -> CoordTuple:
+def manhattan(point: CoordTuple, source: CoordTuple) -> float:
     return sum(abs(val1 - val2) for val1, val2 in zip(point, source))
 
 
 def shortest_path_astar(
     start: CoordTuple,
-    dict_nn: Dict[CoordTuple, List[CoordTuple]],
-    dict_blizzards: Dict[int, List[CoordTuple]],
+    dict_nn: dict[CoordTuple, list[CoordTuple]],
+    dict_blizzards: dict[int, set[CoordTuple]],
     grid_period: int,
     end: CoordTuple,
     start_time: int,
@@ -59,6 +60,7 @@ def shortest_path_astar(
                         (new_time, neighbor),
                     ),
                 )
+    return -1
 
 
 def _create_periodic(x, i, vec, bound):
@@ -70,7 +72,7 @@ def _create_periodic(x, i, vec, bound):
 
 def create_blizzards_lookups(
     grid: np.ndarray, grid_period: int
-) -> Dict[int, Set[CoordTuple]]:
+) -> dict[int, set[CoordTuple]]:
     # Create a dictionary with the blizzards position for each time step
     # Since we have periodicity over the valley, lcm(grid_x - 2, grid_y - 2)
     # gives the number of unique maps possible (since it guarantees we have
@@ -89,8 +91,8 @@ def create_blizzards_lookups(
 
 
 def _get_neighbors(
-    node: CoordTuple, bounds: Dict[str, CoordTuple], grid: np.ndarray
-) -> List[CoordTuple]:
+    node: CoordTuple, bounds: dict[str, CoordTuple], grid: np.ndarray
+) -> list[CoordTuple]:
     """Simple function to obtain the neighbors coordinates of a point on a grid.
     The grid bounds are considered."""
     x, y = node
@@ -108,9 +110,9 @@ def _get_neighbors(
 
 def create_neighbors_dict(
     grid: np.ndarray,
-) -> Dict[CoordTuple, List[CoordTuple]]:
+) -> dict[CoordTuple, list[CoordTuple]]:
     """Create dictionary of neighbors for a grid"""
-    dict_nn = {
+    dict_nn: dict[CoordTuple, list[CoordTuple]] = {
         node: []
         for node in list(itertools.product(range(grid.shape[0]), range(grid.shape[1])))
     }
@@ -123,7 +125,7 @@ def create_neighbors_dict(
 
 @timefunc
 def main(filename: str):
-    grid = np.genfromtxt(filename, comments=None, delimiter=1, dtype=str)
+    grid = np.genfromtxt(filename, delimiter=None, dtype=str)
     grid_period = np.lcm(grid.shape[0] - 2, grid.shape[1] - 2)
     dict_blizzards = create_blizzards_lookups(grid, grid_period)
     dict_nn = create_neighbors_dict(grid)

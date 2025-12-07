@@ -12,7 +12,7 @@ def create_input(
             break
         rows.append(line[1::4])
 
-    stacks = [[] for _ in range(len(rows.pop()))]
+    stacks: list[list[str]] = [[] for _ in range(len(rows.pop()))]
     while rows:
         for j, char in enumerate(rows.pop()):
             if char != " ":
@@ -21,7 +21,9 @@ def create_input(
     # Second section corresponds to the instructions
     instructions = []
     for line in lines[i + 1 :]:
-        instructions.append(tuple(int(s) for s in re.findall(r"\b\d+\b", line)))
+        nums = tuple(int(s) for s in re.findall(r"\b\d+\b", line))
+        if len(nums) == 3:
+            instructions.append(nums)
 
     return stacks, instructions
 
@@ -30,7 +32,7 @@ def rearrange_stacks(
     stacks: List[List[str]],
     instructions: List[Tuple[int, int, int]],
     is_9001: bool = False,
-) -> List[List[str]]:
+):
     # Iterate over instructions
     for instruction in instructions:
         num, origin, destination = instruction
@@ -43,8 +45,6 @@ def rearrange_stacks(
             temp_stack.reverse()
         # Add it to destination
         stacks[destination - 1] += temp_stack
-
-    return None
 
 
 def main(filename: str):

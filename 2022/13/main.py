@@ -1,14 +1,15 @@
-from utils import read_input_batch
 import ast
-import numpy as np
 from functools import cmp_to_key
 from math import prod
-from typing import Union, List
 
-Packet = Union[List, int]
+import numpy as np
+
+from utils import read_input_batch
+
+from typing import Any
 
 
-def compare_packets(A: Packet, B: Packet) -> int:
+def compare_packets(A: Any, B: Any) -> int:
     a_type = isinstance(A, list)
     b_type = isinstance(B, list)
 
@@ -59,8 +60,8 @@ def main(filename: str):
         flattened_packets + divider, key=cmp_to_key(compare_packets)
     )[::-1]
 
-    idx = [ordered_packets.index(el) + 1 for el in divider]
-    print(f"Result of part 2: {prod(idx)}")
+    divider_idx = [ordered_packets.index(el) + 1 for el in divider]
+    print(f"Result of part 2: {prod(divider_idx)}")
 
 
 if __name__ == "__main__":

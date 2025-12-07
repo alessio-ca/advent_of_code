@@ -1,5 +1,6 @@
-from utils import read_input
 from typing import List
+
+from utils import read_input
 
 
 def move_tail(head: List[int], tail: List[int]) -> bool:
@@ -16,14 +17,14 @@ def rope_walk(n_tails: int, moves: List[str]) -> int:
 
     # Iterate over moves
     for move in moves:
-        direction, steps = move.split(" ")
-        steps = int(steps)
+        direction, steps_str = move.split(" ")
+        steps = int(steps_str)
         idx_par = 0 if direction in ["R", "L"] else 1
 
         while steps > 0:
             # Move head
-            move = -1 + 2 * (direction in ["R", "U"])
-            head[idx_par] += move
+            move_h = -1 + 2 * (direction in ["R", "U"])
+            head[idx_par] += move_h
 
             # Loop over tails -- start with current head and tail 0
             current_head = head.copy()
@@ -32,8 +33,8 @@ def rope_walk(n_tails: int, moves: List[str]) -> int:
                 # If check is True, tail needs to move
                 # Perform diagonal or horizontal move for each axis
                 for axis in [0, 1]:
-                    move = -1 + 2 * (current_head[axis] - tails[i][axis] > 0)
-                    tails[i][axis] += move * (
+                    move_h = -1 + 2 * (current_head[axis] - tails[i][axis] > 0)
+                    tails[i][axis] += move_h * (
                         (current_head[axis] - tails[i][axis]) != 0
                     )
 

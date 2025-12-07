@@ -1,5 +1,6 @@
-from utils import read_input, timefunc
 from collections import deque
+
+from utils import read_input, timefunc
 
 
 def mix_match(dict_input, n_mix):

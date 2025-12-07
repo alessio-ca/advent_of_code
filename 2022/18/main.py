@@ -1,6 +1,7 @@
-from utils import read_input
 import numpy as np
 from scipy import ndimage
+
+from utils import read_input
 
 EDGES = [(1, 0, 0), (0, 1, 0), (0, 0, 1), (-1, 0, 0), (0, -1, 0), (0, 0, -1)]
 
@@ -22,13 +23,13 @@ def main(filename: str):
     print(f"Result of part 1: {calculate_exposed_edges(cubes)}")
 
     # Convert cubes to array
-    cubes = np.array(
+    cubes_arr = np.array(
         [list(map(int, line.split(","))) for line in lines],
         dtype=np.int64,
     )
     # Create 3D space
-    space = np.zeros(shape=cubes.max(axis=0) + 1, dtype=np.int64)
-    xc, yc, zc = cubes.T
+    space = np.zeros(shape=cubes_arr.max(axis=0) + 1, dtype=np.int64)
+    xc, yc, zc = cubes_arr.T
     space[xc, yc, zc] = 1
     # Fill holes
     space = ndimage.binary_fill_holes(space)

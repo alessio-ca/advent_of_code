@@ -1,6 +1,7 @@
-from utils import read_input
 from collections import deque
 from typing import Deque, Dict
+
+from utils import read_input
 
 
 def create_result_dictionary(

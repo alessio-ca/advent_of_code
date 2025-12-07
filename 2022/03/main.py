@@ -1,7 +1,7 @@
-from utils import read_input
+from itertools import zip_longest
 from typing import List
 
-from itertools import zip_longest
+from utils import read_input
 
 
 def grouper(iterable, n, fillvalue=None):

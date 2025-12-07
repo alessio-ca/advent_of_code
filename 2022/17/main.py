@@ -1,8 +1,9 @@
-from utils import read_input, timefunc
 import itertools
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
 from typing import List
+
+from utils import read_input, timefunc
 
 SHAPES = [
     [(0, 0), (1, 0), (2, 0), (3, 0)],

@@ -3,9 +3,9 @@ from itertools import accumulate
 from typing import List
 
 
-def read_line(commands: List[str]) -> None:
+def read_line(commands: List[str]) -> defaultdict[str, int]:
     # Initialise folder size dictionary
-    folder_sizes = defaultdict(lambda: 0)
+    folder_sizes: defaultdict[str, int] = defaultdict(lambda: 0)
     # Initialise root structure as a list and separation marker for `cd`
     root_structure = [""]
     sep_idx = 5

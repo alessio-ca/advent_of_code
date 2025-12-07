@@ -1,8 +1,9 @@
-from utils import read_input
-import re
 import heapq
 import math
+import re
 from collections import defaultdict
+
+from utils import read_input
 
 
 class Node:
@@ -52,7 +53,7 @@ def compute_all_paths(start_node, nodes):
     }
     # Eliminate nodes with zero flow rate from computed costs
     for name, costs_d in costs.items():
-        costs[name] = {d: l for d, l in costs_d.items() if nodes[d].rate > 0}
+        costs[name] = {dd: ll for dd, ll in costs_d.items() if nodes[dd].rate > 0}
     return costs
 
 

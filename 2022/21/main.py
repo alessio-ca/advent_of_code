@@ -1,7 +1,9 @@
-from utils import read_input
 import operator
 import types
+
 from scipy.optimize import fsolve
+
+from utils import read_input
 
 ops = {
     "+": operator.add,
@@ -68,12 +70,12 @@ def apply_operator(monkeys, a, op, b):
 def main(filename: str):
     input_file = read_input(filename, line_strip=True)
     monkeys = create_monkeys(input_file)
-    print(f'Result of part 1: {apply_operator(monkeys, *monkeys["root"])}')
+    print(f"Result of part 1: {apply_operator(monkeys, *monkeys['root'])}")
 
     root_a, _, root_b = monkeys["root"]
     monkeys["root"] = (root_a, "=", root_b)
     monkeys["humn"] = lambda x: x
-    print(f'Result of part 2: {apply_operator(monkeys, *monkeys["root"])}')
+    print(f"Result of part 2: {apply_operator(monkeys, *monkeys['root'])}")
 
 
 if __name__ == "__main__":

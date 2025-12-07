@@ -1,28 +1,29 @@
-import numpy as np
-from typing import List, Tuple, Dict, Optional
-from collections import defaultdict
-import math
 import heapq
 import itertools
+import math
+from collections import defaultdict
+from typing import Optional
 
-from utils import read_input
+import numpy as np
+
+from utils import read_input, CoordTuple, DijkstraDistances, CoordGenerator
 
 
 def modified_shortest_path_dijkstra(
-    start: Tuple[int, int],
+    start: CoordTuple,
     grid: np.ndarray,
     flip_check: bool = True,
-    end: Optional[Tuple[int, int]] = None,
-) -> Dict[Tuple[int, int], int]:
+    end: Optional[CoordTuple] = None,
+) -> DijkstraDistances:
     # Create neighbor grid
     dict_nn = _create_neighbors_dict(grid)
 
     # Initialise distance dictionary and visited set
-    dists = defaultdict(lambda: math.inf, {start: 0})
+    dists: DijkstraDistances = defaultdict(lambda: math.inf, {start: 0})
     visited = set()
 
     # Initialise queue
-    queue = [(0, start)]
+    queue: list[tuple[float, CoordTuple]] = [(0, start)]
 
     while queue:
         # Pop the element of the queue with the shortest distance
@@ -58,9 +59,7 @@ def modified_shortest_path_dijkstra(
     return dists
 
 
-def _get_neighbors(
-    node: Tuple[int, int], bounds: Dict[str, Tuple[int, int]]
-) -> List[Tuple[int, int]]:
+def _get_neighbors(node: CoordTuple, bounds: dict[str, CoordTuple]) -> CoordGenerator:
     """Simple function to obtain the neighbors coordinates of a point on a grid.
     The grid bounds are considered."""
     x, y = node
@@ -75,15 +74,15 @@ def _get_neighbors(
 
 def _create_neighbors_dict(
     grid: np.ndarray,
-) -> Dict[Tuple[int, int], List[Tuple[int, int]]]:
+) -> dict[CoordTuple, list[CoordTuple]]:
     """Create dictionary of neighbors for a grid"""
-    dict_nn = {
-        node: []
+    dict_nn: dict[CoordTuple, list[CoordTuple]] = {
+        (node[0], node[1]): []
         for node in list(itertools.product(range(grid.shape[0]), range(grid.shape[1])))
     }
     bounds = {"x": (0, grid.shape[0]), "y": (0, grid.shape[1])}
     for node in dict_nn.keys():
-        dict_nn[node] = _get_neighbors(node, bounds)
+        dict_nn[node] = list(_get_neighbors(node, bounds))
 
     return dict_nn
 
@@ -104,7 +103,7 @@ def main(filename: str):
 
     X = np.array(grid_input, dtype=np.int64)
     # Find shortest path
-    shortest_path = modified_shortest_path_dijkstra(start, X, end)[end]
+    shortest_path = modified_shortest_path_dijkstra(start, X, True, end)[end]
     print(f"Result of part 1: {shortest_path}")
     # Find all paths
     all_paths = modified_shortest_path_dijkstra(end, X, flip_check=False)

@@ -1,8 +1,11 @@
-from utils import read_input
-import re
-import numpy as np
 import itertools
+import re
 from collections import deque
+
+import numpy as np
+
+from utils import read_input
+from typing import Any
 
 
 def manhattan(a, b):
@@ -122,7 +125,7 @@ def main(filename: str):
         distances.append(manhattan(coord_s, coord_b))
 
     # Calculate sensor overlaps with row of interest
-    overlaps = set()
+    overlaps: set[Any] = set()
     y_line = 2000000
     for (x_s, y_s), dist_s in zip(sensors, distances):
         dist_x = dist_s - abs(y_line - y_s)

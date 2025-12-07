@@ -1,7 +1,8 @@
-from utils import read_input_batch
-from typing import List
 import re
-from math import floor, prod, lcm
+from math import floor, lcm, prod
+from typing import List
+
+from utils import read_input_batch
 
 
 class Monkey:
@@ -9,14 +10,18 @@ class Monkey:
         # Query monkey parameters
         search_int = re.compile(r"\d+")
 
-        self.num = int(search_int.search(params[0]).group())
+        match = search_int.search(params[0])
+        self.num = int(match.group()) if match else 0
         self.items = list(map(int, re.findall(r"\d+", params[1])))
         self.operation = eval("lambda old: " + params[2].split("=")[1])
 
-        self.divisor = int(search_int.search(params[3]).group())
+        match = search_int.search(params[3])
+        self.divisor = int(match.group()) if match else 1
         self.test = lambda x: x % self.divisor == 0
-        self.throw_true = int(search_int.search(params[4]).group())
-        self.throw_false = int(search_int.search(params[5]).group())
+        match = search_int.search(params[4])
+        self.throw_true = int(match.group()) if match else 0
+        match = search_int.search(params[5])
+        self.throw_false = int(match.group()) if match else 0
 
         self.inspected = 0
 

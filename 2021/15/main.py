@@ -2,19 +2,19 @@ import heapq
 import itertools
 import math
 from collections import defaultdict
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import numpy as np
 
-from utils import read_input
+from utils import read_input, DijkstraDistances, CoordTuple, CoordGenerator
 
 
 def shortest_path_dijkstra(
-    start: Tuple[int, int],
+    start: CoordTuple,
     grid: np.ndarray,
-    dict_nn: Dict[Tuple[int, int], List[Tuple[int, int]]],
-    end: Optional[Tuple[int, int]] = None,
-) -> Dict[Tuple[int, int], int | float]:
+    dict_nn: dict[CoordTuple, list[CoordTuple]],
+    end: Optional[CoordTuple] = None,
+) -> DijkstraDistances:
     """Dijkstra's algo for shortest path calculation between a start node and any other
      node in a grid.
     Returns a dictionary of {node: distance} from the source node.
@@ -27,9 +27,7 @@ def shortest_path_dijkstra(
     """
 
     # Initialise distance dictionary and visited set
-    dists: defaultdict[Tuple[int, int], int | float] = defaultdict(
-        lambda: math.inf, {start: 0}
-    )
+    dists: DijkstraDistances = defaultdict(lambda: math.inf, {start: 0})
     visited = set()
 
     # Initialise queue
@@ -61,7 +59,7 @@ def shortest_path_dijkstra(
     return dists
 
 
-def _get_neighbors(node: Tuple[int, int], bounds: Dict[str, Tuple[int, int]]):
+def _get_neighbors(node: CoordTuple, bounds: dict[str, CoordTuple]) -> CoordGenerator:
     """Simple function to obtain the neighbors coordinates of a point on a grid.
     The grid bounds are considered."""
     x, y = node
@@ -76,15 +74,15 @@ def _get_neighbors(node: Tuple[int, int], bounds: Dict[str, Tuple[int, int]]):
 
 def create_neighbors_dict(
     grid: np.ndarray,
-) -> Dict[Tuple[int, int], List[Tuple[int, int]]]:
+) -> dict[CoordTuple, list[CoordTuple]]:
     """Create dictionary of neighbors for a grid"""
-    dict_nn: Dict[Tuple[int, int], List[Tuple[int, int]]] = {
+    dict_nn: dict[CoordTuple, list[CoordTuple]] = {
         node: []
         for node in list(itertools.product(range(grid.shape[0]), range(grid.shape[1])))
     }
     bounds = {"x": (0, grid.shape[0]), "y": (0, grid.shape[1])}
     for node in dict_nn.keys():
-        dict_nn[node] = _get_neighbors(node, bounds)
+        dict_nn[node] = list(_get_neighbors(node, bounds))
 
     return dict_nn
 

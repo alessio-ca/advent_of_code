@@ -1,6 +1,7 @@
-from utils import read_input, timefunc
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
+
+from utils import read_input, timefunc
 
 
 def mix(values: np.ndarray, numbers: np.ndarray) -> np.ndarray:

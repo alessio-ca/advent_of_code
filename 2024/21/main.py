@@ -1,9 +1,10 @@
-from utils import read_input
-from collections import defaultdict
-import re
-import math
 import heapq
+import math
+import re
+from collections import defaultdict
 from functools import cache
+
+from utils import read_input
 
 Pad = dict[str, dict[str, str]]
 Dist = int | float

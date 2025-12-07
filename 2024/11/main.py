@@ -1,6 +1,7 @@
-from utils import read_integer_lists
 from collections import deque
 from functools import cache
+
+from utils import read_integer_lists
 
 
 @cache
@@ -22,7 +23,6 @@ def memosequence(stone: str, n: int):
 
 
 def main(filename: str):
-
     stones = deque(map(lambda d: str(d), read_integer_lists(filename)[0]))
     print(f"Result of part 1: {sum(memosequence(stone, 25) for stone in stones)}")
     print(f"Result of part 2: {sum(memosequence(stone, 75) for stone in stones)}")

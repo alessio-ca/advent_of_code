@@ -1,8 +1,9 @@
-from utils import read_input_batch
 import heapq
-from collections import deque
 import re
+from collections import deque
 from itertools import chain
+
+from utils import read_input_batch
 
 GatesDict = dict[str, tuple[str, frozenset[str]]]
 WiresDict = dict[str, int]
@@ -118,7 +119,7 @@ class AdderConstructor:
             return False, inputs, "XOR"
 
         inputs = frozenset(
-            (self.mapping[f"a0{digit}"], self.mapping[f"c{zero_pad(bit-1)}"])
+            (self.mapping[f"a0{digit}"], self.mapping[f"c{zero_pad(bit - 1)}"])
         )
         if not self.map_inputs(inputs, {"XOR": f"z{digit}", "AND": f"a2{digit}"}):
             return False, inputs, "XOR"

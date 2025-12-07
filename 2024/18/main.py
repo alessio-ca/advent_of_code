@@ -1,8 +1,10 @@
-from utils import read_input, CoordTuple, get_neighbors, ConstraintFunArgs, diff_tuple
-import numpy as np
-from collections import defaultdict, deque
-import math
 import heapq
+import math
+from collections import defaultdict, deque
+
+import numpy as np
+
+from utils import ConstraintFunArgs, CoordTuple, diff_tuple, get_neighbors, read_input
 
 
 def constraint(fun_args: ConstraintFunArgs) -> bool:
@@ -18,7 +20,7 @@ def shortest_path_dijkstra(
     Returns the shortest path"""
 
     # Initialise distance dictionary and visited set
-    dists = defaultdict(lambda: math.inf, {start: 0})
+    dists = defaultdict(lambda: math.inf, {start: 0.0})
     visited = set()
 
     # Initialise queue
@@ -79,7 +81,11 @@ def main(filename: str):
         i_bytes = 1024
         space_size = 71
 
-    bytes = list((map(lambda x: tuple(map(int, x.split(","))), read_input(filename))))
+    bytes: list[CoordTuple] = list(
+        (
+            map(lambda x: tuple(map(int, x.split(","))), read_input(filename))  # type: ignore
+        )
+    )
 
     grid = np.zeros(shape=(space_size, space_size), dtype="int")
     for y, x in bytes[:i_bytes]:

@@ -1,7 +1,8 @@
-from utils import read_input_batch
+import heapq
 import re
 from collections import deque
-import heapq
+
+from utils import read_input_batch
 
 
 class Program:
@@ -12,8 +13,8 @@ class Program:
         )
         self.program = list(map(int, re.findall(r"\d+", program[0])))
         self.pointer = 0
-        self.out = deque([])
-        self.stack = deque([])
+        self.out: deque[int] = deque()
+        self.stack: deque[int] = deque()
 
     def instruction(self, i: int, o: int):
         if i == 0:
@@ -100,6 +101,7 @@ def reverse_iteration(targets, is_test: bool = True) -> int:
             # add A to heap and point to next target
             if op(A, is_test) == targets[-i]:
                 heapq.heappush(heap, (A, i + 1))
+    return -1
 
 
 def main(filename: str):

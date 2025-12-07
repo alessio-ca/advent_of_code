@@ -1,9 +1,11 @@
-from utils import read_input, CoordTuple
 import re
 from collections import Counter, defaultdict
 from functools import reduce
 from operator import mul
+
 import numpy as np
+
+from utils import CoordTuple, read_input
 
 
 def predict_position(robot, shape: CoordTuple, steps: int = 100) -> CoordTuple:
@@ -15,7 +17,7 @@ def predict_position(robot, shape: CoordTuple, steps: int = 100) -> CoordTuple:
 def map_to_quadrant(occupancy: Counter[CoordTuple], shape: CoordTuple) -> int:
     xg, yg = shape
     qx, qy = xg // 2, yg // 2
-    quadrants = defaultdict(int)
+    quadrants: defaultdict[int, int] = defaultdict(int)
     for pos, count in occupancy.items():
         x, y = pos
         if (x < qx) & (y < qy):

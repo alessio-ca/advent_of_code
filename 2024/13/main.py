@@ -1,6 +1,8 @@
-from utils import read_input_batch
 import re
+
 import numpy as np
+
+from utils import read_input_batch
 
 
 def solve_linear_system(machine: list[list[int]], part_1: bool = True) -> int:

@@ -1,16 +1,16 @@
-from utils import read_input
-import re
 import heapq
-from collections.abc import Sequence, Callable, Iterable
-from typing import TypeVar
+import re
+from collections.abc import Callable, Iterable
 
-Q = TypeVar("Q", bound=Sequence[tuple[int, int]])
+from utils import read_input
+
+Q = list[tuple[int, int]]
 
 
 def push_part_1(queue: Q, residual: int, numbers: list[int], i: int) -> None:
     # If residual is divisible by number, add division to queue
     if residual % numbers[i] == 0:
-        heapq.heappush(queue, (residual / numbers[i], i + 1))
+        heapq.heappush(queue, (int(residual / numbers[i]), i + 1))
     # Add substraction to queue
     heapq.heappush(queue, (residual - numbers[i], i + 1))
 
@@ -36,7 +36,7 @@ def calibration(
         result, numbers = equation[0], equation[1:]
         numbers.reverse()
         # Use priority queue, minimises residual
-        queue = [(result, 0)]
+        queue: Q = [(result, 0)]
         heapq.heapify(queue)
         while queue:
             residual, i = heapq.heappop(queue)

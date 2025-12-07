@@ -1,14 +1,16 @@
+import heapq
+import math
+from collections import defaultdict
+from typing import Generator
+
+import numpy as np
+
 from utils import (
-    read_input,
+    ConstraintFun,
     ConstraintFunArgs,
     CoordTuple,
-    ConstraintFun,
+    read_input,
 )
-from collections import defaultdict
-import heapq
-import numpy as np
-from typing import Optional, Generator
-import math
 
 GeneralisedNode = tuple[CoordTuple, CoordTuple]
 VECTORS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
@@ -46,7 +48,7 @@ class Path:
 def modified_dijkstra(
     start: CoordTuple,
     grid: np.ndarray,
-    end: Optional[CoordTuple] = None,
+    end: CoordTuple,
 ) -> tuple[int, set[CoordTuple]]:
     """Modified Dijkstra's algo for marking all nodes belonging to
     any shortest path in the graph,

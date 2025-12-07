@@ -1,8 +1,10 @@
-from utils import read_input, CoordTuple, get_neighbors, ConstraintFunArgs
-from collections import deque, defaultdict
+from collections import defaultdict, deque
 from itertools import product
+
 import numpy as np
 from scipy.signal import convolve2d
+
+from utils import ConstraintFunArgs, CoordTuple, get_neighbors, read_input
 
 
 def equal_constraint(fun_args: ConstraintFunArgs) -> bool:

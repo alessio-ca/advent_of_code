@@ -1,8 +1,9 @@
-from itertools import pairwise, combinations
+from itertools import combinations, pairwise
+from typing import Iterable
 from utils import read_integer_lists
 
 
-def is_safe(report: list[int]) -> bool:
+def is_safe(report: Iterable[int]) -> bool:
     """Return True is report is safe according to rules"""
     steps = [y - x for (x, y) in pairwise(report)]
     return (all(step > 0 for step in steps) | all(step < 0 for step in steps)) & all(
@@ -17,10 +18,10 @@ def main(filename: str):
     print(f"Result of part 1: {sum(mask_steps)}")
 
     dampened_reports = (combinations(report, len(report) - 1) for report in reports)
-    mask_steps = (
+    mask_steps_damp = (
         any(is_safe(report) for report in reports) for reports in dampened_reports
     )
-    print(f"Result of part 2: {sum(mask_steps)}")
+    print(f"Result of part 2: {sum(mask_steps_damp)}")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
-from utils import read_input, get_neighbors, CoordTuple, ConstraintFunArgs
+from collections import Counter, deque
+
 import numpy as np
-from collections import deque, Counter
+
+from utils import ConstraintFunArgs, CoordTuple, get_neighbors, read_input
 
 
 def constraint(fun_args: ConstraintFunArgs) -> bool:
@@ -12,14 +14,14 @@ def constraint(fun_args: ConstraintFunArgs) -> bool:
 def trailing_path(
     start: CoordTuple,
     grid: np.ndarray,
-) -> int:
+) -> tuple[int, int]:
     """DFS for trailing path calculation.
     Allows for node revisit"""
 
     # Initialise queue
     stack = deque([(0, start)])
     # Initialise endpoints counter
-    endpoints = Counter()
+    endpoints: Counter[CoordTuple] = Counter()
 
     while stack:
         # Pop from the stack & explore neighbors

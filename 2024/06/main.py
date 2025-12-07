@@ -1,8 +1,8 @@
-from utils import read_input, timefunc
-from utils import CoordTuple
 from typing import Optional
 
-DirTuple = tuple[CoordTuple, CoordTuple]
+from utils import CoordTuple, read_input, timefunc
+
+DirTuple = tuple[int, int, int, int]
 
 
 def initialize_guard(grid: list[list[str]]) -> CoordTuple:
@@ -10,6 +10,7 @@ def initialize_guard(grid: list[list[str]]) -> CoordTuple:
         for j, c in enumerate(line):
             if c == "^":
                 return (i, j)
+    return -1, -1
 
 
 class GridWalker:
@@ -25,6 +26,7 @@ class GridWalker:
         self.guard = start
         self.xg = len(grid)
         self.yg = len(grid[0])
+        self.i = 0
 
     def next_vector(self) -> CoordTuple:
         # Return next direction
@@ -50,8 +52,8 @@ class GridWalker:
     def check_bounds(self, x: int, y: int) -> bool:
         return x >= 0 and x < self.xg and y >= 0 and y < self.yg
 
-    def grid_walk(self, move: DirTuple, path: set[CoordTuple]) -> bool:
-        while move := self.encounter(move):
+    def grid_walk(self, move: DirTuple, path: set[DirTuple]) -> bool:
+        while move := self.encounter(move):  # type: ignore
             # If the move was already performed,
             # it's a loop
             if move in path:
@@ -75,7 +77,7 @@ class GridWalker:
     def explore_grid(self) -> tuple[int, int]:
         # Initialize
         self.i = 0
-        path = set()
+        path: set[DirTuple] = set()
         move = self.guard + self.next_vector()
         checked = set([self.guard])
         loops = 0

@@ -1,7 +1,8 @@
-from utils import read_input
-import numpy as np
-from utils import diff_tuple, CoordTuple
 from typing import Callable
+
+import numpy as np
+
+from utils import CoordTuple, diff_tuple, read_input
 
 
 def check_bounds(x: int, y: int, xg: int, yg: int) -> bool:
@@ -38,10 +39,10 @@ def part_2_antinodes(
 def find_antinodes(
     map: np.ndarray,
     antenna_types: np.ndarray,
-    antinodes_fun: Callable[[int, int, int, int, int, int, set[CoordTuple]], int],
+    antinodes_fun: Callable[[int, int, int, int, int, int, set[CoordTuple]], None],
 ) -> int:
     xg, yg = map.shape
-    antinodes = set()
+    antinodes: set[CoordTuple] = set()
     for kind in antenna_types:
         antennas = np.argwhere(map == kind)
         for i, (xi, yi) in enumerate(antennas):

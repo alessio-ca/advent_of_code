@@ -1,10 +1,11 @@
-from utils import read_input_batch
-import numpy as np
 from itertools import product
+
+import numpy as np
+
+from utils import read_input_batch
 
 
 def main(filename: str):
-
     schemes = read_input_batch(filename)
     keys = []
     locks = []

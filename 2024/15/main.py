@@ -1,11 +1,12 @@
-from utils import read_input_batch, CoordTuple, cached_add_tuples
 from collections import deque
+
+from utils import CoordTuple, cached_add_tuples, read_input_batch
 
 
 def warehouse(filename: str) -> tuple[list[list[str]], str]:
-    map, moves = read_input_batch(filename)
-    map = [list(line) for line in map]
-    moves = "".join(move for move in moves)
+    map_raw, moves_raw = read_input_batch(filename)
+    map = [list(line) for line in map_raw]
+    moves = "".join(move for move in moves_raw)
     return map, moves
 
 
@@ -13,7 +14,7 @@ def big_warehouse(filename: str) -> tuple[list[list[str]], str]:
     map, moves = warehouse(filename)
     xg = len(map)
     yg = len(map[0])
-    big_map = [2 * yg * [None] for _ in range(xg)]
+    big_map = [2 * yg * [""] for _ in range(xg)]
     for i in range(len(map)):
         for j in range(len(map[0])):
             sym = map[i][j]
@@ -34,6 +35,7 @@ def initialize_robot(grid: list[list[str]]) -> CoordTuple:
         for j, c in enumerate(line):
             if c == "@":
                 return (i, j)
+    return -1, -1
 
 
 class RobotWalker:
@@ -54,7 +56,9 @@ class RobotWalker:
             xn, yn = cached_add_tuples(pos, move)
             self.grid[xn][yn] = grid_value
 
-    def attempt_move(self, pos: CoordTuple, move: CoordTuple) -> dict[CoordTuple, str]:
+    def attempt_move(
+        self, pos: CoordTuple, move: CoordTuple
+    ) -> dict[CoordTuple, str] | None:
         queue = deque([pos])
         moves: dict[CoordTuple, str] = dict()
         while queue:
@@ -79,7 +83,7 @@ class RobotWalker:
                         queue.append((x, y - 1))
                     elif grid_value == "#":
                         # There is a wall - we can't perform this move
-                        return []
+                        return None
 
         # Once all possible moves have been checked,
         #  return the dict of moves to perform

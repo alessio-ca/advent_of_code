@@ -1,16 +1,18 @@
+import heapq
+import math
+from collections import Counter, defaultdict
+from itertools import product
+from typing import Generator
+
+import numpy as np
+
 from utils import (
-    read_input,
+    ConstraintFun,
+    ConstraintFunArgs,
     CoordTuple,
     get_neighbors,
-    ConstraintFunArgs,
-    ConstraintFun,
+    read_input,
 )
-import numpy as np
-import heapq
-from collections import defaultdict, Counter
-from itertools import product
-import math
-from typing import Generator
 
 
 def manhattan(a, b):
@@ -25,8 +27,8 @@ def constraint_track(fun_args: ConstraintFunArgs) -> bool:
 
 
 def shortest_path_dijkstra(
-    start: CoordTuple, end: np.ndarray, grid: np.ndarray
-) -> dict[CoordTuple, int]:
+    start: CoordTuple, end: CoordTuple, grid: np.ndarray
+) -> dict[CoordTuple, float]:
     """Dijkstra's algo for shortest path calculation between a start and any node.
     Returns a dict of shortest path length per node"""
 
@@ -34,11 +36,11 @@ def shortest_path_dijkstra(
     constraint_fun = constraint_track
 
     # Initialise distance dictionary and visited set
-    dists = defaultdict(lambda: math.inf, {start: 0})
+    dists = defaultdict(lambda: math.inf, {start: 0.0})
     visited = set()
 
     # Initialise queue
-    queue = [(0, start)]
+    queue = [(0.0, start)]
     heapq.heapify(queue)
 
     while queue:
@@ -85,7 +87,7 @@ def get_nth_neighbors(
 
 
 def find_cheats(start_paths, end_paths, grid, best_time, max_length) -> Counter:
-    cheats = Counter()
+    cheats: Counter[int] = Counter()
     # Filter start and end paths to be at most:
     #  best_time
     #  - 100 (need to be 100 faster)

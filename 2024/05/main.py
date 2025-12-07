@@ -1,16 +1,16 @@
-from utils import read_input_batch
 from collections import defaultdict, deque
+
+from utils import read_input_batch
 
 
 def rule_enforcer(
-    rules_dict: dict[int, set[int]], updates: list[int]
+    rules_dict: dict[int, set[int]], updates: list[list[int]]
 ) -> tuple[int, int]:
-
     sum_correct = 0
     sum_incorrect = 0
     for update in updates:
         queue = deque(update)
-        ordered = deque()
+        ordered: deque[int] = deque()
         # Scroll through the queue
         while queue:
             # Pop a page & check if intersection of queue with rules is empty
@@ -32,9 +32,9 @@ def rule_enforcer(
 
 
 def main(filename: str):
-    rules, updates = read_input_batch(filename)
-    rules = list(map(lambda x: list(map(int, x.split("|"))), rules))
-    updates = list(map(lambda x: list(map(int, x.split(","))), updates))
+    rules_raw, updates_raw = read_input_batch(filename)
+    rules = list(map(lambda x: list(map(int, x.split("|"))), rules_raw))
+    updates = list(map(lambda x: list(map(int, x.split(","))), updates_raw))
     # Create a dictionary of rules: each page maps to the set of
     # "future" pages according to the rules (right --> left)
     rules_dict = defaultdict(set)

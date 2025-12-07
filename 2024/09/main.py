@@ -1,6 +1,7 @@
-from utils import read_single_line, timefunc
-from collections import deque, defaultdict
 import heapq
+from collections import defaultdict, deque
+
+from utils import read_single_line, timefunc
 
 
 def compactify(diskmap: list[int]) -> int:

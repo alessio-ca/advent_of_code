@@ -1,6 +1,8 @@
-from utils import read_input
-import numpy as np
 from itertools import chain, combinations
+
+import numpy as np
+
+from utils import read_input
 
 
 def create_adjacency_matrix(

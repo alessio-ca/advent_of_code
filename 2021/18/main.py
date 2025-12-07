@@ -1,14 +1,15 @@
-from utils import read_input, timefunc
-from typing import List, Union, Tuple
-from itertools import permutations
 from functools import reduce
+from itertools import permutations
+from typing import List, Tuple, Union
+
+from utils import read_input, timefunc
 
 
 class SnailMath:
     def __init__(self, numbers: List[str]):
         self.numbers = numbers
 
-    def _candidate_numerics(self, s: str, inverse=False) -> Tuple[str, int]:
+    def _candidate_numerics(self, s: str, inverse=False) -> Tuple[int, int]:
         sgn = -1 if inverse else 1
         # Check if there is a n-digit numeric at index i
         # Return n-digit digit numeric and offset
@@ -30,7 +31,7 @@ class SnailMath:
         else:
             return x
 
-    def _find_candidate(self, s: str, inverse=False) -> Tuple[str, int, int]:
+    def _find_candidate(self, s: str, inverse=False) -> Tuple[int, int, int]:
         # Loop over string to find a numeric candidate
         j = 0
         kz = 0
@@ -42,15 +43,15 @@ class SnailMath:
         # Return the candidate, index and candidate size
         return -1, j, kz
 
-    def _adjust_string(self, s: str, pair_n: int, inverse=False) -> str:
+    def _adjust_string(self, s: str, pair_n: int, inverse=False) -> tuple[str, int]:
         # Adjust string after finding a regular for the explosion
         sgn = -1 if inverse else 1
         # Loop string until a numeric if found.
         regular, j, k = self._find_candidate(s, inverse)
         # Adjust string if regular was found
         if regular != -1:
-            regular = str(regular + pair_n)
-            return s[:j] + regular[::sgn] + s[j + k :], j + k
+            regular_s = str(regular + pair_n)
+            return s[:j] + regular_s[::sgn] + s[j + k :], j + k
         else:
             return s, 0
 

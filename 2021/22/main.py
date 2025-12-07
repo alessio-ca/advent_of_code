@@ -1,6 +1,7 @@
-from utils import read_input, timefunc
 import re
 from typing import Optional
+
+from utils import read_input, timefunc
 
 
 class CubeSystem:

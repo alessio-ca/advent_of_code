@@ -1,6 +1,7 @@
-from utils import read_input
 import re
 from typing import List
+
+from utils import read_input
 
 
 class Area:

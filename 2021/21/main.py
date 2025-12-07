@@ -1,9 +1,11 @@
-from utils import read_input, timefunc
 import re
-from itertools import product
 from collections import Counter
+from itertools import product
+
 import numpy as np
 from numpy.fft import fft, ifft
+
+from utils import read_input, timefunc
 
 
 def _roll_rows(A, r):
@@ -64,7 +66,7 @@ class QuantumPlayer:
             >= 21
         )
         # List of starters, winners and still playing at each winning step
-        self.results = []
+        self.results: list[tuple[int, int, int, int]] = []
 
     def create_accumulator(self):
         # Create new positions based on current position and all possible outcomes
@@ -132,7 +134,7 @@ def who_wins_more(player_1: QuantumPlayer, player_2: QuantumPlayer) -> int:
     total_1 = 0
     total_2 = 0
     # Query the results of the two players
-    for (status_1, status_2) in zip(player_1.results, player_2.results):
+    for status_1, status_2 in zip(player_1.results, player_2.results):
         # Assign quantities from status at each step
         _, winners_1, playing_1, _ = status_1
         _, winners_2, _, beginning_2 = status_2

@@ -1,6 +1,7 @@
-from utils import read_input_batch
 import numpy as np
 from scipy.ndimage import convolve
+
+from utils import read_input_batch
 
 MAP_DICT = {".": 0, "#": 1}
 INVERSE_MAP_DICT = {0: ".", 1: "#"}

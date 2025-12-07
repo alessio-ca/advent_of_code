@@ -1,9 +1,11 @@
-from utils import read_input_batch, timefunc
-import numpy as np
-from scipy.spatial.distance import pdist, cdist
-from collections import Counter
 import itertools
-from typing import Dict, Tuple, Set, List
+from collections import Counter
+from typing import Dict, List, Set, Tuple
+
+import numpy as np
+from scipy.spatial.distance import cdist, pdist
+
+from utils import read_input_batch, timefunc
 
 
 def _mapping_vector_to_matrix(n: int) -> Dict[int, Tuple[int, int]]:
@@ -55,7 +57,7 @@ def __get_beacons(
     # Intersect the two arrays
     intersection = np.where(np.isin(Y_1, Y_2) & (Y_1 >= 0))[0]
     # Get matrix representation
-    pair_intersection = list(map(dict_pairs.get, intersection))
+    pair_intersection: list[tuple[int, int]] = [dict_pairs[i] for i in intersection]
     # Get valid beacons
     counter = Counter([item for sublist in pair_intersection for item in sublist])
     beacons = [index for index, count in counter.items() if count >= 11]
@@ -77,7 +79,7 @@ def _common_beacons(
     # For each scanner, get overlapping beacons. If there is overlap,
     #  record the valid ones
     for idx in [idx_1, idx_2]:
-        beacons = __get_beacons(Y[idx, :], common_distances, dict_pairs)
+        beacons = __get_beacons(Y[idx, :], np.array(common_distances), dict_pairs)
         if len(beacons) < 12:
             return []
         else:

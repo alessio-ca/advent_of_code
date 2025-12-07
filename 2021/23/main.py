@@ -2,7 +2,6 @@
 
 from utils import read_input
 
-
 # Distance travelled and corridors traversed to get from corridor C to room R
 paths = {  # (C, R): (distance, cells)
     (0, 0): (3, [1]),

@@ -1,25 +1,24 @@
 from __future__ import annotations
-from utils import read_input
-from typing import Tuple, List, Set
-from collections import defaultdict
-import heapq
-from typing import TypeVar
 
-T = TypeVar("T", bound=int)
-Coord = Tuple[T, T, T]
-Cube = Tuple[Coord, Coord]
+import heapq
+from collections import defaultdict
+
+from utils import read_input
+
+Coord = tuple[int, int, int]
+Cube = tuple[Coord, Coord]
 
 
 class BrickSystem:
-    def __init__(self, bricks: List[Cube]) -> None:
+    def __init__(self, bricks: list[Cube]) -> None:
         self.og_bricks = sorted(bricks, key=lambda v: v[0][2])
-        self.settled = defaultdict(int)
+        self.settled: defaultdict[int, int] = defaultdict(int)
         # Parents need to remain a complete set
-        self.parents = {i: set() for i in range(len(bricks))}
-        self.children = defaultdict(set)
-        self.free_pieces = set()
+        self.parents: dict[int, set[int]] = {i: set() for i in range(len(bricks))}
+        self.children: defaultdict[int, set[int]] = defaultdict(set)
+        self.free_pieces: set[int] = set()
 
-    def create_cubes(self) -> List[Set[Coord]]:
+    def create_cubes(self) -> list[set[Coord]]:
         return [
             {
                 (x, y, z)
@@ -96,7 +95,7 @@ class BrickSystem:
 def main(filename: str):
     brick_system = BrickSystem(
         [
-            [list(map(int, seq.split(","))) for seq in line.split("~")]
+            [list(map(int, seq.split(","))) for seq in line.split("~")]  # type: ignore
             for line in read_input(filename)
         ]
     )

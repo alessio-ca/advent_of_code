@@ -1,9 +1,11 @@
-from utils import read_input
-import numpy as np
 import itertools
 
+import numpy as np
 
-def get_galaxies(grid: np.ndarray, expansion_n: int) -> np.ndarray:
+from utils import read_input
+
+
+def get_galaxies(grid: np.ndarray, expansion_n: int) -> tuple[np.ndarray, np.ndarray]:
     # Get galaxies positions.
     # Consider expansion
     x_r, y_r = (grid == "#").nonzero()
@@ -33,10 +35,10 @@ def main(filename: str):
     grid_raw = np.array([list(line) for line in read_input(filename)], dtype=str)
     # Get galaxies positions & compute
     x, y = get_galaxies(grid_raw, expansion_n=2)
-    print(f"Result of part 1: {compute_distances(x,y)}")
+    print(f"Result of part 1: {compute_distances(x, y)}")
     # Get galaxies positions & compute
     x, y = get_galaxies(grid_raw, expansion_n=1000000)
-    print(f"Result of part 2: {compute_distances(x,y)}")
+    print(f"Result of part 2: {compute_distances(x, y)}")
 
 
 if __name__ == "__main__":

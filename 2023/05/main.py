@@ -1,6 +1,7 @@
-from utils import read_input_batch
-import re
 import functools
+import re
+
+from utils import read_input_batch
 
 
 def convert_seed_to_location(input_source, source_to_dist_maps):
@@ -70,7 +71,7 @@ def main(filename: str):
     mapped_ranges = list(
         functools.reduce(range_convert_source_to_dest, source_to_dist_maps, total_seeds)
     )
-    print(f"Result of part 2: {min(i for i,_ in mapped_ranges)}")
+    print(f"Result of part 2: {min(i for i, _ in mapped_ranges)}")
 
 
 if __name__ == "__main__":

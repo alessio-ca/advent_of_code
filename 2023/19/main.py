@@ -1,6 +1,7 @@
-from utils import read_input_batch
-import re
 import math
+import re
+
+from utils import read_input_batch
 
 
 def create_flow_dict(worflows):
@@ -100,10 +101,10 @@ def calculate_combinations(intervals_dict):
 
 def main(filename: str):
     workflows, parts = [row for row in read_input_batch(filename)]
-    parts = [tuple(map(int, re.findall(r"\d+", part))) for part in parts]
+    parsed_parts = [tuple(map(int, re.findall(r"\d+", part))) for part in parts]
     flow_dict = create_flow_dict(workflows)
     total_n = 0
-    for part in parts:
+    for part in parsed_parts:
         total_n += process_part(part, flow_dict)
     print(f"Result of part 1: {total_n}")
     range_flow_dict = format_flow_dict(flow_dict)

@@ -1,14 +1,16 @@
 from __future__ import annotations
-from utils import read_input
-from typing import List, Tuple
-import regex as re
-from functools import cached_property
+
 import math
+from functools import cached_property
+
 import numpy as np
+import regex as re
+
+from utils import read_input
 
 
 class Snowflake:
-    def __init__(self, config: List[Tuple[int, int]]) -> None:
+    def __init__(self, config: list[tuple[int, int, int]]) -> None:
         x, y, z = config[0]
         vx, vy, vz = config[1]
         self.x0 = x
@@ -48,7 +50,7 @@ class Snowflake:
         return (x_t - self.x0) / self.vx
 
 
-def intersect(snowflakes: List[Snowflake], area_bounds: Tuple[int, int]) -> int:
+def intersect(snowflakes: list[Snowflake], area_bounds: tuple[int, int]) -> int:
     bound_min, bound_max = area_bounds
     counter = 0
     for i, snow_1 in enumerate(snowflakes):
@@ -63,7 +65,9 @@ def intersect(snowflakes: List[Snowflake], area_bounds: Tuple[int, int]) -> int:
     return counter
 
 
-def create_coefficient_matrices(snowflakes: List[Snowflake]) -> np.ndarray:
+def create_coefficient_matrices(
+    snowflakes: list[Snowflake],
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Create coefficient matrices that represents three linear systems of equations.
     We need three linear systems XY, XZ and YZ to completely solve the problem.
     See PDF for a theoretical derivation.
@@ -147,7 +151,7 @@ def main(filename: str):
     snowflakes = [
         Snowflake(
             [
-                tuple(map(int, tup.split(",")))
+                tuple(map(int, tup.split(",")))  # type: ignore
                 for tup in re.findall(r"-?\d+,\s+-?\d+,\s+-?\d+", line)
             ]
         )

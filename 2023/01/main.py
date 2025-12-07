@@ -1,5 +1,6 @@
-from utils import read_input
 import re
+
+from utils import read_input
 
 DIGITS_DICT = {
     "one": "1",

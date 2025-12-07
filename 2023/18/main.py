@@ -1,9 +1,10 @@
-from utils import read_input, CoordTuple, add_tuples
 import re
-from typing import Tuple, List
 from itertools import accumulate
+from typing import List, Tuple, Any
+
 import numpy as np
 
+from utils import CoordTuple, add_tuples, read_input
 
 PATTERN = r"^(U|R|L|D) (\d+) \(#(.+)\)"
 
@@ -25,7 +26,7 @@ def generate_vertexes(
         return add_tuples(point, (-n, 0))
 
 
-def create_trench(instructions: List[Tuple[str, int, str]]) -> List[CoordTuple]:
+def create_trench(instructions: List[Tuple[str, int, Any]]) -> List[CoordTuple]:
     return list(
         accumulate(
             [(x, y) for x, y, _ in instructions], generate_vertexes, initial=(0, 0)
@@ -34,7 +35,7 @@ def create_trench(instructions: List[Tuple[str, int, str]]) -> List[CoordTuple]:
 
 
 def calculate_area(
-    vertexes: List[CoordTuple], instructions: List[Tuple[str, int, str]]
+    vertexes: List[CoordTuple], instructions: List[Tuple[str, int, Any]]
 ) -> int:
     # Shoelace Formula gives the internal area,
     # given the vertex coordinates, with the start vertex being

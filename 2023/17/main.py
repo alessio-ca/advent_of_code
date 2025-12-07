@@ -1,15 +1,15 @@
-from utils import read_input, timefunc
-import numpy as np
-from typing import Tuple, List, Dict, Optional
-import itertools
-from collections import defaultdict
-import math
 import heapq
+import itertools
+import math
+from collections import defaultdict
+from typing import Optional
+
+import numpy as np
+
+from utils import read_input, timefunc, CoordTuple
 
 
-def _get_neighbors(
-    node: Tuple[int, int], bounds: Dict[str, Tuple[int, int]]
-) -> List[Tuple[int, int]]:
+def _get_neighbors(node: CoordTuple, bounds: dict[str, CoordTuple]) -> list[CoordTuple]:
     """Simple function to obtain the neighbors coordinates of a point on a grid.
     The grid bounds are considered."""
     x, y = node
@@ -26,9 +26,9 @@ def _get_neighbors(
 
 def create_neighbors_dict(
     grid: np.ndarray,
-) -> Dict[Tuple[int, int], List[Tuple[int, int]]]:
+) -> dict[CoordTuple, list[CoordTuple]]:
     """Create dictionary of neighbors for a grid"""
-    dict_nn = {
+    dict_nn: dict[CoordTuple, list[CoordTuple]] = {
         node: []
         for node in list(itertools.product(range(grid.shape[0]), range(grid.shape[1])))
     }
@@ -40,13 +40,13 @@ def create_neighbors_dict(
 
 
 def shortest_path_dijkstra(
-    start: Tuple[int, int],
+    start: CoordTuple,
     grid: np.ndarray,
-    dict_nn: Dict[Tuple[int, int], List[Tuple[int, int]]],
+    dict_nn: dict[CoordTuple, list[CoordTuple]],
     max_straight: int,
     min_straights: int,
-    end: Optional[Tuple[int, int]] = None,
-) -> Dict[Tuple[int, int], int]:
+    end: Optional[CoordTuple] = None,
+) -> int:
     """Dijkstra's algo for shortest path calculation between a start node and any other
      node in a grid.
     Returns a dictionary of {node: distance} from the source node.
@@ -60,7 +60,7 @@ def shortest_path_dijkstra(
     """
 
     # Initialise distance dictionary and visited set
-    dists = defaultdict(lambda: math.inf, {(start, start, 0): 0})
+    dists = defaultdict(lambda: math.inf, {(start, start, 0): 0.0})
     visited = set()
 
     # Initialise queue
@@ -98,6 +98,7 @@ def shortest_path_dijkstra(
                         heapq.heappush(
                             queue, (new_dist, neighbor, current_node, new_straights)
                         )
+    return -1
 
 
 def add_tuples(x, y):

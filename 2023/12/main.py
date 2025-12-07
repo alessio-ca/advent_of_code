@@ -1,6 +1,6 @@
-from utils import read_input
-from utils import timefunc
 from collections import defaultdict, deque
+
+from utils import read_input, timefunc
 
 
 class Record:

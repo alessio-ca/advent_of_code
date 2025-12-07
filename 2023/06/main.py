@@ -1,6 +1,8 @@
-from utils import read_input
-import numpy as np
 import re
+
+import numpy as np
+
+from utils import read_input
 
 
 def race_distance(race):

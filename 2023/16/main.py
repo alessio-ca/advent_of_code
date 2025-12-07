@@ -1,5 +1,6 @@
-from utils import read_input, timefunc
 from collections import deque
+
+from utils import read_input, timefunc
 
 
 def encounter(x, y, hx, hy, grid):
@@ -51,7 +52,7 @@ def generate_starts(grid):
 @timefunc
 def main(filename: str):
     grid = read_input(filename)
-    print(f"Result of part 1: {laser_walk(grid, start=(0,0), head=(0,1))}")
+    print(f"Result of part 1: {laser_walk(grid, start=(0, 0), head=(0, 1))}")
     configs = []
     for start, head in generate_starts(grid):
         configs.append(laser_walk(grid, start, head))

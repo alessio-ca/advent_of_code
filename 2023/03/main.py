@@ -1,8 +1,10 @@
-from utils import read_input, timefunc
-from typing import List, Tuple
-import numpy as np
 import itertools
 from collections import Counter
+from typing import List, Tuple
+
+import numpy as np
+
+from utils import read_input, timefunc
 
 
 def assign_blocks(

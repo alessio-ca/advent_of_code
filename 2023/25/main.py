@@ -1,13 +1,15 @@
-from utils import read_input
-import regex as re
-from typing import List, Tuple
 from collections import defaultdict
+from typing import List, Tuple
+
 import numpy as np
+import regex as re
+
+from utils import read_input
 
 
 def build_graph_matrices(connections: List[List[str]]) -> Tuple[np.ndarray, np.ndarray]:
     # Create graph dict tree (node -> edges)
-    adj_dict = defaultdict(set)
+    adj_dict: defaultdict[str, set[str]] = defaultdict(set)
     for line in connections:
         adj_dict[line[0]] |= set(line[1:])
         for comp in line[1:]:

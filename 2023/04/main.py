@@ -1,7 +1,9 @@
-from utils import read_input
-from typing import List, Set, Dict, Tuple
 import re
+from typing import Dict, List, Set, Tuple
+
 import numpy as np
+
+from utils import read_input
 
 
 def format_cards(cards: List[str]) -> Dict[int, Tuple[Set[int], Set[int]]]:

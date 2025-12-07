@@ -1,7 +1,8 @@
-from typing import Tuple, List, Any
-from utils import read_input
 import math
 import re
+from typing import Any, List, Tuple
+
+from utils import read_input
 
 
 def parse_games(games: List[str]) -> Tuple[List[int], List[Any]]:

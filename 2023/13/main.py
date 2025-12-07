@@ -1,6 +1,8 @@
-from utils import read_input_batch
-import numpy as np
 from typing import Callable
+
+import numpy as np
+
+from utils import read_input_batch
 
 
 def test_grid(grid, i):

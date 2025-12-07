@@ -1,8 +1,9 @@
-from utils import read_input, CoordTuple
-import numpy as np
 import heapq
+from typing import List, Set, Tuple
 
-from typing import Tuple, List, Set
+import numpy as np
+
+from utils import CoordTuple, read_input
 
 N = (-1, 0)
 S = (1, 0)
@@ -45,7 +46,8 @@ def rotate(dir: CoordTuple) -> Tuple[CoordTuple, CoordTuple]:
 
 
 def dir_inverse(direction: CoordTuple) -> CoordTuple:
-    return tuple(map((-1).__mul__, direction))
+    x, y = direction
+    return (-x, -y)
 
 
 def add_tuples(point: CoordTuple, direction: CoordTuple) -> CoordTuple:
@@ -87,10 +89,10 @@ class Network:
         # Initialise loop
         self.network = set()
         self.network.add(self.start)
-        self.clock_set = set()
-        self.anti_set = set()
+        self.clock_set: set[CoordTuple] = set()
+        self.anti_set: set[CoordTuple] = set()
         self.total_angle = 0
-        self.network_loop = 0
+        self.network_loop: set[CoordTuple] = set()
 
     def start_network(self) -> Tuple[CoordTuple, CoordTuple]:
         """Start the network. Find first connected pipe to start.
@@ -186,7 +188,7 @@ def main(filename: str):
     grid = np.array([list(line) for line in read_input(filename)], dtype=str)
     network = Network(grid)
     network.construct_network()
-    print(f"Result of part 1: {int((len(network.network)+1)/2)}")
+    print(f"Result of part 1: {int((len(network.network) + 1) / 2)}")
     network.construct_loop()
     print(f"Result of part 2: {len(network.network_loop)}")
 

@@ -1,7 +1,8 @@
-from utils import read_input
 import re
-from typing import List, Tuple
 from collections import defaultdict, deque
+from typing import List, Tuple
+
+from utils import read_input
 
 
 def hash_algorithm(sequence: str) -> int:
@@ -31,11 +32,13 @@ class Boxes:
     def __init__(self, sequences) -> None:
         self.sequences = sequences
         # Labels are represented as {box: deque([labels])}
-        self.dict_labels = defaultdict(deque)
+        self.dict_labels: defaultdict[int, deque[str]] = defaultdict(deque)
         # Lenses are represented as {box: {label: focal}}
-        self.dict_lenses = defaultdict(lambda: defaultdict(int))
+        self.dict_lenses: defaultdict[int, defaultdict[str, int]] = defaultdict(
+            lambda: defaultdict(int)
+        )
 
-    def perform_extraction(self, hash_box, idx):
+    def perform_extraction(self, hash_box: int, idx: int):
         self.dict_labels[hash_box].rotate(-idx)
         self.dict_labels[hash_box].popleft()
         self.dict_labels[hash_box].rotate(idx)

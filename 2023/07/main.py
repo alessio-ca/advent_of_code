@@ -1,7 +1,7 @@
-from utils import read_input
-from dataclasses import dataclass
 from collections import Counter
-from typing import Dict
+from dataclasses import dataclass
+
+from utils import read_input
 
 DICT_VALUES = {"A": 14, "K": 13, "Q": 12, "J": 11, "T": 10}
 DICT_VALUES_PART_2 = {"A": 14, "K": 13, "Q": 12, "J": 1, "T": 10}
@@ -10,7 +10,7 @@ DICT_VALUES_PART_2 = {"A": 14, "K": 13, "Q": 12, "J": 1, "T": 10}
 @dataclass
 class Card:
     face: str
-    dict_values: Dict[str, int]
+    dict_values: dict[str, int]
 
     @property
     def value(self) -> int:
@@ -21,7 +21,7 @@ class Card:
 
 
 class Hand:
-    def __init__(self, cards: str, bid: int, dict_values: Dict[str, int]) -> None:
+    def __init__(self, cards: str, bid: str, dict_values: dict[str, int]) -> None:
         self.cards = cards
         self.bid = int(bid)
         self.counter = Counter(cards)
@@ -77,7 +77,9 @@ def main(filename: str):
         for hand in hand_sets
     ]
     hand_tuples.sort(key=lambda t: (t[0], t[1]))
-    print(f"Result of part 1: {sum((i+1)*j for i,(_,_,j) in enumerate(hand_tuples))}")
+    print(
+        f"Result of part 1: {sum((i + 1) * j for i, (_, _, j) in enumerate(hand_tuples))}"
+    )
 
     hand_sets = [Hand(hand, bid, DICT_VALUES_PART_2) for hand, bid in games]
     hand_tuples = [
@@ -85,7 +87,9 @@ def main(filename: str):
         for hand in hand_sets
     ]
     hand_tuples.sort(key=lambda t: (t[0], t[1]))
-    print(f"Result of part 2: {sum((i+1)*j for i,(_,_,j) in enumerate(hand_tuples))}")
+    print(
+        f"Result of part 2: {sum((i + 1) * j for i, (_, _, j) in enumerate(hand_tuples))}"
+    )
 
 
 if __name__ == "__main__":

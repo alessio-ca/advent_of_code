@@ -1,6 +1,8 @@
-from utils import read_input
-import numpy as np
 from functools import reduce
+
+import numpy as np
+
+from utils import read_input
 
 
 def forward_value(seq: np.ndarray) -> int:

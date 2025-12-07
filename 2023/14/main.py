@@ -1,8 +1,8 @@
-from utils import read_input, timefunc
 import numpy as np
-from numba.experimental import jitclass
-from numba import int64
+from numba import int64  # type: ignore
+from numba.experimental import jitclass  # type: ignore
 
+from utils import read_input, timefunc
 
 DICT_ROCKS = {".": 0, "O": 1, "#": 2}
 

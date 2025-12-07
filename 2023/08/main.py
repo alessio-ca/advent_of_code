@@ -1,7 +1,9 @@
-from utils import read_input_batch
-import regex as re
 from itertools import cycle
+
 import numpy as np
+import regex as re
+
+from utils import read_input_batch
 
 
 def cond_part_1(key):
@@ -22,7 +24,7 @@ class Network:
         n = 0
         while cond(key):
             step = next(directions)
-            key = self.network[key][step]
+            key = self.network[key][0 if step == "L" else 1]
             n += 1
         return n
 
@@ -36,11 +38,12 @@ class Network:
 
 
 def main(filename: str):
-    instr, network = read_input_batch(filename, line_split=False)
+    instr, network_input = read_input_batch(filename, line_split=False)
     network = {
-        x: (y, z) for (x, y, z) in (re.findall(r"[A-Z]{3}", line) for line in network)
+        x: (y, z)
+        for (x, y, z) in (re.findall(r"[A-Z]{3}", line) for line in network_input)
     }
-    instr = [0 if x == "L" else 1 for x in instr[0]]
+    instr = [x for x in instr[0]]
 
     problem_network = Network(network, instr)
     print(f"Result of part 1: {problem_network.human_navigate_network()}")

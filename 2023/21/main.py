@@ -1,9 +1,12 @@
 from __future__ import annotations
-from utils import read_input
-import numpy as np
-from typing import Tuple, Dict, List, Callable
+
 import itertools
 from collections import defaultdict
+from typing import Callable, Generator
+
+import numpy as np
+
+from utils import read_input, CoordTuple
 
 
 class Point:
@@ -19,7 +22,9 @@ class Point:
         return Point(self.x + other.x, self.y + other.y)
 
 
-def _get_neighbors(node: Point, bounds: Dict[str, Tuple[int, int]]) -> List[Point]:
+def _get_neighbors(
+    node: Point, bounds: dict[str, CoordTuple]
+) -> Generator[Point, None, None]:
     """Simple function to obtain the neighbors coordinates of a point on a grid.
     The grid bounds are considered."""
     for move in (Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1)):
@@ -32,8 +37,8 @@ def _get_neighbors(node: Point, bounds: Dict[str, Tuple[int, int]]) -> List[Poin
 
 
 def _get_neighbors_infinite(
-    node: Point, bounds: Dict[str, Tuple[int, int]]
-) -> List[Point]:
+    node: Point, bounds: dict[str, CoordTuple]
+) -> Generator[Point, None, None]:
     """Simple function to obtain the neighbors coordinates of a point on a grid.
     The grid is supposed to be periodic"""
     for move in (Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1)):
@@ -53,9 +58,9 @@ def _get_neighbors_infinite(
 
 def create_neighbors_dict(
     grid: np.ndarray, method: Callable
-) -> Dict[Tuple[int, int], List[Tuple[int, int]]]:
+) -> dict[CoordTuple, list[CoordTuple]]:
     """Create dictionary of neighbors for a grid"""
-    dict_nn = {
+    dict_nn: dict[CoordTuple, list[CoordTuple]] = {
         node: []
         for node in list(itertools.product(range(grid.shape[0]), range(grid.shape[1])))
     }
@@ -210,7 +215,7 @@ def main(filename: str):
         steps = 26501365
         offset = 65
 
-    print(f"Result of part 2: {search_result(base,steps,offset,y)}")
+    print(f"Result of part 2: {search_result(base, steps, offset, y)}")
 
 
 if __name__ == "__main__":

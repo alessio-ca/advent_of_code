@@ -1,9 +1,12 @@
-from utils import read_input
 from collections import defaultdict
+
 import numpy as np
+
+from utils import read_input
 
 
 class ModuleSelector(object):
+    @staticmethod
     def factory(string):
         if string[0] == "%":
             return FlipFlop(string)
@@ -18,7 +21,7 @@ class AbstractModule:
         m_type, send_to = [x.strip() for x in string.split("->")]
         self.id = m_type[1:]
         self.send_to = [x.strip() for x in send_to.split(",")]
-        self.dict_status = defaultdict(lambda x: False)
+        self.dict_status: defaultdict = defaultdict(lambda: False)
 
 
 class FlipFlop(AbstractModule):
@@ -43,7 +46,7 @@ class ModuleProcess:
         self.low = 0
         self.i = 0
         self.seeds = self.find_conjunctions()
-        self.seeds_dict = defaultdict(list)
+        self.seeds_dict: defaultdict[str, list] = defaultdict(list)
         self.initialise_conjunctions()
 
     def find_conjunctions(self):
@@ -125,8 +128,8 @@ class ModuleProcess:
 
 
 def main(filename: str):
-    modules = [ModuleSelector.factory(row) for row in read_input(filename)]
-    modules = {module.id: module for module in modules}
+    modules_list = [ModuleSelector.factory(row) for row in read_input(filename)]
+    modules = {module.id: module for module in modules_list}
     process = ModuleProcess(modules)
 
     for _ in range(1000):

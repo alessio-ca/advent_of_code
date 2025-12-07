@@ -1,13 +1,10 @@
-from utils import read_input, timefunc
-import numpy as np
-from typing import Tuple, Dict, List, Iterator
-import math
 import itertools
-from typing import TypeVar
+import math
 from collections import defaultdict
 
-T = TypeVar("T", bound=int)
-Coord = Tuple[T, T]
+import numpy as np
+
+from utils import read_input, timefunc, CoordTuple, CoordGenerator
 
 DICT_DIRECTIONS = {">": (0, 1), "v": (1, 0), "<": (0, -1), "^": (-1, 0)}
 
@@ -15,8 +12,8 @@ DICT_DIRECTIONS = {">": (0, 1), "v": (1, 0), "<": (0, -1), "^": (-1, 0)}
 def longest_path_dfs(
     start: int,
     end: int,
-    dict_nn: Dict[int, List[int]],
-) -> int:
+    dict_nn: dict[int, list[int]],
+) -> float:
     """DFS algo for longest path calculation between a start node and
         and end node
     Returns the length of the longest path
@@ -46,8 +43,8 @@ def longest_path_dfs(
 def longest_path_dfs_compressed(
     start: int,
     end: int,
-    graph_edges: Dict[int, List[Tuple[int, int]]],
-) -> int:
+    graph_edges: dict[int, list[CoordTuple]],
+) -> float:
     """DFS algo for longest path calculation between a start node and
         and end node, on a compressed graph
     Returns the length of the longest path
@@ -77,8 +74,8 @@ def longest_path_dfs_compressed(
 def compress_graph(
     start: int,
     end: int,
-    dict_nn: Dict[int, List[int]],
-) -> Dict[Tuple[int, int], int]:
+    dict_nn: dict[int, list[int]],
+) -> dict[int, list[CoordTuple]]:
     """Compress a graph between start and end node.
     Calculate edges between grid junctions and transform grid
     into a graph of junctions.
@@ -128,14 +125,14 @@ def compress_graph(
     return graph
 
 
-def conv_func(coord: Coord, grid: np.ndarray) -> int:
+def conv_func(coord: CoordTuple, grid: np.ndarray) -> int:
     """Convert a coord tuple into a single int"""
     return grid.shape[1] * coord[0] + coord[1]
 
 
 def convert_coords_to_int(
-    dict_nn: Dict[Coord, List[Coord]], grid: np.ndarray
-) -> Dict[int, List[int]]:
+    dict_nn: dict[CoordTuple, list[CoordTuple]], grid: np.ndarray
+) -> dict[int, list[int]]:
     """Convert a dictionary of nn as Coord into single int"""
     return {
         conv_func(key, grid): [conv_func(el, grid) for el in value]
@@ -143,7 +140,7 @@ def convert_coords_to_int(
     }
 
 
-def _get_neighbors(node: Coord, grid: np.ndarray) -> Iterator:
+def _get_neighbors(node: CoordTuple, grid: np.ndarray) -> CoordGenerator:
     """Simple function to obtain the neighbors coordinates of a point on a grid.
     The grid bounds are considered. Obstacles/constraints are considered"""
     x, y = node
@@ -164,14 +161,14 @@ def _get_neighbors(node: Coord, grid: np.ndarray) -> Iterator:
 
 def create_neighbors_dict(
     grid: np.ndarray,
-) -> Dict[Coord, List[Coord]]:
+) -> dict[CoordTuple, list[CoordTuple]]:
     """Create dictionary of neighbors for a grid"""
-    dict_nn = {
+    dict_nn: dict[CoordTuple, list[CoordTuple]] = {
         node: []
         for node in list(itertools.product(range(grid.shape[0]), range(grid.shape[1])))
     }
     for node in dict_nn.keys():
-        dict_nn[node] = _get_neighbors(node, grid)
+        dict_nn[node] = list(_get_neighbors(node, grid))
 
     return dict_nn
 

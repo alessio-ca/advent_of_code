@@ -1,16 +1,19 @@
-import time
-import functools
 import cProfile
+import functools
 import io
 import pstats
-from typing import Generator, Callable
-import numpy as np
+import time
 from functools import cache
+from collections import defaultdict
+from typing import Callable, Generator
+
+import numpy as np
 
 CoordTuple = tuple[int, int]
 CoordGenerator = Generator[CoordTuple, None, None]
 ConstraintFunArgs = tuple[int, int, int, int, np.ndarray]
 ConstraintFun = Callable[[ConstraintFunArgs], bool]
+DijkstraDistances = defaultdict[CoordTuple, float]
 
 
 def add_tuples(p1: CoordTuple, p2: CoordTuple) -> CoordTuple:
@@ -59,7 +62,7 @@ def read_input(input_file: str, line_strip: bool = True) -> list[str]:
     return input_list
 
 
-def read_integer_lists(input_file: str) -> list[int]:
+def read_integer_lists(input_file: str) -> list[list[int]]:
     return list(map(lambda x: list(map(int, x.split(" "))), read_input(input_file)))
 
 

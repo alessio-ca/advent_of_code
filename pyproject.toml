@@ -20,6 +20,10 @@ dev = [
     "isort>=7.0.0",
     "mypy>=1.19.0",
     "ruff>=0.14.8",
+    "scipy-stubs>=1.16.3.2",
+    "types-networkx>=3.6.0.20251127",
+    "types-parsimonious>=0.11.0.20251114",
+    "types-regex>=2025.11.3.20251106",
 ]
 
 [tool.ruff]

@@ -1,5 +1,4 @@
 from utils import read_input
-import heapq
 import numpy as np
 
      

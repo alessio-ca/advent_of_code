@@ -49,6 +49,7 @@ def is_rectangle_in_polygon(u: CoordTuple, v: CoordTuple, vertex_set: set[CoordT
     x_min, x_max, y_min, y_max = create_rectangle(np.array(u), np.array(v))
     rec_vertexes = [ (x_min, y_min), (x_min, y_max), (x_max, y_min), (x_max, y_max) ]
     
+    # Check if all rectangle vertexes are inside the polygon
     for v in rec_vertexes:
         if v not in vertex_set:
             if not is_point_in_polygon(v, v_edges):

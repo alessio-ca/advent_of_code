@@ -4,6 +4,7 @@ import numpy as np
 from scipy.spatial.distance import pdist
 
 Edge = tuple[int, int, int]  # (x, y_min, y_max)
+FloatTuple = tuple[float, float]
 
 def create_rectangle(u: np.ndarray, v: np.ndarray) -> tuple[int,int,int,int]:
     """Create a rectangle defined by two corner points u and v (inclusive)."""
@@ -32,7 +33,7 @@ def get_edges(polygon: list[CoordTuple]) -> tuple[list[Edge], list[Edge]]:
 
 
 
-def is_point_in_polygon(point: CoordTuple, edges: list[tuple[int,int,int]]) -> bool:
+def is_point_in_polygon(point: CoordTuple | FloatTuple, edges: list[tuple[int,int,int]]) -> bool:
     """Determine if a point is inside a polygon using the ray-casting algorithm.
     Use only vertical edges for simplicity. Point on edge is considered inside."""
     x, y = point
@@ -62,6 +63,13 @@ def is_rectangle_in_polygon(u: CoordTuple, v: CoordTuple, vertex_set: set[CoordT
         if y_min < y_edge < y_max: 
             if not (x2 <= x_min or x1 >= x_max):
                 return False
+    
+    # Check center point to ensure rectangle isn't completely outside
+    center_x = (x_min + x_max) / 2
+    center_y = (y_min + y_max) / 2
+    if not is_point_in_polygon((center_x, center_y), v_edges): 
+        return False
+    
     return True
 
 def main(filename: str):

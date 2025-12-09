@@ -14,12 +14,13 @@ def create_rectangle(u: np.ndarray, v: np.ndarray) -> tuple[int,int,int,int]:
 
 
 
-def get_edges(polygon: list[CoordTuple]) -> tuple[list[Edge], list[Edge]]:
+def get_edges(polygon: np.ndarray) -> tuple[list[Edge], list[Edge]]:
     """Extract horizontal and vertical edges from a polygon defined by its vertices."""
     h_edges = []
     v_edges = []
     x0, y0 = polygon[0]
-    for point in polygon[1:] + [polygon[0]]:
+    np.append(polygon, [polygon[0]], axis=0)  # Close the polygon
+    for point in polygon:
         x, y = point
         if x == x0:
             # Vertical edge
@@ -43,16 +44,16 @@ def is_point_in_polygon(point: CoordTuple | FloatTuple, edges: list[tuple[int,in
             crossings += 1
     return crossings % 2 == 1
 
-def is_rectangle_in_polygon(u: CoordTuple, v: CoordTuple, vertex_set: set[CoordTuple], v_edges: list[Edge], h_edges: list[Edge]) -> bool:
+def is_rectangle_in_polygon(u: np.ndarray, v: np.ndarray, vertex_set: set[CoordTuple], v_edges: list[Edge], h_edges: list[Edge]) -> bool:
     """Check if the rectangle defined by corners u and v is fully contained within the polygon.
     """
-    x_min, x_max, y_min, y_max = create_rectangle(np.array(u), np.array(v))
+    x_min, x_max, y_min, y_max = create_rectangle(u, v)
     rec_vertexes = [ (x_min, y_min), (x_min, y_max), (x_max, y_min), (x_max, y_max) ]
     
     # Check if all rectangle vertexes are inside the polygon
-    for v in rec_vertexes:
-        if v not in vertex_set:
-            if not is_point_in_polygon(v, v_edges):
+    for vertex in rec_vertexes:
+        if vertex not in vertex_set:
+            if not is_point_in_polygon(vertex, v_edges):
                 return False
     
     # Check for edge crossing
@@ -74,20 +75,18 @@ def is_rectangle_in_polygon(u: CoordTuple, v: CoordTuple, vertex_set: set[CoordT
     return True
 
 def main(filename: str):
-    data = np.array([list(map(int, line.split(','))) for line in read_input(filename)], dtype=np.int64)
+    polygon = np.array([list(map(int, line.split(','))) for line in read_input(filename)], dtype=np.int64)
     def rectangle_area(u: np.ndarray, v: np.ndarray) -> int:
         return np.prod(abs(u - v) + 1)
-    areas = pdist(data, metric=rectangle_area).astype(np.int64)
+    areas = pdist(polygon, metric=rectangle_area).astype(np.int64)
     print(f"Result of part 1: {areas.max()}")
    
-   
-    polygon = data.tolist()
     h_edges, v_edges = get_edges(polygon)
     vertex_set = set(map(tuple, polygon))
     areas_2 = []
     for u, v in combinations(polygon, 2):
         if is_rectangle_in_polygon(u,v, vertex_set, v_edges, h_edges):
-            areas_2.append(rectangle_area(np.array(u), np.array(v)))
+            areas_2.append(rectangle_area(u, v))
 
     print(f"Result of part 2: {max(areas_2)}")
 
